@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}Solicitação Enviada com Sucesso - Central MEI{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Card de Sucesso -->
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-body p-5 text-center">
+                        <!-- Ícone de Sucesso -->
+                        <div class="mb-4">
+                            <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center success-icon">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                        </div>
+
+                        <!-- Título -->
+                        <h2 class="text-success mb-3">Solicitação Enviada com Sucesso!</h2>
+                        
+                        <!-- Protocolo -->
+                        <div class="alert alert-success border-0 mb-4" role="alert">
+                            <h4 class="alert-heading">
+                                <i class="bi bi-clipboard-check me-2"></i>
+                                Protocolo #{{ solicitacao.id }}
+                            </h4>
+                            <p class="mb-0">Guarde este número para acompanhar o andamento da sua solicitação</p>
+                        </div>
+
+                        <!-- Informações da Solicitação -->
+                        <div class="row text-start mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="bi bi-person me-1"></i>
+                                            Dados Pessoais
+                                        </h6>
+                                        <p class="mb-1"><strong>Nome:</strong> {{ solicitacao.nome_completo }}</p>
+                                        <p class="mb-1"><strong>CPF:</strong> {{ solicitacao.cpf }}</p>
+                                        <p class="mb-0"><strong>E-mail:</strong> {{ solicitacao.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            Status da Solicitação
+                                        </h6>
+                                        <p class="mb-1"><strong>Status:</strong> 
+                                            <span class="badge bg-warning text-dark">{{ solicitacao.get_status_display }}</span>
+                                        </p>
+                                        <p class="mb-1"><strong>Data:</strong> {{ solicitacao.criado_em|date:"d/m/Y H:i" }}</p>
+                                        <p class="mb-0"><strong>Capital:</strong> R$ {{ solicitacao.capital_inicial }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Próximos Passos -->
+                        <div class="card border-primary mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    Próximos Passos
+                                </h5>
+                            </div>
+                            <div class="card-body text-start">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">1</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Análise dos Dados</h6>
+                                                <small class="text-muted">Nossa equipe irá validar as informações enviadas</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">2</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Contato em até 24h</h6>
+                                                <small class="text-muted">Entraremos em contato via e-mail ou WhatsApp</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">3</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Documentação</h6>
+                                                <small class="text-muted">Envio dos documentos complementares</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">4</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Abertura do MEI</h6>
+                                                <small class="text-muted">Finalização em 2-3 dias úteis</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentos Necessários -->
+                        <div class="alert alert-info border-0" role="alert">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Documentos que você deve ter em mãos
+                            </h6>
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check text-success me-1"></i> Cópia do RG e CPF</li>
+                                        <li><i class="bi bi-check text-success me-1"></i> Comprovante de endereço</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check text-success me-1"></i> Título de eleitor</li>
+                                        <li><i class="bi bi-check text-success me-1"></i> Declaração IR (se houver)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                            <a href="{% url 'core:home' %}" class="btn btn-primary">
+                                <i class="bi bi-house me-1"></i>
+                                Voltar ao Início
+                            </a>
+                            <a href="https://wa.me/5511999999999?text=Olá! Acabei de enviar uma solicitação de abertura de MEI (Protocolo #{{ solicitacao.id }}). Gostaria de mais informações." 
+                               class="btn btn-success" target="_blank">
+                                <i class="bi bi-whatsapp me-1"></i>
+                                Falar no WhatsApp
+                            </a>
+                            <button onclick="window.print()" class="btn btn-outline-secondary">
+                                <i class="bi bi-printer me-1"></i>
+                                Imprimir Protocolo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informações de Contato -->
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="bi bi-envelope text-primary h4"></i>
+                            <h6 class="mt-2">E-mail</h6>
+                            <p class="small text-muted">contato@centralmei.com.br</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="bi bi-whatsapp text-success h4"></i>
+                            <h6 class="mt-2">WhatsApp</h6>
+                            <p class="small text-muted">(11) 99999-9999</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="bi bi-clock text-warning h4"></i>
+                            <h6 class="mt-2">Horário</h6>
+                            <p class="small text-muted">Seg-Sex: 8h às 18h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.success-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2.5rem;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+@media print {
+    .btn, nav, footer {
+        display: none !important;
+    }
+    .card {
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+    }
+}
+</style>
+{% endblock %}

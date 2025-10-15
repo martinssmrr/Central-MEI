@@ -1,0 +1,402 @@
+{% extends 'dashboard/base.html' %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="bi bi-list-ul me-2 text-primary"></i>
+                {{ title }}
+            </h4>
+            <a href="{% url 'dashboard:movimentacao_create' %}" class="btn btn-custom">
+                <i class="bi bi-plus-circle me-1"></i>
+                Nova Movimentação
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-custom mb-3">
+            <div class="card-header bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="bi bi-funnel me-1"></i>
+                        Filtros
+                    </h6>
+                    <button class="btn btn-link btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="collapse" id="filtrosCollapse">
+                <div class="card-body">
+                    <form method="GET" id="filtrosForm">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="tipo" class="form-label fw-bold">Tipo</label>
+                                <select name="tipo" id="tipo" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option value="entrada" {% if request.GET.tipo == 'entrada' %}selected{% endif %}>Entrada</option>
+                                    <option value="saida" {% if request.GET.tipo == 'saida' %}selected{% endif %}>Saída</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label for="categoria" class="form-label fw-bold">Categoria</label>
+                                <select name="categoria" id="categoria" class="form-select">
+                                    <option value="">Todas</option>
+                                    {% for categoria in categorias %}
+                                        <option value="{{ categoria.id }}" {% if request.GET.categoria == categoria.id|slugify %}selected{% endif %}>
+                                            {{ categoria.nome }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label for="data_inicio" class="form-label fw-bold">Data Início</label>
+                                <input type="date" name="data_inicio" id="data_inicio" class="form-control" 
+                                       value="{{ request.GET.data_inicio }}">
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label for="data_fim" class="form-label fw-bold">Data Fim</label>
+                                <input type="date" name="data_fim" id="data_fim" class="form-control" 
+                                       value="{{ request.GET.data_fim }}">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-outline-primary me-2">
+                                    <i class="bi bi-search me-1"></i>
+                                    Filtrar
+                                </button>
+                                <a href="{% url 'dashboard:movimentacoes_list' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Limpar
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resumo Financeiro -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-arrow-up-circle display-6 text-success"></i>
+                <h6 class="card-title text-muted mt-2">Total Entradas</h6>
+                <h4 class="text-success">R$ {{ total_entradas|floatformat:2 }}</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-arrow-down-circle display-6 text-danger"></i>
+                <h6 class="card-title text-muted mt-2">Total Saídas</h6>
+                <h4 class="text-danger">R$ {{ total_saidas|floatformat:2 }}</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-calculator display-6 text-primary"></i>
+                <h6 class="card-title text-muted mt-2">Saldo</h6>
+                <h4 class="{% if saldo >= 0 %}text-success{% else %}text-danger{% endif %}">
+                    R$ {{ saldo|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-list-ol display-6 text-info"></i>
+                <h6 class="card-title text-muted mt-2">Total Movimentações</h6>
+                <h4 class="text-info">{{ movimentacoes.count }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Movimentações -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">
+                    <i class="bi bi-table me-1"></i>
+                    Movimentações
+                    {% if movimentacoes %}
+                        <span class="badge bg-primary">{{ movimentacoes.count }}</span>
+                    {% endif %}
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                {% if movimentacoes %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center">
+                                        <i class="bi bi-hash"></i>
+                                    </th>
+                                    <th>
+                                        <a href="?{{ request.GET.urlencode }}&order=data_movimentacao" 
+                                           class="text-decoration-none text-dark">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            Data
+                                            {% if request.GET.order == 'data_movimentacao' %}
+                                                <i class="bi bi-arrow-up"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-tag me-1"></i>
+                                        Tipo
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-pencil me-1"></i>
+                                        Descrição
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-folder me-1"></i>
+                                        Categoria
+                                    </th>
+                                    <th class="text-end">
+                                        <a href="?{{ request.GET.urlencode }}&order=valor" 
+                                           class="text-decoration-none text-dark">
+                                            <i class="bi bi-currency-dollar me-1"></i>
+                                            Valor
+                                            {% if request.GET.order == 'valor' %}
+                                                <i class="bi bi-arrow-up"></i>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for movimentacao in movimentacoes %}
+                                    <tr>
+                                        <td class="text-center text-muted">
+                                            {{ forloop.counter }}
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold">{{ movimentacao.data_movimentacao|date:"d/m/Y" }}</span>
+                                            <br>
+                                            <small class="text-muted">{{ movimentacao.data_movimentacao|time:"H:i" }}</small>
+                                        </td>
+                                        <td>
+                                            {% if movimentacao.tipo == 'entrada' %}
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-arrow-up me-1"></i>
+                                                    Entrada
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-arrow-down me-1"></i>
+                                                    Saída
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold">{{ movimentacao.descricao }}</div>
+                                            {% if movimentacao.observacoes %}
+                                                <small class="text-muted fst-italic">
+                                                    {{ movimentacao.observacoes|truncatechars:50 }}
+                                                </small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="text-primary">{{ movimentacao.categoria.nome }}</div>
+                                            {% if movimentacao.subcategoria %}
+                                                <small class="text-muted">{{ movimentacao.subcategoria.nome }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="h6 mb-0 {% if movimentacao.tipo == 'entrada' %}text-success{% else %}text-danger{% endif %}">
+                                                {% if movimentacao.tipo == 'entrada' %}+{% else %}-{% endif %}
+                                                R$ {{ movimentacao.valor|floatformat:2 }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'dashboard:movimentacao_update' movimentacao.pk %}" 
+                                                   class="btn btn-outline-primary" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-danger" 
+                                                        title="Excluir" data-bs-toggle="modal" 
+                                                        data-bs-target="#deleteModal{{ movimentacao.pk }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Modal de Confirmação de Exclusão -->
+                                    <div class="modal fade" id="deleteModal{{ movimentacao.pk }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                                                        Confirmar Exclusão
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Tem certeza que deseja excluir esta movimentação?</p>
+                                                    <div class="card bg-light">
+                                                        <div class="card-body">
+                                                            <strong>{{ movimentacao.descricao }}</strong><br>
+                                                            <span class="text-muted">{{ movimentacao.categoria.nome }}</span><br>
+                                                            <span class="h6 {% if movimentacao.tipo == 'entrada' %}text-success{% else %}text-danger{% endif %}">
+                                                                {% if movimentacao.tipo == 'entrada' %}+{% else %}-{% endif %}
+                                                                R$ {{ movimentacao.valor|floatformat:2 }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="text-danger small mt-2">
+                                                        <i class="bi bi-info-circle me-1"></i>
+                                                        Esta ação não pode ser desfeita.
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        Cancelar
+                                                    </button>
+                                                    <form method="POST" action="{% url 'dashboard:movimentacao_delete' movimentacao.pk %}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="bi bi-trash me-1"></i>
+                                                            Excluir
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginação -->
+                    {% if is_paginated %}
+                        <div class="card-footer">
+                            <nav aria-label="Paginação das movimentações">
+                                <ul class="pagination justify-content-center mb-0">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{{ request.GET.urlencode }}&page=1">
+                                                <i class="bi bi-chevron-double-left"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ page_obj.previous_page_number }}">
+                                                <i class="bi bi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ num }}</span>
+                                            </li>
+                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ num }}">{{ num }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ page_obj.next_page_number }}">
+                                                <i class="bi bi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ page_obj.paginator.num_pages }}">
+                                                <i class="bi bi-chevron-double-right"></i>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center p-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <h5 class="text-muted mt-3">Nenhuma movimentação encontrada</h5>
+                        <p class="text-muted">Comece cadastrando sua primeira movimentação financeira.</p>
+                        <a href="{% url 'dashboard:movimentacao_create' %}" class="btn btn-custom">
+                            <i class="bi bi-plus-circle me-1"></i>
+                            Cadastrar Primeira Movimentação
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit do formulário de filtros ao alterar valores
+    const filtrosForm = document.getElementById('filtrosForm');
+    const selects = filtrosForm.querySelectorAll('select, input[type="date"]');
+    
+    selects.forEach(select => {
+        select.addEventListener('change', function() {
+            // Adicionar um pequeno delay para evitar múltiplos submits
+            setTimeout(() => {
+                filtrosForm.submit();
+            }, 300);
+        });
+    });
+
+    // Expandir filtros se algum filtro estiver ativo
+    const hasActiveFilters = '{{ request.GET.tipo }}{{ request.GET.categoria }}{{ request.GET.data_inicio }}{{ request.GET.data_fim }}';
+    if (hasActiveFilters) {
+        const filtrosCollapse = new bootstrap.Collapse(document.getElementById('filtrosCollapse'), {
+            show: true
+        });
+    }
+
+    // Highlighting das linhas da tabela
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#f8f9fa';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+        });
+    });
+});
+</script>
+{% endblock %}

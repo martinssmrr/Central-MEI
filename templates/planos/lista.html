@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Planos - Central MEI{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-light-primary">
+    <div class="container">
+        <div class="section-header text-center">
+            <h1 class="section-title">Nossos Planos</h1>
+            <p class="section-subtitle">Escolha o plano ideal para o seu negócio</p>
+        </div>
+    </div>
+</section>
+
+<!-- Plans Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            {% for plano in planos %}
+            <div class="col-lg-4 col-md-6">
+                <div class="plan-card {% if plano.destaque %}featured{% endif %}">
+                    <div class="plan-header">
+                        <h3 class="h4 mb-3">{{ plano.nome }}</h3>
+                        <div class="plan-price">
+                            R$ {{ plano.preco }}
+                            <small>/mês</small>
+                        </div>
+                    </div>
+                    <div class="plan-body">
+                        <p class="text-muted mb-4">{{ plano.descricao }}</p>
+                        
+                        {% if plano.beneficios %}
+                        <ul class="plan-features">
+                            {% for beneficio in plano.beneficios %}
+                            <li><i class="bi bi-check-circle-fill"></i> {{ beneficio }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        
+                        <div class="d-grid">
+                            <a href="#" class="btn {% if plano.destaque %}btn-warning{% else %}btn-primary{% endif %} btn-lg">
+                                Escolher Plano
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Planos padrão caso não existam no banco -->
+            <div class="col-lg-4 col-md-6">
+                <div class="plan-card rounded-custom shadow-custom shadow-hover">
+                    <div class="plan-header bg-gradient-primary">
+                        <h3 class="h4 mb-3">Basic</h3>
+                        <div class="plan-price">
+                            R$ 39,90
+                            <small>/mês</small>
+                        </div>
+                    </div>
+                    <div class="plan-body">
+                        <p class="text-muted mb-4">Ideal para quem está começando</p>
+                        
+                        <ul class="plan-features">
+                            <li><i class="bi bi-check-circle-fill"></i> Boleto DAS por mês</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Ate 03 Notas Fiscais</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Consultoria em Emprestimo Bancário</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Consultoria na Compra de Carro</li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary btn-lg">
+                                Escolher Plano
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="plan-card featured rounded-custom shadow-custom shadow-hover">
+                    <div class="plan-header bg-gradient-secondary">
+                        <h3 class="h4 mb-3">Standard</h3>
+                        <div class="plan-price">
+                            R$ 59,90
+                            <small>/mês</small>
+                        </div>
+                    </div>
+                    <div class="plan-body">
+                        <p class="text-muted mb-4">O mais escolhido pelos nossos clientes</p>
+                        
+                        <ul class="plan-features">
+                            <li><i class="bi bi-check-circle-fill"></i> Boleto DAS por mês</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Ate 05 Notas Fiscais</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Consultoria em Emprestimo Bancário</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Consultoria na Compra de Carro</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Declaração Anual</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Inscrição Estadual</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Alteração e Cadastro DET</li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-warning btn-lg">
+                                Escolher Plano
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="plan-card rounded-custom shadow-custom shadow-hover">
+                    <div class="plan-header bg-quaternary">
+                        <h3 class="h4 mb-3">Premium</h3>
+                        <div class="plan-price">
+                            R$ 79,90
+                            <small>/mês</small>
+                        </div>
+                    </div>
+                    <div class="plan-body">
+                        <p class="text-muted mb-4">Solução completa para seu MEI</p>
+                        
+                        <ul class="plan-features">
+                            <li><i class="bi bi-check-circle-fill"></i> Boleto DAS por mês</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Notas Fiscais Ilimitadas</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Consultoria em Emprestimo Bancário</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Consultoria na Compra de Carro</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Declaração Anual</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Inscrição Estadual</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Alteração e Cadastro DET</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Regularização com Parcelamento</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Alterar MEI</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Alvará de Funcionamento</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Certidão Negativa de Débitos</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Certificado Digital</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Certificado - CCMEI</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Contrato Social</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Desenquadramento MEI</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Assistencia Júridica</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Controle Fiscal</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Suporte 24H</li>
+                        </ul>
+                        
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary btn-lg">
+                                Escolher Plano
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold text-primary">Perguntas Frequentes</h2>
+                </div>
+                
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                Posso cancelar meu plano a qualquer momento?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Sim! Você pode cancelar seu plano a qualquer momento sem multa. O cancelamento vale a partir do próximo ciclo de cobrança.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                Posso mudar de plano depois?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Claro! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento através da sua conta.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Como funciona o suporte?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Oferecemos suporte via email, WhatsApp e telefone (dependendo do plano). Nosso tempo de resposta é de até 24 horas.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- WhatsApp Floating Button -->
+<div class="whatsapp-float" id="whatsappButton">
+    <a href="https://wa.me/551131642284?text=Quero%20conhecer%20mais%20sobre%20a%20Central%20MEI" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Falar no WhatsApp"
+       class="whatsapp-link">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+</div>
+{% endblock %}

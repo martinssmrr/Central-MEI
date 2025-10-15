@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Todos os Serviços - Central MEI{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-light-primary">
+    <div class="container">
+        <div class="section-header text-center">
+            <h1 class="section-title">Todos os Serviços</h1>
+            <p class="section-subtitle">Soluções completas para o seu MEI</p>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="py-5">
+    <div class="container">
+        <style>
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .service-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .service-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .service-description {
+            flex: 1;
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-footer {
+            margin-top: auto;
+        }
+        </style>
+        <div class="services-grid">
+            {% for servico in servicos %}
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">{{ servico.nome }}</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">{{ servico.descricao|truncatechars:120 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h5 text-primary mb-0">R$ {{ servico.preco }}</span>
+                            <small class="text-muted">{{ servico.tempo_estimado }}</small>
+                        </div>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="{% url 'servicos:detalhe' servico.slug %}" class="btn btn-outline-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Serviços padrão caso não existam no banco -->
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Abrir MEI</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Abertura completa do seu MEI com toda documentação necessária. Processo rápido e seguro.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="{% url 'servicos:abrir_mei' %}" class="btn btn-primary" aria-label="Saiba mais sobre abertura de MEI">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Regularizar MEI</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Regularize seu MEI em atraso. Quitação de débitos e colocação da documentação em dia.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="{% url 'servicos:regularizar_mei' %}" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-file-text"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Declaração Anual MEI</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Declaração anual simplificada (DASN-SIMEI). Evite multas e mantenha seu MEI regular.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="{% url 'servicos:declaracao_mei' %}" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Baixar MEI</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Encerramento completo das atividades do MEI com quitação de todas as pendências.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Alteração MEI</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Alteração de dados do MEI como endereço, atividade principal, nome empresarial.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-receipt"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Nota Fiscal</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Emissão de notas fiscais eletrônicas para MEI. Configuração e suporte completo.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Buscar MEI pelo CPF</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Consulta completa da situação do MEI através do CPF. Relatório detalhado.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Certidão Negativa de Débitos</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Emissão de certidões negativas federais, estaduais e municipais.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-icon">
+                    <i class="bi bi-award"></i>
+                </div>
+                <div class="service-content">
+                    <h4 class="text-primary mb-3">Certificado Digital</h4>
+                    <div class="service-description">
+                        <p class="text-muted mb-3">Emissão e instalação de certificado digital A1 ou A3 para MEI.</p>
+                    </div>
+                    <div class="service-footer">
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-primary">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+<!-- WhatsApp Floating Button -->
+<div class="whatsapp-float" id="whatsappButton">
+    <a href="https://wa.me/551131642284?text=Quero%20conhecer%20mais%20sobre%20a%20Central%20MEI"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Falar no WhatsApp"
+       class="whatsapp-link">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,545 @@
+{% extends 'dashboard/base.html' %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="bi bi-diagram-3 me-2 text-primary"></i>
+                {{ title }}
+            </h4>
+            <div class="btn-group">
+                <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#categoriaModal">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Nova Categoria
+                </button>
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#subcategoriaModal">
+                    <i class="bi bi-plus-square me-1"></i>
+                    Nova Subcategoria
+                </button>
+            </div>
+        </div>
+        <p class="text-muted mt-2">
+            <i class="bi bi-info-circle me-1"></i>
+            Organize suas receitas e despesas em categorias para melhor controle financeiro
+        </p>
+    </div>
+</div>
+
+<!-- Estatísticas do Plano de Contas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-arrow-up-circle display-6 text-success"></i>
+                <h6 class="card-title text-muted mt-2">Categorias de Entrada</h6>
+                <h4 class="text-success">{{ categorias_entrada.count }}</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-arrow-down-circle display-6 text-danger"></i>
+                <h6 class="card-title text-muted mt-2">Categorias de Saída</h6>
+                <h4 class="text-danger">{{ categorias_saida.count }}</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-diagram-2 display-6 text-primary"></i>
+                <h6 class="card-title text-muted mt-2">Total Subcategorias</h6>
+                <h4 class="text-primary">{{ total_subcategorias }}</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card text-center card-custom">
+            <div class="card-body">
+                <i class="bi bi-activity display-6 text-info"></i>
+                <h6 class="card-title text-muted mt-2">Mais Utilizada</h6>
+                <h6 class="text-info">
+                    {% if categoria_mais_usada %}
+                        {{ categoria_mais_usada.nome }}
+                    {% else %}
+                        Nenhuma
+                    {% endif %}
+                </h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Plano de Contas por Tipo -->
+<div class="row">
+    <!-- Categorias de Entrada -->
+    <div class="col-lg-6">
+        <div class="card card-custom">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="bi bi-arrow-up-circle me-1 text-success"></i>
+                    Receitas (Entradas)
+                </h6>
+                <span class="badge bg-success">{{ categorias_entrada.count }}</span>
+            </div>
+            <div class="card-body p-0">
+                {% if categorias_entrada %}
+                    <div class="accordion accordion-flush" id="accordionEntrada">
+                        {% for categoria in categorias_entrada %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#collapseEntrada{{ categoria.id }}">
+                                        <div class="d-flex justify-content-between w-100 me-3">
+                                            <div>
+                                                <i class="bi bi-folder me-2 text-success"></i>
+                                                <strong>{{ categoria.nome }}</strong>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-light text-dark">
+                                                    {{ categoria.subcategorias.count }} subcategorias
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="collapseEntrada{{ categoria.id }}" class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionEntrada">
+                                    <div class="accordion-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-muted">
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                {{ categoria.descricao|default:"Sem descrição" }}
+                                            </span>
+                                            <div class="btn-group btn-group-sm">
+                                                <button type="button" class="btn btn-outline-primary" 
+                                                        onclick="editarCategoria({{ categoria.id }}, '{{ categoria.nome }}', '{{ categoria.descricao|default:'' }}', '{{ categoria.tipo }}')"
+                                                        title="Editar categoria">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger" 
+                                                        onclick="confirmarExclusao('categoria', {{ categoria.id }}, '{{ categoria.nome }}')"
+                                                        title="Excluir categoria">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if categoria.subcategorias.all %}
+                                            <div class="list-group list-group-flush">
+                                                {% for subcategoria in categoria.subcategorias.all %}
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="bi bi-arrow-return-right me-2 text-muted"></i>
+                                                            <strong>{{ subcategoria.nome }}</strong>
+                                                            {% if subcategoria.descricao %}
+                                                                <br>
+                                                                <small class="text-muted ms-3">{{ subcategoria.descricao }}</small>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <button type="button" class="btn btn-outline-primary" 
+                                                                    onclick="editarSubcategoria({{ subcategoria.id }}, '{{ subcategoria.nome }}', '{{ subcategoria.descricao|default:'' }}', {{ subcategoria.categoria.id }})"
+                                                                    title="Editar subcategoria">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-outline-danger" 
+                                                                    onclick="confirmarExclusao('subcategoria', {{ subcategoria.id }}, '{{ subcategoria.nome }}')"
+                                                                    title="Excluir subcategoria">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <div class="text-center text-muted py-3">
+                                                <i class="bi bi-inbox"></i>
+                                                Nenhuma subcategoria cadastrada
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <div class="mt-3">
+                                            <button type="button" class="btn btn-sm btn-outline-success" 
+                                                    onclick="adicionarSubcategoria({{ categoria.id }})"
+                                                    title="Adicionar subcategoria">
+                                                <i class="bi bi-plus-circle me-1"></i>
+                                                Adicionar Subcategoria
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center p-4">
+                        <i class="bi bi-folder-plus display-4 text-muted"></i>
+                        <h6 class="text-muted mt-3">Nenhuma categoria de entrada</h6>
+                        <p class="text-muted small">Crie categorias para organizar suas receitas</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Categorias de Saída -->
+    <div class="col-lg-6">
+        <div class="card card-custom">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="bi bi-arrow-down-circle me-1 text-danger"></i>
+                    Despesas (Saídas)
+                </h6>
+                <span class="badge bg-danger">{{ categorias_saida.count }}</span>
+            </div>
+            <div class="card-body p-0">
+                {% if categorias_saida %}
+                    <div class="accordion accordion-flush" id="accordionSaida">
+                        {% for categoria in categorias_saida %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#collapseSaida{{ categoria.id }}">
+                                        <div class="d-flex justify-content-between w-100 me-3">
+                                            <div>
+                                                <i class="bi bi-folder me-2 text-danger"></i>
+                                                <strong>{{ categoria.nome }}</strong>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-light text-dark">
+                                                    {{ categoria.subcategorias.count }} subcategorias
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="collapseSaida{{ categoria.id }}" class="accordion-collapse collapse" 
+                                     data-bs-parent="#accordionSaida">
+                                    <div class="accordion-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-muted">
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                {{ categoria.descricao|default:"Sem descrição" }}
+                                            </span>
+                                            <div class="btn-group btn-group-sm">
+                                                <button type="button" class="btn btn-outline-primary" 
+                                                        onclick="editarCategoria({{ categoria.id }}, '{{ categoria.nome }}', '{{ categoria.descricao|default:'' }}', '{{ categoria.tipo }}')"
+                                                        title="Editar categoria">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger" 
+                                                        onclick="confirmarExclusao('categoria', {{ categoria.id }}, '{{ categoria.nome }}')"
+                                                        title="Excluir categoria">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if categoria.subcategorias.all %}
+                                            <div class="list-group list-group-flush">
+                                                {% for subcategoria in categoria.subcategorias.all %}
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <i class="bi bi-arrow-return-right me-2 text-muted"></i>
+                                                            <strong>{{ subcategoria.nome }}</strong>
+                                                            {% if subcategoria.descricao %}
+                                                                <br>
+                                                                <small class="text-muted ms-3">{{ subcategoria.descricao }}</small>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <button type="button" class="btn btn-outline-primary" 
+                                                                    onclick="editarSubcategoria({{ subcategoria.id }}, '{{ subcategoria.nome }}', '{{ subcategoria.descricao|default:'' }}', {{ subcategoria.categoria.id }})"
+                                                                    title="Editar subcategoria">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-outline-danger" 
+                                                                    onclick="confirmarExclusao('subcategoria', {{ subcategoria.id }}, '{{ subcategoria.nome }}')"
+                                                                    title="Excluir subcategoria">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <div class="text-center text-muted py-3">
+                                                <i class="bi bi-inbox"></i>
+                                                Nenhuma subcategoria cadastrada
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <div class="mt-3">
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    onclick="adicionarSubcategoria({{ categoria.id }})"
+                                                    title="Adicionar subcategoria">
+                                                <i class="bi bi-plus-circle me-1"></i>
+                                                Adicionar Subcategoria
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center p-4">
+                        <i class="bi bi-folder-plus display-4 text-muted"></i>
+                        <h6 class="text-muted mt-3">Nenhuma categoria de saída</h6>
+                        <p class="text-muted small">Crie categorias para organizar suas despesas</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Nova/Editar Categoria -->
+<div class="modal fade" id="categoriaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="categoriaForm" method="POST" action="{% url 'dashboard:categoria_create' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoriaModalLabel">
+                        <i class="bi bi-folder-plus me-2"></i>
+                        Nova Categoria
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" title="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="categoria_id" name="categoria_id">
+                    
+                    <div class="mb-3">
+                        <label for="categoria_nome" class="form-label fw-bold">
+                            <i class="bi bi-tag me-1"></i>
+                            Nome da Categoria
+                        </label>
+                        <input type="text" class="form-control" id="categoria_nome" name="nome" required>
+                        <div class="form-text">Nome único para identificar a categoria</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="categoria_tipo" class="form-label fw-bold">
+                            <i class="bi bi-arrow-up-down me-1"></i>
+                            Tipo
+                        </label>
+                        <select class="form-select" id="categoria_tipo" name="tipo" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="entrada">Entrada (Receita)</option>
+                            <option value="saida">Saída (Despesa)</option>
+                        </select>
+                        <div class="form-text">Define se é uma categoria de receita ou despesa</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="categoria_descricao" class="form-label fw-bold">
+                            <i class="bi bi-journal-text me-1"></i>
+                            Descrição
+                        </label>
+                        <textarea class="form-control" id="categoria_descricao" name="descricao" rows="3"></textarea>
+                        <div class="form-text">Descrição opcional da categoria</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-custom" id="categoriaSubmitBtn">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Salvar Categoria
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Nova/Editar Subcategoria -->
+<div class="modal fade" id="subcategoriaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="subcategoriaForm" method="POST" action="{% url 'dashboard:subcategoria_create' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subcategoriaModalLabel">
+                        <i class="bi bi-plus-square me-2"></i>
+                        Nova Subcategoria
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" title="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="subcategoria_id" name="subcategoria_id">
+                    
+                    <div class="mb-3">
+                        <label for="subcategoria_categoria" class="form-label fw-bold">
+                            <i class="bi bi-folder me-1"></i>
+                            Categoria Principal
+                        </label>
+                        <select class="form-select" id="subcategoria_categoria" name="categoria" required>
+                            <option value="">Selecione uma categoria</option>
+                            {% for categoria in todas_categorias %}
+                                <option value="{{ categoria.id }}" data-tipo="{{ categoria.tipo }}">
+                                    {{ categoria.nome }} ({{ categoria.get_tipo_display }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Categoria à qual esta subcategoria pertence</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subcategoria_nome" class="form-label fw-bold">
+                            <i class="bi bi-tag me-1"></i>
+                            Nome da Subcategoria
+                        </label>
+                        <input type="text" class="form-control" id="subcategoria_nome" name="nome" required>
+                        <div class="form-text">Nome único para identificar a subcategoria</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subcategoria_descricao" class="form-label fw-bold">
+                            <i class="bi bi-journal-text me-1"></i>
+                            Descrição
+                        </label>
+                        <textarea class="form-control" id="subcategoria_descricao" name="descricao" rows="3"></textarea>
+                        <div class="form-text">Descrição opcional da subcategoria</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-custom" id="subcategoriaSubmitBtn">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Salvar Subcategoria
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                    Confirmar Exclusão
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" title="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessage"></p>
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle me-1"></i>
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>
+                        Excluir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoriaModal = new bootstrap.Modal(document.getElementById('categoriaModal'));
+    const subcategoriaModal = new bootstrap.Modal(document.getElementById('subcategoriaModal'));
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+    // Função para editar categoria
+    window.editarCategoria = function(id, nome, descricao, tipo) {
+        document.getElementById('categoria_id').value = id;
+        document.getElementById('categoria_nome').value = nome;
+        document.getElementById('categoria_descricao').value = descricao;
+        document.getElementById('categoria_tipo').value = tipo;
+        
+        document.getElementById('categoriaModalLabel').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Categoria';
+        document.getElementById('categoriaSubmitBtn').innerHTML = '<i class="bi bi-check-circle me-1"></i>Atualizar Categoria';
+        document.getElementById('categoriaForm').action = "{% url 'dashboard:categoria_update' 0 %}".replace('0', id);
+        
+        categoriaModal.show();
+    };
+
+    // Função para editar subcategoria
+    window.editarSubcategoria = function(id, nome, descricao, categoriaId) {
+        document.getElementById('subcategoria_id').value = id;
+        document.getElementById('subcategoria_nome').value = nome;
+        document.getElementById('subcategoria_descricao').value = descricao;
+        document.getElementById('subcategoria_categoria').value = categoriaId;
+        
+        document.getElementById('subcategoriaModalLabel').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Subcategoria';
+        document.getElementById('subcategoriaSubmitBtn').innerHTML = '<i class="bi bi-check-circle me-1"></i>Atualizar Subcategoria';
+        document.getElementById('subcategoriaForm').action = "{% url 'dashboard:subcategoria_update' 0 %}".replace('0', id);
+        
+        subcategoriaModal.show();
+    };
+
+    // Função para adicionar subcategoria a uma categoria específica
+    window.adicionarSubcategoria = function(categoriaId) {
+        // Limpar form
+        document.getElementById('subcategoriaForm').reset();
+        document.getElementById('subcategoria_id').value = '';
+        document.getElementById('subcategoria_categoria').value = categoriaId;
+        
+        document.getElementById('subcategoriaModalLabel').innerHTML = '<i class="bi bi-plus-square me-2"></i>Nova Subcategoria';
+        document.getElementById('subcategoriaSubmitBtn').innerHTML = '<i class="bi bi-check-circle me-1"></i>Salvar Subcategoria';
+        document.getElementById('subcategoriaForm').action = "{% url 'dashboard:subcategoria_create' %}";
+        
+        subcategoriaModal.show();
+    };
+
+    // Função para confirmar exclusão
+    window.confirmarExclusao = function(tipo, id, nome) {
+        let message = '';
+        let action = '';
+        
+        if (tipo === 'categoria') {
+            message = `Tem certeza que deseja excluir a categoria "${nome}"? Todas as subcategorias relacionadas também serão excluídas.`;
+            action = "{% url 'dashboard:categoria_delete' 0 %}".replace('0', id);
+        } else {
+            message = `Tem certeza que deseja excluir a subcategoria "${nome}"?`;
+            action = "{% url 'dashboard:subcategoria_delete' 0 %}".replace('0', id);
+        }
+        
+        document.getElementById('deleteMessage').textContent = message;
+        document.getElementById('deleteForm').action = action;
+        
+        deleteModal.show();
+    };
+
+    // Limpar modais ao fechar
+    document.getElementById('categoriaModal').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('categoriaForm').reset();
+        document.getElementById('categoria_id').value = '';
+        document.getElementById('categoriaModalLabel').innerHTML = '<i class="bi bi-folder-plus me-2"></i>Nova Categoria';
+        document.getElementById('categoriaSubmitBtn').innerHTML = '<i class="bi bi-check-circle me-1"></i>Salvar Categoria';
+        document.getElementById('categoriaForm').action = "{% url 'dashboard:categoria_create' %}";
+    });
+
+    document.getElementById('subcategoriaModal').addEventListener('hidden.bs.modal', function() {
+        document.getElementById('subcategoriaForm').reset();
+        document.getElementById('subcategoria_id').value = '';
+        document.getElementById('subcategoriaModalLabel').innerHTML = '<i class="bi bi-plus-square me-2"></i>Nova Subcategoria';
+        document.getElementById('subcategoriaSubmitBtn').innerHTML = '<i class="bi bi-check-circle me-1"></i>Salvar Subcategoria';
+        document.getElementById('subcategoriaForm').action = "{% url 'dashboard:subcategoria_create' %}";
+    });
+});
+</script>
+{% endblock %}

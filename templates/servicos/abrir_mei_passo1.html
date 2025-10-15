@@ -1,0 +1,491 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Abrir MEI - Passo 1: Dados Pessoais - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary: #04acec;
+        --color-secondary: #1c943c;
+        --color-tertiary: #fccc2b;
+        --color-quaternary: #026d96;
+    }
+    
+    .bg-gradient-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        background: linear-gradient(135deg, var(--color-quaternary), var(--color-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(4, 172, 236, 0.25);
+    }
+    
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card-custom:hover {
+        transform: translateY(-5px);
+    }
+    
+    .icon-step {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem;
+    }
+    
+    .step-indicator {
+        background: var(--color-tertiary);
+        color: var(--color-quaternary);
+        font-weight: bold;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+    
+    .card-header-icon {
+        font-size: 2rem;
+    }
+    
+    .list-group-item:hover {
+        background-color: rgba(4, 172, 236, 0.05);
+        transition: all 0.2s ease;
+    }
+    
+    .progress-step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin: 0 auto 0.5rem;
+    }
+    
+    .progress-step.active {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        color: white;
+    }
+    
+    .progress-step.pending {
+        background: #e9ecef;
+        color: #6c757d;
+    }
+    
+    .card-info-highlight {
+        background: linear-gradient(45deg, rgba(4, 172, 236, 0.1), rgba(252, 204, 43, 0.1));
+        border-left: 4px solid var(--color-primary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-gradient-custom text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="step-indicator mb-3">ETAPA 1 DE 2</div>
+                <h1 class="display-4 fw-bold mb-3">Abertura de MEI</h1>
+                <p class="lead mb-4">Passo 1: Dados Pessoais - Vamos começar com suas informações básicas</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <span>100% Seguro</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock me-2"></i>
+                        <span>Processo Rápido</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-headset me-2"></i>
+                        <span>Suporte Completo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="icon-step">
+                    <i class="bi bi-person"></i>
+                </div>
+                <h5>Dados Pessoais</h5>
+                <p class="mb-0">Primeira etapa</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Form Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-decoration-none">Início</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'servicos:abrir_mei_info' %}" class="text-decoration-none">Abrir MEI</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Dados Pessoais</li>
+            </ol>
+        </nav>
+
+        <!-- Indicador de Progresso -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card card-custom">
+                    <div class="card-body p-4">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="progress-step active">1</div>
+                                <h6 class="text-primary fw-bold">Dados Pessoais</h6>
+                                <small class="text-muted">Passo atual</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="progress-step pending">2</div>
+                                <h6 class="text-muted">Dados Empresariais</h6>
+                                <small class="text-muted">Próximo passo</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Barra de Progresso -->
+                        <div class="progress mt-4" style="height: 8px;">
+                            <div class="progress-bar" 
+                                 role="progressbar" 
+                                 style="width: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));" 
+                                 aria-valuenow="50" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100"
+                                 title="Progresso: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Formulário Principal -->
+            <div class="col-lg-8">
+                <div class="card card-custom">
+                    <div class="card-header bg-gradient-custom text-white border-0 p-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-circle text-white me-3 card-header-icon"></i>
+                            <div>
+                                <h3 class="h4 text-white mb-1">Passo 1: Dados Pessoais</h3>
+                                <p class="text-white-50 mb-0">Informações básicas para abertura do MEI</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <div class="row g-3">
+                                <!-- Nome Completo -->
+                                <div class="col-12">
+                                    <label for="{{ form.nome_completo.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>{{ form.nome_completo.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.nome_completo.id_for_label }}"
+                                           name="{{ form.nome_completo.html_name }}"
+                                           placeholder="Digite seu nome completo"
+                                           value="{{ form.nome_completo.value|default:'' }}"
+                                           aria-label="Nome completo"
+                                           required>
+                                    {% if form.nome_completo.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.nome_completo.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- CPF e RG -->
+                                <div class="col-md-6">
+                                    <label for="{{ form.cpf.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-card-text me-1 text-primary"></i>{{ form.cpf.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.cpf.id_for_label }}"
+                                           name="{{ form.cpf.html_name }}"
+                                           placeholder="000.000.000-00"
+                                           value="{{ form.cpf.value|default:'' }}"
+                                           aria-label="CPF"
+                                           required>
+                                    {% if form.cpf.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.cpf.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="{{ form.rg.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-card-heading me-1 text-primary"></i>{{ form.rg.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.rg.id_for_label }}"
+                                           name="{{ form.rg.html_name }}"
+                                           placeholder="00.000.000-0"
+                                           value="{{ form.rg.value|default:'' }}"
+                                           aria-label="RG"
+                                           required>
+                                    {% if form.rg.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.rg.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Órgão Expedidor e Estado -->
+                                <div class="col-md-6">
+                                    <label for="{{ form.orgao_expedidor.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-building me-1 text-primary"></i>{{ form.orgao_expedidor.label }}
+                                    </label>
+                                    {{ form.orgao_expedidor }}
+                                    {% if form.orgao_expedidor.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.orgao_expedidor.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Órgão que emitiu o RG
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="{{ form.estado_expedidor.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-geo-alt me-1 text-primary"></i>{{ form.estado_expedidor.label }}
+                                    </label>
+                                    {{ form.estado_expedidor }}
+                                    {% if form.estado_expedidor.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.estado_expedidor.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Estado onde foi emitido
+                                    </div>
+                                </div>
+
+                                <!-- E-mail e Telefone -->
+                                <div class="col-md-6">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-envelope me-1 text-primary"></i>{{ form.email.label }}
+                                    </label>
+                                    <input type="email" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.email.id_for_label }}"
+                                           name="{{ form.email.html_name }}"
+                                           placeholder="seuemail@exemplo.com"
+                                           value="{{ form.email.value|default:'' }}"
+                                           aria-label="E-mail"
+                                           required>
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.email.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="{{ form.telefone.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-telephone me-1 text-primary"></i>{{ form.telefone.label }}
+                                    </label>
+                                    <input type="tel" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.telefone.id_for_label }}"
+                                           name="{{ form.telefone.html_name }}"
+                                           placeholder="(11) 99999-9999"
+                                           value="{{ form.telefone.value|default:'' }}"
+                                           aria-label="Telefone"
+                                           required>
+                                    {% if form.telefone.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.telefone.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                                <a href="{% url 'servicos:abrir_mei_info' %}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Voltar
+                                </a>
+                                <button type="submit" class="btn btn-custom btn-lg px-5">
+                                    Próximo Passo
+                                    <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card informativo à direita -->
+            <div class="col-lg-4">
+                <div>
+                    <!-- Card Principal: Abertura MEI -->
+                    <div class="card card-custom mb-4">
+                        <div class="card-header bg-gradient-custom text-white border-0 p-4">
+                            <div class="text-center">
+                                <div class="icon-step mb-3">
+                                    <i class="bi bi-briefcase-fill"></i>
+                                </div>
+                                <h4 class="fw-bold mb-2">Abertura de MEI</h4>
+                                <p class="mb-0 opacity-90">Processo Simplificado</p>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="alert alert-info border-0 mb-4 card-info-highlight">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-shield-check text-primary me-3 fs-4"></i>
+                                    <div>
+                                        <strong class="text-primary">Dados Seguros</strong><br>
+                                        <small class="text-dark">Criptografia SSL para proteger suas informações</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h5 class="text-secondary mb-3">
+                                <i class="bi bi-check-circle me-2"></i>Documentos necessários:
+                            </h5>
+                            
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-card-text text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">RG, CPF e Órgão Expedidor</strong><br>
+                                            <small class="text-muted">Dados que você está preenchendo</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-house text-success me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">Comprovante de endereço</strong><br>
+                                            <small class="text-muted">Residencial ou comercial</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-envelope text-warning me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">E-mail válido</strong><br>
+                                            <small class="text-muted">Para receber notificações</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-telephone text-info me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">Telefone de contato</strong><br>
+                                            <small class="text-muted">Para suporte durante o processo</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Secundário: Suporte -->
+                    <div class="card card-custom">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-step mb-3">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                            <h5 class="text-primary mb-3">Suporte Especializado</h5>
+                            <p class="text-muted mb-4">Nossa equipe está pronta para ajudar em qualquer dúvida durante o processo.</p>
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <i class="bi bi-whatsapp text-success me-2"></i>
+                                    <span class="text-muted small">Suporte via WhatsApp</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Máscaras para os campos
+    const cpfInput = document.getElementById('id_cpf');
+    const telefoneInput = document.getElementById('id_telefone');
+    
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+    // Validação do formulário
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,300 @@
+{% extends 'dashboard/base.html' %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    {{ title }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="vendaForm">
+                    {% csrf_token %}
+                    
+                    <!-- Dados do Cliente -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-person me-1"></i>
+                                Dados do Cliente
+                            </h6>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.cliente_nome.label_tag }}
+                            {{ form.cliente_nome }}
+                            {% if form.cliente_nome.errors %}
+                                <div class="text-danger small">{{ form.cliente_nome.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.cliente_email.label_tag }}
+                            {{ form.cliente_email }}
+                            {% if form.cliente_email.errors %}
+                                <div class="text-danger small">{{ form.cliente_email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.cliente_telefone.label_tag }}
+                            {{ form.cliente_telefone }}
+                            {% if form.cliente_telefone.errors %}
+                                <div class="text-danger small">{{ form.cliente_telefone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.cliente_cpf_cnpj.label_tag }}
+                            {{ form.cliente_cpf_cnpj }}
+                            {% if form.cliente_cpf_cnpj.errors %}
+                                <div class="text-danger small">{{ form.cliente_cpf_cnpj.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Dados da Venda -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-cart me-1"></i>
+                                Dados da Venda
+                            </h6>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.produto.label_tag }}
+                            {{ form.produto }}
+                            {% if form.produto.errors %}
+                                <div class="text-danger small">{{ form.produto.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.quantidade.label_tag }}
+                            {{ form.quantidade }}
+                            {% if form.quantidade.errors %}
+                                <div class="text-danger small">{{ form.quantidade.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.valor_unitario.label_tag }}
+                            {{ form.valor_unitario }}
+                            {% if form.valor_unitario.errors %}
+                                <div class="text-danger small">{{ form.valor_unitario.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            {{ form.desconto.label_tag }}
+                            {{ form.desconto }}
+                            {% if form.desconto.errors %}
+                                <div class="text-danger small">{{ form.desconto.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Resumo dos Valores -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Resumo dos Valores</h6>
+                                    <div class="row text-center">
+                                        <div class="col-3">
+                                            <small class="text-muted">Valor Total</small>
+                                            <div id="valorTotal" class="h5">R$ 0,00</div>
+                                        </div>
+                                        <div class="col-3">
+                                            <small class="text-muted">Desconto</small>
+                                            <div id="valorDesconto" class="h5 text-warning">R$ 0,00</div>
+                                        </div>
+                                        <div class="col-3">
+                                            <small class="text-muted">Valor Final</small>
+                                            <div id="valorFinal" class="h4 text-success fw-bold">R$ 0,00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status e Pagamento -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="bi bi-credit-card me-1"></i>
+                                Status e Pagamento
+                            </h6>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            {{ form.status.label_tag }}
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger small">{{ form.status.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3" id="formaPagamentoDiv">
+                            {{ form.forma_pagamento.label_tag }}
+                            {{ form.forma_pagamento }}
+                            {% if form.forma_pagamento.errors %}
+                                <div class="text-danger small">{{ form.forma_pagamento.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3" id="dataPagamentoDiv">
+                            {{ form.data_pagamento.label_tag }}
+                            {{ form.data_pagamento }}
+                            {% if form.data_pagamento.errors %}
+                                <div class="text-danger small">{{ form.data_pagamento.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            {{ form.observacoes.label_tag }}
+                            {{ form.observacoes }}
+                            {% if form.observacoes.errors %}
+                                <div class="text-danger small">{{ form.observacoes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'dashboard:vendas_list' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>
+                                    Voltar
+                                </a>
+                                <button type="submit" class="btn btn-custom">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Salvar Venda
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const produtoSelect = document.getElementById('id_produto');
+    const quantidadeInput = document.getElementById('id_quantidade');
+    const valorUnitarioInput = document.getElementById('id_valor_unitario');
+    const descontoInput = document.getElementById('id_desconto');
+    const statusSelect = document.getElementById('id_status');
+    const formaPagamentoDiv = document.getElementById('formaPagamentoDiv');
+    const dataPagamentoDiv = document.getElementById('dataPagamentoDiv');
+
+    // Preços dos produtos (será preenchido via AJAX ou dados inline)
+    const precosProdutos = {};
+    
+    // Preencher preços dos produtos
+    const produtos = document.querySelectorAll('#id_produto option');
+    produtos.forEach(option => {
+        if (option.value) {
+            // Aqui você pode fazer uma requisição AJAX para buscar o preço
+            // Por simplicidade, vamos usar um valor fixo
+            precosProdutos[option.value] = 0;
+        }
+    });
+
+    function calcularValores() {
+        const quantidade = parseFloat(quantidadeInput.value) || 0;
+        const valorUnitario = parseFloat(valorUnitarioInput.value) || 0;
+        const desconto = parseFloat(descontoInput.value) || 0;
+        
+        const valorTotal = quantidade * valorUnitario;
+        const valorFinal = valorTotal - desconto;
+        
+        document.getElementById('valorTotal').textContent = 'R$ ' + valorTotal.toFixed(2).replace('.', ',');
+        document.getElementById('valorDesconto').textContent = 'R$ ' + desconto.toFixed(2).replace('.', ',');
+        document.getElementById('valorFinal').textContent = 'R$ ' + valorFinal.toFixed(2).replace('.', ',');
+    }
+
+    function togglePagamentoFields() {
+        const status = statusSelect.value;
+        if (status === 'pago') {
+            formaPagamentoDiv.style.display = 'block';
+            dataPagamentoDiv.style.display = 'block';
+            document.getElementById('id_forma_pagamento').required = true;
+            document.getElementById('id_data_pagamento').required = true;
+        } else {
+            formaPagamentoDiv.style.display = 'none';
+            dataPagamentoDiv.style.display = 'none';
+            document.getElementById('id_forma_pagamento').required = false;
+            document.getElementById('id_data_pagamento').required = false;
+        }
+    }
+
+    // Event listeners
+    produtoSelect.addEventListener('change', function() {
+        const produtoId = this.value;
+        if (produtoId && precosProdutos[produtoId]) {
+            valorUnitarioInput.value = precosProdutos[produtoId];
+        }
+        calcularValores();
+    });
+
+    quantidadeInput.addEventListener('input', calcularValores);
+    valorUnitarioInput.addEventListener('input', calcularValores);
+    descontoInput.addEventListener('input', calcularValores);
+    statusSelect.addEventListener('change', togglePagamentoFields);
+
+    // Inicializar
+    calcularValores();
+    togglePagamentoFields();
+
+    // Máscaras para CPF/CNPJ e telefone
+    const cpfCnpjInput = document.getElementById('id_cliente_cpf_cnpj');
+    const telefoneInput = document.getElementById('id_cliente_telefone');
+
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+
+    if (cpfCnpjInput) {
+        cpfCnpjInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length <= 11) {
+                // CPF
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            } else {
+                // CNPJ
+                value = value.replace(/(\d{2})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1/$2');
+                value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            }
+            
+            e.target.value = value;
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,5 @@
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/logo.png' %}">
+    
+    <title>{% block title %}Central MEI - Sua contabilidade MEI simplificada{% endblock %}</title>

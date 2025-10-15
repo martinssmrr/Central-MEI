@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Central MEI - Sua contabilidade MEI simplificada{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/comentarios-horizontal.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" role="banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="hero-content">
+                    <h1>Sua contabilidade MEI <span class="text-warning">simplificada</span></h1>
+                    <p class="lead">Oferecemos todos os serviços que você precisa para manter seu MEI em dia. Abertura, declarações, regularização e muito mais!</p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="{% url 'servicos:abrir_mei' %}" class="btn btn-warning btn-lg shadow" aria-label="Contratar serviço de abertura de MEI">
+                            <i class="bi bi-person-plus me-2"></i>Abrir MEI
+                        </a>
+                        <a href="{% url 'servicos:declaracao_mei' %}" class="btn btn-outline-light btn-lg" aria-label="Contratar declaração anual do MEI">
+                            <i class="bi bi-file-text me-2"></i>Declaração Anual
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nossos Serviços Section -->
+<section class="py-5 bg-light-primary" id="servicos">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2 class="section-title">Nossos Serviços</h2>
+            <p class="section-subtitle">Soluções completas para o seu MEI</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for servico in servicos_principais %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card service-card h-100 rounded-custom shadow-custom">
+                    <div class="card-header">
+                        <div class="service-icon">
+                            <i class="bi bi-{% if 'abrir' in servico.tipo %}person-plus{% elif 'regularizar' in servico.tipo %}tools{% elif 'declaracao' in servico.tipo %}file-text{% else %}briefcase{% endif %}"></i>
+                        </div>
+                        <h5 class="card-title">{{ servico.nome }}</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text flex-grow-1">{{ servico.descricao|truncatechars:120 }}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="service-price">R$ {{ servico.preco }}</span>
+                                <small class="text-muted fw-medium">{{ servico.tempo_estimado }}</small>
+                            </div>
+                            <a href="{% url 'servicos:detalhe' servico.slug %}" class="btn btn-primary" aria-label="Contratar {{ servico.nome }}">
+                                Contratar Serviço
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Cards padrão caso não existam serviços -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card service-card h-100 rounded-custom shadow-custom shadow-hover">
+                    <div class="card-header">
+                        <div class="service-icon">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <h5 class="card-title">Abrir MEI</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text flex-grow-1">Abertura completa do seu MEI com toda documentação necessária. Processo rápido e seguro.</p>
+                        <div class="mt-auto">
+                            <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="service-price">R$ 97,00</span>
+                                <small class="text-muted fw-medium">2-3 dias</small>
+                            </div> -->
+                            <a href="{% url 'servicos:abrir_mei' %}" class="btn btn-primary" aria-label="Contratar abertura de MEI">
+                                Contratar Serviço
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card service-card h-100 rounded-custom shadow-custom shadow-hover">
+                    <div class="card-header">
+                        <div class="service-icon">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <h5 class="card-title">Regularizar MEI</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text flex-grow-1">Regularize seu MEI em atraso. Quitação de débitos e colocação da documentação em dia.</p>
+                        <div class="mt-auto">
+                            <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="service-price">R$ 147,00</span>
+                                <small class="text-muted fw-medium">3-5 dias</small>
+                            </div> -->
+                            <a href="{% url 'servicos:regularizar_mei' %}" class="btn btn-secondary" aria-label="Contratar regularização de MEI">
+                                Contratar Serviço
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card service-card h-100 rounded-custom shadow-custom shadow-hover">
+                    <div class="card-header">
+                        <div class="service-icon">
+                            <i class="bi bi-file-text"></i>
+                        </div>
+                        <h5 class="card-title">Declaração Anual MEI</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text flex-grow-1">Declaração anual simplificada (DASN-SIMEI). Evite multas e mantenha seu MEI regular.</p>
+                        <div class="mt-auto">
+                            <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="service-price">R$ 67,00</span>
+                                <small class="text-muted fw-medium">1-2 dias</small>
+                            </div> -->
+                            <a href="{% url 'servicos:declaracao_mei' %}" class="btn btn-warning" aria-label="Contratar declaração anual MEI">
+                                Contratar Serviço
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'servicos:lista' %}" class="btn btn-outline-secondary btn-lg shadow" aria-label="Ver lista completa de serviços">
+                <i class="bi bi-grid-3x3-gap me-2"></i>Ver Todos os Serviços
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section -->
+{% if posts_recentes %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary">Últimas do Blog</h2>
+            <p class="lead text-muted">Fique por dentro das novidades do mundo MEI</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for post in posts_recentes %}
+            <div class="col-md-4">
+                <div class="card blog-card h-100">
+                    {% if post.imagem %}
+                        <img src="{{ post.imagem.url }}" class="card-img-top" alt="{{ post.titulo }}">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center blog-img-placeholder">
+                            <i class="bi bi-file-text fs-1 text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ post.titulo }}</h5>
+                        <p class="card-text flex-grow-1">{{ post.resumo }}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary">Ler mais</a>
+                                <small class="text-muted">{{ post.criado_em|date:"d/m/Y" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'blog:post_list' %}" class="btn btn-outline-primary btn-lg">Ver Todos os Posts</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Depoimentos Section -->
+{% if depoimentos %}
+<section class="py-5 bg-light" id="depoimentos">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2 class="section-title">O que nossos clientes dizem</h2>
+            <p class="section-subtitle">Confiança e satisfação garantidas</p>
+        </div>
+        
+        <div class="testimonials-horizontal-container position-relative">
+            <div class="testimonials-scroll-wrapper d-flex" id="testimonialsScrollWrapper">
+                {% for depoimento in depoimentos %}
+                <div class="testimonial-slide-horizontal flex-shrink-0">
+                    <div class="testimonial-card rounded-custom shadow-custom h-100">
+                        {% if depoimento.foto %}
+                            <img src="{{ depoimento.foto.url }}" alt="{{ depoimento.nome }}" class="testimonial-avatar">
+                        {% else %}
+                            <div class="testimonial-avatar bg-primary d-flex align-items-center justify-content-center text-white">
+                                <i class="bi bi-person-fill fs-2"></i>
+                            </div>
+                        {% endif %}
+                        <div class="testimonial-content">
+                            "{{ depoimento.conteudo }}"
+                        </div>
+                        <div class="testimonial-author">
+                            {{ depoimento.nome }}
+                            {% if depoimento.empresa %}
+                                <div class="small text-muted">{{ depoimento.cargo }} - {{ depoimento.empresa }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Botões de navegação -->
+            <button class="testimonials-nav-btn testimonials-prev" id="testimonialsNavPrev" aria-label="Comentário anterior">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="testimonials-nav-btn testimonials-next" id="testimonialsNavNext" aria-label="Próximo comentário">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+        
+        <!-- Indicadores -->
+        <div class="testimonials-indicators-horizontal d-flex justify-content-center mt-4" id="testimonialsIndicators">
+            {% for depoimento in depoimentos %}
+            <button class="indicator-dot {% if forloop.first %}active{% endif %}" 
+                    data-slide="{{ forloop.counter0 }}" 
+                    aria-label="Ver comentário {{ forloop.counter }}">
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Blog Section
+{% if posts_recentes %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary">Últimas do Blog</h2>
+            <p class="lead text-muted">Fique por dentro das novidades do mundo MEI</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for post in posts_recentes %}
+            <div class="col-md-4">
+                <div class="card blog-card">
+                    {% if post.imagem %}
+                        <img src="{{ post.imagem.url }}" class="card-img-top" alt="{{ post.titulo }}">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center blog-img-placeholder">
+                            <i class="bi bi-file-text fs-1 text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.titulo }}</h5>
+                        <p class="card-text">{{ post.resumo }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary">Ler mais</a>
+                            <small class="text-muted">{{ post.criado_em|date:"d/m/Y" }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'blog:post_list' %}" class="btn btn-outline-primary btn-lg">Ver Todos os Posts</a>
+        </div>
+    </div>
+</section>
+{% endif %} -->
+
+<!-- Call to Action Section -->
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="display-6 fw-bold mb-3">Atenção</h3>
+                <p class="lead mb-0"> <Strong>ESTE NÃO É UM SITE GOVERNAMENTAL</Strong> O serviço prestado através do site centralgestaomei.com.br é um serviço privado e opcional. O registro do MEI pode ser feito gratuitamente no portal oficial gov.br. Aqui você conta com suporte profissional, orientação especializada e acompanhamento personalizado em cada etapa.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'servicos:lista' %}" class="btn btn-warning btn-lg shadow" aria-label="Começar a usar os serviços da Central MEI">
+                    <i class="bi bi-rocket-takeoff me-2"></i>Começar Agora
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Botão Flutuante WhatsApp -->
+<div class="whatsapp-float" id="whatsappButton">
+    <a href="https://wa.me/551131642284?text=Quero%20conhecer%20mais%20sobre%20a%20Central%20MEI" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Falar no WhatsApp"
+       class="whatsapp-link">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+</div>
+{% endblock %}

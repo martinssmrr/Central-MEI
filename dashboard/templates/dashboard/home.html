@@ -1,0 +1,259 @@
+{% extends 'dashboard/base.html' %}
+
+{% block page_title %}Painel Principal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <!-- Cards de Estatísticas -->
+    <div class="col-md-3 mb-3">
+        <div class="card card-stats">
+            <div class="card-body text-center">
+                <div class="display-6 fw-bold">{{ qtd_vendas_mes }}</div>
+                <h6 class="card-title text-uppercase">Vendas no Mês</h6>
+                <i class="bi bi-cart-check fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card card-stats">
+            <div class="card-body text-center">
+                <div class="display-6 fw-bold">R$ {{ total_vendas_mes|floatformat:2 }}</div>
+                <h6 class="card-title text-uppercase">Faturamento</h6>
+                <i class="bi bi-currency-dollar fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card card-stats">
+            <div class="card-body text-center">
+                <div class="display-6 fw-bold">R$ {{ entradas_mes|floatformat:2 }}</div>
+                <h6 class="card-title text-uppercase">Entradas</h6>
+                <i class="bi bi-arrow-up-circle fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card card-stats">
+            <div class="card-body text-center">
+                <div class="display-6 fw-bold">R$ {{ saidas_mes|floatformat:2 }}</div>
+                <h6 class="card-title text-uppercase">Saídas</h6>
+                <i class="bi bi-arrow-down-circle fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Saldo Atual -->
+    <div class="col-md-4 mb-4">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-wallet2 me-2"></i>
+                    Saldo Atual
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                {% if saldo_atual %}
+                    <div class="display-4 fw-bold {% if saldo_atual.saldo_final >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        R$ {{ saldo_atual.saldo_final|floatformat:2 }}
+                    </div>
+                    <small class="text-muted">Atualizado em {{ saldo_atual.data|date:"d/m/Y" }}</small>
+                {% else %}
+                    <div class="display-4 fw-bold text-muted">R$ 0,00</div>
+                    <small class="text-muted">Nenhuma movimentação registrada</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Produtos Mais Vendidos -->
+    <div class="col-md-4 mb-4">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-trophy me-2"></i>
+                    Produtos Mais Vendidos
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if produtos_mais_vendidos %}
+                    {% for produto in produtos_mais_vendidos %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>{{ produto.nome }}</strong><br>
+                                <small class="text-muted">R$ {{ produto.preco }}</small>
+                            </div>
+                            <span class="badge bg-primary">{{ produto.total_vendas }}</span>
+                        </div>
+                        {% if not forloop.last %}<hr class="my-2">{% endif %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">Nenhuma venda registrada</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ações Rápidas -->
+    <div class="col-md-4 mb-4">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-lightning me-2"></i>
+                    Ações Rápidas
+                </h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'dashboard:venda_create' %}" class="btn btn-custom">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Nova Venda
+                </a>
+                <a href="{% url 'dashboard:movimentacao_create' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-cash-stack me-2"></i>
+                    Nova Movimentação
+                </a>
+                <a href="{% url 'dashboard:vendas_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-check me-2"></i>
+                    Ver Todas as Vendas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Últimas Movimentações -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-custom">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Últimas Movimentações
+                </h5>
+                <a href="{% url 'dashboard:movimentacoes_list' %}" class="btn btn-sm btn-outline-primary">
+                    Ver Todas
+                </a>
+            </div>
+            <div class="card-body">
+                {% if ultimas_movimentacoes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Tipo</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Valor</th>
+                                    <th>Usuário</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mov in ultimas_movimentacoes %}
+                                    <tr>
+                                        <td>{{ mov.data_movimentacao|date:"d/m H:i" }}</td>
+                                        <td>
+                                            <span class="badge {% if mov.tipo == 'entrada' %}badge-entrada{% else %}badge-saida{% endif %}">
+                                                {% if mov.tipo == 'entrada' %}
+                                                    <i class="bi bi-arrow-up"></i> Entrada
+                                                {% else %}
+                                                    <i class="bi bi-arrow-down"></i> Saída
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td>{{ mov.descricao|truncatechars:50 }}</td>
+                                        <td>
+                                            <small class="text-muted">{{ mov.subcategoria }}</small>
+                                        </td>
+                                        <td class="fw-bold {% if mov.tipo == 'entrada' %}text-success{% else %}text-danger{% endif %}">
+                                            {% if mov.tipo == 'entrada' %}+{% else %}-{% endif %}R$ {{ mov.valor|floatformat:2 }}
+                                        </td>
+                                        <td>
+                                            <small>{{ mov.usuario.get_full_name|default:mov.usuario.username }}</small>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Nenhuma movimentação registrada</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resumo do Mês -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-calendar-month me-2"></i>
+                    Resumo do Mês
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h6 class="text-success">Entradas</h6>
+                        <h4 class="text-success">R$ {{ entradas_mes|floatformat:2 }}</h4>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="text-danger">Saídas</h6>
+                        <h4 class="text-danger">R$ {{ saidas_mes|floatformat:2 }}</h4>
+                    </div>
+                    <div class="col-4">
+                        <h6 class="{% if saldo_mes >= 0 %}text-success{% else %}text-danger{% endif %}">Saldo</h6>
+                        <h4 class="{% if saldo_mes >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            R$ {{ saldo_mes|floatformat:2 }}
+                        </h4>
+                    </div>
+                </div>
+                
+                {% if saldo_mes != 0 %}
+                    <div class="progress mt-3" style="height: 10px;">
+                        {% if saldo_mes > 0 %}
+                            <div class="progress-bar bg-success" style="width: 100%"></div>
+                        {% else %}
+                            <div class="progress-bar bg-danger" style="width: 100%"></div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Informações do Sistema
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-calendar3 text-primary me-2"></i>
+                        <strong>Data atual:</strong> {{ hoje|date:"d/m/Y" }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-person text-primary me-2"></i>
+                        <strong>Usuário:</strong> {{ user.get_full_name|default:user.username }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-shield-check text-success me-2"></i>
+                        <strong>Sistema:</strong> <Strong>Central MEI</Strong> v1.0
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

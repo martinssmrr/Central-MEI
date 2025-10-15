@@ -1,0 +1,363 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Financeiro - Central MEI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            background: white;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #04acec;
+        }
+
+        .logo {
+            max-height: 50px;
+            max-width: 150px;
+        }
+
+        .company-info {
+            text-align: right;
+            color: #666;
+        }
+
+        .company-info h1 {
+            color: #04acec;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .report-title {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #04acec, #026d96);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .report-title h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .report-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .info-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .info-section h4 {
+            color: #04acec;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .summary-cards {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            gap: 15px;
+        }
+
+        .summary-card {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .summary-card h5 {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .summary-card .value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .value.entrada { color: #1c943c; }
+        .value.saida { color: #dc3545; }
+        .value.saldo.positive { color: #1c943c; }
+        .value.saldo.negative { color: #dc3545; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 11px;
+        }
+
+        thead th {
+            background: linear-gradient(135deg, #04acec, #026d96);
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        tbody td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tbody tr:hover {
+            background: #e3f2fd;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge.entrada {
+            background: #1c943c;
+            color: white;
+        }
+
+        .badge.saida {
+            background: #dc3545;
+            color: white;
+        }
+
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-success { color: #1c943c; }
+        .text-danger { color: #dc3545; }
+        .text-muted { color: #666; }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 10px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .filters-applied {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .filters-applied h6 {
+            color: #04acec;
+            margin-bottom: 10px;
+        }
+
+        .filter-item {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 5px;
+        }
+
+        .filter-item strong {
+            color: #333;
+        }
+
+        @media print {
+            body { margin: 0; }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <div class="header">
+        <div>
+            <img src="data:image/png;base64,{% load static %}{% static 'img/logo.png' %}" alt="Central MEI" class="logo">
+        </div>
+        <div class="company-info">
+            <h1>Central MEI</h1>
+            <p>Relatório Financeiro</p>
+            <p>{{ data_geracao|date:"d/m/Y H:i" }}</p>
+        </div>
+    </div>
+
+    <!-- Título do Relatório -->
+    <div class="report-title">
+        <h2>Relatório de Movimentações Financeiras</h2>
+        <p>Período: {{ periodo_texto }}</p>
+    </div>
+
+    <!-- Informações do Relatório -->
+    <div class="report-info">
+        <div class="info-section">
+            <h4>Gerado por</h4>
+            <p>{{ usuario.get_full_name|default:usuario.username }}</p>
+        </div>
+        <div class="info-section">
+            <h4>Data de Geração</h4>
+            <p>{{ data_geracao|date:"d/m/Y às H:i" }}</p>
+        </div>
+        <div class="info-section">
+            <h4>Total de Registros</h4>
+            <p>{{ resumo.total_movimentacoes }} movimentações</p>
+        </div>
+    </div>
+
+    <!-- Filtros Aplicados -->
+    {% if filtros %}
+    <div class="filters-applied">
+        <h6>Filtros Aplicados:</h6>
+        <div class="filter-item">
+            <strong>Tipo:</strong> {{ filtros.tipo }}
+        </div>
+        <div class="filter-item">
+            <strong>Categoria:</strong> {{ filtros.categoria }}
+        </div>
+        <div class="filter-item">
+            <strong>Subcategoria:</strong> {{ filtros.subcategoria }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Resumo Financeiro -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <h5>Total de Entradas</h5>
+            <div class="value entrada">R$ {{ resumo.total_entradas|floatformat:2 }}</div>
+        </div>
+        <div class="summary-card">
+            <h5>Total de Saídas</h5>
+            <div class="value saida">R$ {{ resumo.total_saidas|floatformat:2 }}</div>
+        </div>
+        <div class="summary-card">
+            <h5>Saldo Final</h5>
+            <div class="value saldo {% if resumo.saldo >= 0 %}positive{% else %}negative{% endif %}">
+                R$ {{ resumo.saldo|floatformat:2 }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Movimentações -->
+    {% if movimentacoes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Subcategoria</th>
+                    <th style="text-align: right;">Valor</th>
+                    {% if incluir_observacoes %}
+                        <th>Observações</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for movimentacao in movimentacoes %}
+                    <tr>
+                        <td>
+                            {{ movimentacao.data_movimentacao|date:"d/m/Y" }}<br>
+                            <small class="text-muted">{{ movimentacao.data_movimentacao|time:"H:i" }}</small>
+                        </td>
+                        <td>
+                            <span class="badge {{ movimentacao.tipo }}">
+                                {{ movimentacao.get_tipo_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>{{ movimentacao.descricao }}</strong><br>
+                            <small class="text-muted">
+                                Por: {{ movimentacao.usuario.get_full_name|default:movimentacao.usuario.username }}
+                            </small>
+                        </td>
+                        <td>
+                            {% if movimentacao.categoria %}
+                                {{ movimentacao.categoria.nome }}
+                            {% else %}
+                                <span class="text-muted">Sem categoria</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if movimentacao.subcategoria %}
+                                {{ movimentacao.subcategoria.nome }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: right;">
+                            <strong class="{% if movimentacao.tipo == 'entrada' %}text-success{% else %}text-danger{% endif %}">
+                                {% if movimentacao.tipo == 'entrada' %}+{% else %}-{% endif %}
+                                R$ {{ movimentacao.valor|floatformat:2 }}
+                            </strong>
+                        </td>
+                        {% if incluir_observacoes %}
+                            <td>
+                                {% if movimentacao.observacoes %}
+                                    {{ movimentacao.observacoes|truncatechars:100 }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-data">
+            <h3>Nenhuma movimentação encontrada</h3>
+            <p>Não foram encontradas movimentações para os filtros aplicados.</p>
+        </div>
+    {% endif %}
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <p>
+            <strong>Central MEI</strong> - Sistema de Gestão Financeira para Microempreendedores Individuais<br>
+            Relatório gerado automaticamente em {{ data_geracao|date:"d/m/Y às H:i" }}
+        </p>
+    </div>
+</body>
+</html>

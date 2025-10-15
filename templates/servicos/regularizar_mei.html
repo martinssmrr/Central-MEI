@@ -1,0 +1,611 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Regularizar MEI - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary: #04acec;
+        --color-secondary: #1c943c;
+        --color-tertiary: #fccc2b;
+        --color-quaternary: #026d96;
+    }
+    
+    .bg-gradient-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        background: linear-gradient(135deg, var(--color-quaternary), var(--color-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(4, 172, 236, 0.25);
+    }
+    
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card-custom:hover {
+        transform: translateY(-5px);
+    }
+    
+    .icon-step {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem;
+    }
+    
+    .step-indicator {
+        background: var(--color-tertiary);
+        color: var(--color-quaternary);
+        font-weight: bold;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+    
+    .card-header-icon {
+        font-size: 2rem;
+    }
+    
+    .list-group-item:hover {
+        background-color: rgba(4, 172, 236, 0.05);
+        transition: all 0.2s ease;
+    }
+    
+    .card-info-highlight {
+        background: linear-gradient(45deg, rgba(4, 172, 236, 0.1), rgba(252, 204, 43, 0.1));
+        border-left: 4px solid var(--color-primary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-gradient-custom text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="step-indicator mb-3">REGULARIZAÇÃO MEI</div>
+                <h1 class="display-4 fw-bold mb-3">Regularizar MEI</h1>
+                <p class="lead mb-4">Coloque seu MEI em dia e evite problemas com a Receita Federal</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <span>100% Seguro</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock me-2"></i>
+                        <span>Processo Rápido</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-headset me-2"></i>
+                        <span>Suporte Completo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="icon-step">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h5>Regularização</h5>
+                <p class="mb-0">MEI em dia</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Form Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <!-- Formulário à esquerda -->
+            <div class="col-lg-8">
+                <form method="POST" action="{% url 'servicos:regularizar_mei' %}" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Dados Pessoais Card -->
+                    <div class="card card-custom mb-4">
+                        <div class="card-header bg-gradient-custom text-white border-0 p-4">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle text-white me-3 card-header-icon"></i>
+                                <div>
+                                    <h3 class="h4 text-white mb-1">Dados Pessoais e Empresariais</h3>
+                                    <p class="text-white-50 mb-0">Informações necessárias para regularização</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="nome_completo" class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>Nome Completo
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="nome_completo" 
+                                           name="nome_completo"
+                                           placeholder="Digite seu nome completo"
+                                           aria-label="Nome completo do proprietário"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe seu nome completo.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="cpf" class="form-label fw-bold">
+                                        <i class="bi bi-card-text me-1 text-primary"></i>CPF
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="cpf" 
+                                           name="cpf"
+                                           placeholder="000.000.000-00"
+                                           aria-label="CPF"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe um CPF válido.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="cnpj" class="form-label fw-bold">
+                                        <i class="bi bi-building me-1 text-secondary"></i>CNPJ MEI
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="cnpj" 
+                                           name="cnpj"
+                                           placeholder="00.000.000/0001-00"
+                                           aria-label="CNPJ do MEI"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe um CNPJ válido.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label fw-bold">
+                                        <i class="bi bi-envelope me-1 text-primary"></i>E-mail
+                                    </label>
+                                    <input type="email" 
+                                           class="form-control form-control-lg" 
+                                           id="email" 
+                                           name="email"
+                                           placeholder="seuemail@exemplo.com"
+                                           aria-label="E-mail"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe um e-mail válido.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="telefone" class="form-label fw-bold">
+                                        <i class="bi bi-telephone me-1 text-primary"></i>Telefone
+                                    </label>
+                                    <input type="tel" 
+                                           class="form-control form-control-lg" 
+                                           id="telefone" 
+                                           name="telefone"
+                                           placeholder="(11) 99999-9999"
+                                           aria-label="Telefone"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe um telefone válido.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Endereço Comercial Card -->
+                    <div class="card card-custom mb-4">
+                        <div class="card-header bg-white border-0 p-4">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt-fill text-secondary me-3 card-header-icon"></i>
+                                <div>
+                                    <h3 class="h4 text-secondary mb-1">Endereço Comercial</h3>
+                                    <p class="text-muted mb-0">Endereço registrado do MEI</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="cep" class="form-label fw-bold">
+                                        <i class="bi bi-mailbox me-1 text-secondary"></i>CEP
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="cep" 
+                                           name="cep"
+                                           placeholder="00000-000"
+                                           aria-label="CEP"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe o CEP.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label for="cidade" class="form-label fw-bold">
+                                        <i class="bi bi-building-fill me-1 text-secondary"></i>Cidade
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="cidade" 
+                                           name="cidade"
+                                           placeholder="Nome da cidade"
+                                           aria-label="Cidade"
+                                           readonly>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label for="estado" class="form-label fw-bold">
+                                        <i class="bi bi-map me-1 text-secondary"></i>Estado
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="estado" 
+                                           name="estado"
+                                           placeholder="UF"
+                                           aria-label="Estado"
+                                           readonly>
+                                </div>
+                                
+                                <div class="col-md-8">
+                                    <label for="rua" class="form-label fw-bold">
+                                        <i class="bi bi-signpost me-1 text-secondary"></i>Rua/Avenida
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="rua" 
+                                           name="rua"
+                                           placeholder="Nome da rua ou avenida"
+                                           aria-label="Nome da rua"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe o nome da rua.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label for="numero" class="form-label fw-bold">
+                                        <i class="bi bi-hash me-1 text-secondary"></i>Número
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="numero" 
+                                           name="numero"
+                                           placeholder="123"
+                                           aria-label="Número do endereço"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, informe o número.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="bairro" class="form-label fw-bold">
+                                        <i class="bi bi-geo me-1 text-secondary"></i>Bairro
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="bairro" 
+                                           name="bairro"
+                                           placeholder="Nome do bairro"
+                                           aria-label="Bairro"
+                                           readonly>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="complemento" class="form-label fw-bold">
+                                        <i class="bi bi-house-door me-1 text-secondary"></i>Complemento
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="complemento" 
+                                           name="complemento"
+                                           placeholder="Apto, sala, etc. (opcional)"
+                                           aria-label="Complemento do endereço">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="card card-custom">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="text-primary mb-1">Pronto para regularizar?</h5>
+                                    <small class="text-muted">Nossa equipe irá analisar sua situação</small>
+                                </div>
+                                <button type="submit" class="btn btn-custom btn-lg px-5">
+                                    <i class="bi bi-send me-2"></i>
+                                    Solicitar Regularização
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Card informativo à direita -->
+            <div class="col-lg-4">
+                <div>
+                    <!-- Card Principal: Regularização MEI -->
+                    <div class="card card-custom mb-4">
+                        <div class="card-header bg-gradient-custom text-white border-0 p-4">
+                            <div class="text-center">
+                                <div class="icon-step mb-3">
+                                    <i class="bi bi-shield-fill-check"></i>
+                                </div>
+                                <h4 class="fw-bold mb-2">Regularização MEI</h4>
+                                <p class="mb-0 opacity-90">Processo Completo</p>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="alert alert-warning border-0 mb-4 card-info-highlight">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-exclamation-triangle text-warning me-3 fs-4"></i>
+                                    <div>
+                                        <strong class="text-warning">Atenção!</strong><br>
+                                        <small class="text-dark">MEI irregular pode perder benefícios previdenciários</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h5 class="text-secondary mb-3">
+                                <i class="bi bi-check-circle me-2"></i>O que fazemos:
+                            </h5>
+                            
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-credit-card text-success me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">Quitação de débitos</strong><br>
+                                            <small class="text-muted">Parcelamento ou pagamento à vista</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-file-text text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">Declarações em atraso</strong><br>
+                                            <small class="text-muted">Regularização de todas as pendências</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-award text-warning me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">Certidões negativas</strong><br>
+                                            <small class="text-muted">Comprovação de regularidade</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="list-group-item border-0 px-0 py-2">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-lightbulb text-info me-2 mt-1"></i>
+                                        <div>
+                                            <strong class="text-dark">Orientação contínua</strong><br>
+                                            <small class="text-muted">Como manter seu MEI sempre regular</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-custom">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-step mb-3">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                            <h5 class="text-primary mb-3">Suporte Especializado</h5>
+                            <p class="text-muted mb-4">Nossa equipe está pronta para ajudar em qualquer dúvida durante o processo.</p>
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <i class="bi bi-whatsapp text-success me-2"></i>
+                                    <span class="text-muted small">Suporte via WhatsApp</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Secundário: Preços e Prazo -->
+                    <!-- <div class="card card-custom">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-step mb-3">
+                                <i class="bi bi-calculator"></i>
+                            </div>
+                            <h5 class="text-primary mb-3">Investimento</h5>
+                            <div class="display-6 fw-bold text-primary mb-2">R$ 147,00</div>
+                            <p class="text-muted mb-4">+ custos de regularização</p>
+                            
+                            <ul class="list-unstyled text-start mb-4">
+                                <li><i class="bi bi-check text-success me-2"></i> Análise completa</li>
+                                <li><i class="bi bi-check text-success me-2"></i> Quitação de débitos</li>
+                                <li><i class="bi bi-check text-success me-2"></i> Declarações em dia</li>
+                                <li><i class="bi bi-check text-success me-2"></i> 3-5 dias úteis</li>
+                            </ul>
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <i class="bi bi-whatsapp text-success me-2"></i>
+                                    <span class="text-muted small">Suporte via WhatsApp</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Máscaras para os campos
+    const cpfInput = document.getElementById('cpf');
+    const cnpjInput = document.getElementById('cnpj');
+    const telefoneInput = document.getElementById('telefone');
+    const cepInput = document.getElementById('cep');
+    
+    // Máscara CPF
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+    // Máscara CNPJ
+    if (cnpjInput) {
+        cnpjInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1/$2');
+            value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+    // Máscara Telefone
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+    // Máscara CEP e busca automática
+    if (cepInput) {
+        cepInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+            
+            // Busca CEP quando completo
+            if (value.length === 9) {
+                buscarCEP(value);
+            }
+        });
+    }
+    
+    // Função para buscar CEP
+    function buscarCEP(cep) {
+        const cepLimpo = cep.replace(/\D/g, '');
+        
+        if (cepLimpo.length === 8) {
+            fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        document.getElementById('rua').value = data.logradouro || '';
+                        document.getElementById('bairro').value = data.bairro || '';
+                        document.getElementById('cidade').value = data.localidade || '';
+                        document.getElementById('estado').value = data.uf || '';
+                        
+                        // Foca no campo número após preencher o endereço
+                        document.getElementById('numero').focus();
+                    }
+                })
+                .catch(error => {
+                    console.log('Erro ao buscar CEP:', error);
+                });
+        }
+    }
+    
+    // Validação do formulário
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            let valid = true;
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    valid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+            });
+            
+            // Validação específica do CPF
+            const cpfValue = cpfInput.value.replace(/\D/g, '');
+            if (cpfValue.length !== 11) {
+                cpfInput.classList.add('is-invalid');
+                valid = false;
+            }
+            
+            // Validação específica do CNPJ
+            const cnpjValue = cnpjInput.value.replace(/\D/g, '');
+            if (cnpjValue.length !== 14) {
+                cnpjInput.classList.add('is-invalid');
+                valid = false;
+            }
+            
+            // Validação do e-mail
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(document.getElementById('email').value)) {
+                document.getElementById('email').classList.add('is-invalid');
+                valid = false;
+            }
+            
+            if (!valid) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

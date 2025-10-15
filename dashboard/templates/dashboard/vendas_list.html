@@ -1,0 +1,263 @@
+{% extends 'dashboard/base.html' %}
+
+{% block page_title %}Controle de Vendas{% endblock %}
+
+{% block content %}
+<!-- Filtros -->
+<div class="card card-custom mb-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi bi-funnel me-2"></i>
+            Filtros
+        </h5>
+        <a href="{% url 'dashboard:venda_create' %}" class="btn btn-custom">
+            <i class="bi bi-plus-circle me-1"></i>
+            Nova Venda
+        </a>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">Todos</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if filtros.status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <label class="form-label">Produto</label>
+                <select name="produto" class="form-select">
+                    <option value="">Todos</option>
+                    {% for produto in produtos %}
+                        <option value="{{ produto.id }}" {% if filtros.produto == produto.id|stringformat:"s" %}selected{% endif %}>
+                            {{ produto.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label">Data Início</label>
+                <input type="date" name="data_inicio" class="form-control" value="{{ filtros.data_inicio }}">
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label">Data Fim</label>
+                <input type="date" name="data_fim" class="form-control" value="{{ filtros.data_fim }}">
+            </div>
+            
+            <div class="col-md-2 d-flex align-items-end">
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Filtrar
+                    </button>
+                    <a href="{% url 'dashboard:vendas_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Lista de Vendas -->
+<div class="card card-custom">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">
+            <i class="bi bi-cart-check me-2"></i>
+            Vendas Realizadas
+            {% if vendas.paginator.count %}
+                <span class="badge bg-secondary ms-2">{{ vendas.paginator.count }} vendas</span>
+            {% endif %}
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if vendas %}
+            <div class="table-responsive">
+                <table class="table table-hover table-custom">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Produto</th>
+                            <th>Qtd</th>
+                            <th>Valor Final</th>
+                            <th>Status</th>
+                            <th>Pagamento</th>
+                            <th>Data Venda</th>
+                            <th>Vendedor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for venda in vendas %}
+                            <tr>
+                                <td class="fw-bold">#{{ venda.id }}</td>
+                                <td>
+                                    <div>
+                                        <strong>{{ venda.cliente_nome }}</strong>
+                                        {% if venda.cliente_email %}
+                                            <br><small class="text-muted">{{ venda.cliente_email }}</small>
+                                        {% endif %}
+                                        {% if venda.cliente_telefone %}
+                                            <br><small class="text-muted">{{ venda.cliente_telefone }}</small>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong>{{ venda.produto.nome }}</strong>
+                                    <br><small class="text-muted">R$ {{ venda.valor_unitario }}</small>
+                                </td>
+                                <td class="text-center">{{ venda.quantidade }}</td>
+                                <td class="fw-bold text-primary">R$ {{ venda.valor_final|floatformat:2 }}</td>
+                                <td>
+                                    {% if venda.status == 'pendente' %}
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-clock"></i> Pendente
+                                        </span>
+                                    {% elif venda.status == 'pago' %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Pago
+                                        </span>
+                                    {% elif venda.status == 'cancelado' %}
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle"></i> Cancelado
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if venda.forma_pagamento %}
+                                        <small class="text-muted">{{ venda.get_forma_pagamento_display }}</small>
+                                    {% else %}
+                                        <small class="text-muted">-</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ venda.data_venda|date:"d/m/Y H:i" }}
+                                    {% if venda.data_pagamento and venda.status == 'pago' %}
+                                        <br><small class="text-success">Pago em: {{ venda.data_pagamento|date:"d/m/Y" }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small>{{ venda.vendedor.get_full_name|default:venda.vendedor.username }}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary btn-sm" title="Ver Detalhes" data-bs-toggle="modal" data-bs-target="#vendaModal{{ venda.id }}">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <a href="{% url 'admin:dashboard_venda_change' venda.id %}" class="btn btn-outline-secondary btn-sm" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Modal de Detalhes -->
+                            <div class="modal fade" id="vendaModal{{ venda.id }}" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Detalhes da Venda #{{ venda.id }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h6>Dados do Cliente</h6>
+                                                    <p><strong>Nome:</strong> {{ venda.cliente_nome }}</p>
+                                                    {% if venda.cliente_email %}
+                                                        <p><strong>E-mail:</strong> {{ venda.cliente_email }}</p>
+                                                    {% endif %}
+                                                    {% if venda.cliente_telefone %}
+                                                        <p><strong>Telefone:</strong> {{ venda.cliente_telefone }}</p>
+                                                    {% endif %}
+                                                    {% if venda.cliente_cpf_cnpj %}
+                                                        <p><strong>CPF/CNPJ:</strong> {{ venda.cliente_cpf_cnpj }}</p>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h6>Dados da Venda</h6>
+                                                    <p><strong>Produto:</strong> {{ venda.produto.nome }}</p>
+                                                    <p><strong>Quantidade:</strong> {{ venda.quantidade }}</p>
+                                                    <p><strong>Valor Unitário:</strong> R$ {{ venda.valor_unitario|floatformat:2 }}</p>
+                                                    <p><strong>Valor Total:</strong> R$ {{ venda.valor_total|floatformat:2 }}</p>
+                                                    {% if venda.desconto > 0 %}
+                                                        <p><strong>Desconto:</strong> R$ {{ venda.desconto|floatformat:2 }}</p>
+                                                    {% endif %}
+                                                    <p><strong>Valor Final:</strong> R$ {{ venda.valor_final|floatformat:2 }}</p>
+                                                    <p><strong>Status:</strong> {{ venda.get_status_display }}</p>
+                                                    {% if venda.forma_pagamento %}
+                                                        <p><strong>Forma de Pagamento:</strong> {{ venda.get_forma_pagamento_display }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% if venda.observacoes %}
+                                                <hr>
+                                                <h6>Observações</h6>
+                                                <p>{{ venda.observacoes }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginação -->
+            {% if vendas.has_other_pages %}
+                <nav class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        {% if vendas.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ vendas.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.produto %}&produto={{ request.GET.produto }}{% endif %}{% if request.GET.data_inicio %}&data_inicio={{ request.GET.data_inicio }}{% endif %}{% if request.GET.data_fim %}&data_fim={{ request.GET.data_fim }}{% endif %}">
+                                    &laquo; Anterior
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in vendas.paginator.page_range %}
+                            {% if vendas.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > vendas.number|add:'-3' and num < vendas.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.produto %}&produto={{ request.GET.produto }}{% endif %}{% if request.GET.data_inicio %}&data_inicio={{ request.GET.data_inicio }}{% endif %}{% if request.GET.data_fim %}&data_fim={{ request.GET.data_fim }}{% endif %}">
+                                        {{ num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if vendas.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ vendas.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.produto %}&produto={{ request.GET.produto }}{% endif %}{% if request.GET.data_inicio %}&data_inicio={{ request.GET.data_inicio }}{% endif %}{% if request.GET.data_fim %}&data_fim={{ request.GET.data_fim }}{% endif %}">
+                                    Próximo &raquo;
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-cart-x display-1 text-muted"></i>
+                <h4 class="text-muted mt-3">Nenhuma venda encontrada</h4>
+                <p class="text-muted">Crie a primeira venda ou ajuste os filtros.</p>
+                <a href="{% url 'dashboard:venda_create' %}" class="btn btn-custom">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Nova Venda
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

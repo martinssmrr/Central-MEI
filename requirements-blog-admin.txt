@@ -1,0 +1,70 @@
+# Arquivo de requisitos para funcionalidade WYSIWYG do Django Admin
+
+# Django Admin Blog Enhancement - Dependências Adicionais
+# 
+# IMPORTANTE: As seguintes funcionalidades foram implementadas:
+# 1. Editor WYSIWYG com CKEditor 5 via CDN (não requer instalação adicional)
+# 2. Campos SEO adicionais no modelo Post
+# 3. Interface administrativa aprimorada
+# 4. Validação de conteúdo e contagem de palavras
+# 
+# FUNCIONALIDADES IMPLEMENTADAS:
+# - Editor de texto rico com toolbar personalizada
+# - Campos de SEO (meta description, palavras-chave, tags)
+# - Campo para nome de autor personalizado
+# - Data de publicação personalizada
+# - Validação de conteúdo (impede H1 duplicado)
+# - Contagem automática de palavras e tempo de leitura
+# - Interface responsiva e acessível
+# - Integração com tema do Central MEI
+# 
+# ARQUIVOS CRIADOS/MODIFICADOS:
+# - blog/models.py (extendido)
+# - blog/admin.py (customizado)
+# - static/admin/css/blog-admin.css (novo)
+# - static/admin/js/blog-editor.js (novo)
+# - templates/blog/detalhe.html (atualizado)
+# 
+# MIGRAÇÕES APLICADAS:
+# - blog/migrations/0002_alter_post_options_post_data_publicacao_and_more.py
+# 
+# CONFIGURAÇÃO:
+# 1. As migrações já foram aplicadas
+# 2. O CKEditor 5 é carregado via CDN (sem necessidade de instalação local)
+# 3. Arquivos estáticos estão configurados corretamente
+# 
+# COMO USAR:
+# 1. Acesse http://127.0.0.1:8000/admin/
+# 2. Faça login como superusuário
+# 3. Vá para Blog > Posts
+# 4. Crie ou edite um post para ver o editor WYSIWYG
+# 
+# RECURSOS DISPONÍVEIS NO EDITOR:
+# - Formatação de texto (negrito, itálico, sublinhado)
+# - Títulos (H2, H3, H4, H5, H6) - H1 é bloqueado para SEO
+# - Listas ordenadas e não ordenadas
+# - Links e tabelas
+# - Visualização de código fonte
+# - Contagem de palavras em tempo real
+# - Validação de conteúdo
+# - Preview do slug automático
+# 
+# CAMPOS SEO DISPONÍVEIS:
+# - Meta Description (recomendado: 150-160 caracteres)
+# - Palavras-chave (separadas por vírgula)
+# - Tags SEO customizadas (HTML adicional para head)
+# - Nome do autor personalizado (sobrescreve autor padrão)
+# - Data de publicação personalizada
+# 
+# NOTA: Não há dependências Python adicionais pois o CKEditor 5
+# é carregado diretamente via CDN para melhor performance.
+
+# Dependências do projeto original (já devem estar instaladas)
+Django==5.2.3
+Pillow  # Para upload de imagens
+python-decouple  # Para variáveis de ambiente (se usado)
+
+# OPCIONAL: Para production, considere:
+# django-ckeditor==6.7.1  # Alternativa local ao CDN
+# bleach==6.1.0  # Para sanitização adicional de HTML
+# django-crispy-forms  # Para melhor renderização de formulários

@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Abrir MEI - Central MEI{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-light-primary">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold text-primary">Abrir MEI</h1>
+            <p class="lead text-muted">Abertura completa do seu MEI de forma rápida e segura</p>
+        </div>
+    </div>
+</section>
+
+<!-- Content Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h3 text-primary mb-4">Como funciona a abertura do MEI?</h2>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="fw-bold">1</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>Documentação</h5>
+                                        <p class="text-muted">Enviamos a lista de documentos necessários</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="fw-bold">2</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>Registro</h5>
+                                        <p class="text-muted">Fazemos toda a abertura nos órgãos competentes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="fw-bold">3</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>CNPJ</h5>
+                                        <p class="text-muted">Você recebe seu CNPJ e certificado</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <span class="fw-bold">4</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5>Suporte</h5>
+                                        <p class="text-muted">Orientações para manter seu MEI em dia</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h3 class="h4 text-primary mb-3">O que está incluído:</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Abertura do MEI</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Certificado MEI (CCMEI)</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Inscrição Estadual</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Alvará Municipal</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Cartão CNPJ</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Orientações tributárias</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Suporte por 30 dias</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i> Manual do MEI</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-body p-4">
+                        <h3 class="h4 text-primary mb-4">Perguntas Frequentes</h3>
+                        
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        Quem pode ser MEI?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Podem ser MEI pessoas que exercem atividades por conta própria, não possuem sócios e faturam até R$ 81.000,00 por ano.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        Quanto tempo demora?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        O processo leva de 2 a 3 dias úteis após o envio de toda documentação necessária.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        Quais documentos preciso?
+                                    </button>
+                                </h2>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        RG, CPF, comprovante de endereço residencial e comercial, título de eleitor e declaração de imposto de renda (se houver).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar com preço e contratação -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">Abrir MEI</h4>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        <div class="display-6 fw-bold text-primary mb-2">R$ 97,00</div>
+                        <p class="text-muted mb-4">Pagamento único</p>
+                        
+                        <ul class="list-unstyled text-start mb-4">
+                            <li><i class="bi bi-check text-success me-2"></i> Abertura completa</li>
+                            <li><i class="bi bi-check text-success me-2"></i> Todos os documentos</li>
+                            <li><i class="bi bi-check text-success me-2"></i> Suporte incluído</li>
+                            <li><i class="bi bi-check text-success me-2"></i> 2-3 dias úteis</li>
+                        </ul>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'servicos:abrir_mei_passo1' %}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-file-earmark-plus"></i> Abrir MEI Agora
+                            </a>
+                            <a href="https://wa.me/5511999999999" class="btn btn-outline-success">
+                                <i class="bi bi-whatsapp"></i> WhatsApp
+                            </a>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check"></i> Pagamento 100% seguro
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

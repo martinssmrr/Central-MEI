@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog - Central MEI{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-light-primary">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold text-primary">Blog Central MEI</h1>
+            <p class="lead text-muted">Fique por dentro das novidades do mundo MEI</p>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Posts -->
+<section class="py-5">
+    <div class="container">
+        {% if posts %}
+        <div class="row g-4">
+            {% for post in posts %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card blog-card h-100">
+                    {% if post.imagem %}
+                        <img src="{{ post.imagem.url }}" class="card-img-top" alt="{{ post.titulo }}">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center">
+                            <i class="bi bi-file-text fs-1 text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ post.titulo }}</h5>
+                        <p class="card-text flex-grow-1">{{ post.resumo }}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary">Ler mais</a>
+                                <small class="text-muted">{{ post.criado_em|date:"d/m/Y" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <!-- Estado vazio -->
+        <div class="text-center py-5">
+            <i class="bi bi-journal-text display-1 text-muted mb-4"></i>
+            <h3 class="text-muted">Nenhum post encontrado</h3>
+            <p class="text-muted">Em breve teremos conteúdos incríveis sobre MEI para você!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- WhatsApp Floating Button -->
+<div class="whatsapp-float" id="whatsappButton">
+    <a href="https://wa.me/551131642284?text=Quero%20conhecer%20mais%20sobre%20a%20Central%20MEI" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Falar no WhatsApp"
+       class="whatsapp-link">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+</div>
+{% endblock %}

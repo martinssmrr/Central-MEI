@@ -1,0 +1,475 @@
+{% extends 'dashboard/base.html' %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Filtros -->
+    <div class="col-lg-4 mb-4">
+        <div class="card card-custom">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">
+                    <i class="bi bi-funnel me-1"></i>
+                    Filtros do Relatório
+                </h6>
+            </div>
+            <div class="card-body">
+                <form method="GET" id="filtrosRelatorioForm">
+                    <div class="mb-3">
+                        <label for="{{ form.tipo.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-arrow-up-down me-1 text-primary"></i>
+                            {{ form.tipo.label }}
+                        </label>
+                        {{ form.tipo }}
+                        <div class="form-text">Filtre por tipo de movimentação</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.categoria.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-folder me-1 text-secondary"></i>
+                            {{ form.categoria.label }}
+                        </label>
+                        {{ form.categoria }}
+                        <div class="form-text">Selecione uma categoria específica</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.subcategoria.id_for_label }}" class="form-label fw-bold">
+                            <i class="bi bi-diagram-3 me-1 text-secondary"></i>
+                            {{ form.subcategoria.label }}
+                        </label>
+                        {{ form.subcategoria }}
+                        <div class="form-text">Subcategoria específica (opcional)</div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h6 class="text-primary mb-3">
+                        <i class="bi bi-calendar-range me-1"></i>
+                        Período
+                    </h6>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.periodo_predefinido.id_for_label }}" class="form-label fw-bold">
+                            {{ form.periodo_predefinido.label }}
+                        </label>
+                        {{ form.periodo_predefinido }}
+                        <div class="form-text">Selecione um período pré-definido</div>
+                    </div>
+                    
+                    <div class="row" id="periodo_personalizado">
+                        <div class="col-6">
+                            <label for="{{ form.data_inicio.id_for_label }}" class="form-label fw-bold">
+                                {{ form.data_inicio.label }}
+                            </label>
+                            {{ form.data_inicio }}
+                        </div>
+                        <div class="col-6">
+                            <label for="{{ form.data_fim.id_for_label }}" class="form-label fw-bold">
+                                {{ form.data_fim.label }}
+                            </label>
+                            {{ form.data_fim }}
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <h6 class="text-primary mb-3">
+                        <i class="bi bi-gear me-1"></i>
+                        Opções
+                    </h6>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.ordenacao.id_for_label }}" class="form-label fw-bold">
+                            {{ form.ordenacao.label }}
+                        </label>
+                        {{ form.ordenacao }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.incluir_observacoes }}
+                            <label class="form-check-label" for="{{ form.incluir_observacoes.id_for_label }}">
+                                {{ form.incluir_observacoes.label }}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-custom">
+                            <i class="bi bi-search me-1"></i>
+                            Gerar Relatório
+                        </button>
+                        <a href="{% url 'dashboard:relatorios' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+                            Limpar Filtros
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div class="col-lg-8">
+        {% if movimentacoes is not None %}
+            <!-- Cabeçalho do Relatório -->
+            <div class="card card-custom mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">
+                            <i class="bi bi-file-earmark-bar-graph me-1"></i>
+                            Relatório Financeiro
+                        </h6>
+                        {% if periodo_texto %}
+                            <small class="text-muted">Período: {{ periodo_texto }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-success" onclick="imprimirRelatorio()" title="Imprimir">
+                            <i class="bi bi-printer me-1"></i>
+                            Imprimir
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="exportarCSV()" title="Exportar CSV">
+                            <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+                            CSV
+                        </button>
+                    </div>
+                </div>
+                
+                {% if resumo %}
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="border-end">
+                                    <h6 class="text-muted mb-1">Movimentações</h6>
+                                    <h5 class="text-primary mb-0">{{ resumo.total_movimentacoes }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="border-end">
+                                    <h6 class="text-muted mb-1">Entradas</h6>
+                                    <h5 class="text-success mb-0">R$ {{ resumo.total_entradas|floatformat:2 }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="border-end">
+                                    <h6 class="text-muted mb-1">Saídas</h6>
+                                    <h5 class="text-danger mb-0">R$ {{ resumo.total_saidas|floatformat:2 }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 class="text-muted mb-1">Saldo</h6>
+                                <h5 class="mb-0 {% if resumo.saldo >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                    R$ {{ resumo.saldo|floatformat:2 }}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Tabela de Movimentações -->
+            <div class="card card-custom" id="relatorio_tabela">
+                <div class="card-body p-0">
+                    {% if movimentacoes %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Tipo</th>
+                                        <th>Descrição</th>
+                                        <th>Categoria</th>
+                                        <th>Subcategoria</th>
+                                        <th class="text-end">Valor</th>
+                                        {% if form.cleaned_data.incluir_observacoes %}
+                                            <th>Observações</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for movimentacao in movimentacoes %}
+                                        <tr>
+                                            <td>
+                                                <span class="fw-bold">{{ movimentacao.data_movimentacao|date:"d/m/Y" }}</span>
+                                                <br>
+                                                <small class="text-muted">{{ movimentacao.data_movimentacao|time:"H:i" }}</small>
+                                            </td>
+                                            <td>
+                                                {% if movimentacao.tipo == 'entrada' %}
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-arrow-up me-1"></i>
+                                                        Entrada
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">
+                                                        <i class="bi bi-arrow-down me-1"></i>
+                                                        Saída
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">{{ movimentacao.descricao }}</div>
+                                                <small class="text-muted">Por: {{ movimentacao.usuario.get_full_name|default:movimentacao.usuario.username }}</small>
+                                            </td>
+                                            <td>
+                                                {% if movimentacao.categoria %}
+                                                    <div class="text-primary">{{ movimentacao.categoria.nome }}</div>
+                                                {% else %}
+                                                    <span class="text-muted fst-italic">Sem categoria</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if movimentacao.subcategoria %}
+                                                    {{ movimentacao.subcategoria.nome }}
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                <span class="h6 mb-0 {% if movimentacao.tipo == 'entrada' %}text-success{% else %}text-danger{% endif %}">
+                                                    {% if movimentacao.tipo == 'entrada' %}+{% else %}-{% endif %}
+                                                    R$ {{ movimentacao.valor|floatformat:2 }}
+                                                </span>
+                                            </td>
+                                            {% if form.cleaned_data.incluir_observacoes %}
+                                                <td>
+                                                    {% if movimentacao.observacoes %}
+                                                        <small class="text-muted">{{ movimentacao.observacoes|truncatechars:50 }}</small>
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                
+                                <!-- Totalizadores no Rodapé -->
+                                <tfoot class="table-light">
+                                    <tr class="fw-bold">
+                                        <td colspan="{% if form.cleaned_data.incluir_observacoes %}6{% else %}5{% endif %}" class="text-end">
+                                            <strong>TOTAIS:</strong>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="text-success">
+                                                <i class="bi bi-arrow-up me-1"></i>
+                                                R$ {{ resumo.total_entradas|floatformat:2 }}
+                                            </div>
+                                            <div class="text-danger">
+                                                <i class="bi bi-arrow-down me-1"></i>
+                                                R$ {{ resumo.total_saidas|floatformat:2 }}
+                                            </div>
+                                            <hr class="my-1">
+                                            <div class="{% if resumo.saldo >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                                <strong>R$ {{ resumo.saldo|floatformat:2 }}</strong>
+                                            </div>
+                                        </td>
+                                        {% if form.cleaned_data.incluir_observacoes %}
+                                            <td></td>
+                                        {% endif %}
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center p-5">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <h5 class="text-muted mt-3">Nenhuma movimentação encontrada</h5>
+                            <p class="text-muted">Ajuste os filtros e tente novamente.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+        {% else %}
+            <!-- Estado inicial -->
+            <div class="text-center py-5">
+                <i class="bi bi-file-earmark-bar-graph display-1 text-muted"></i>
+                <h4 class="text-muted mt-3">Relatórios Financeiros</h4>
+                <p class="text-muted">Configure os filtros ao lado e clique em "Gerar Relatório" para visualizar suas movimentações financeiras.</p>
+                
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <div class="card border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-funnel display-4 text-primary"></i>
+                                <h6 class="mt-3">Filtros Avançados</h6>
+                                <p class="text-muted small">Filtre por tipo, categoria, subcategoria e período</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-table display-4 text-success"></i>
+                                <h6 class="mt-3">Visualização Clara</h6>
+                                <p class="text-muted small">Dados organizados em tabelas com totalizadores</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0">
+                            <div class="card-body text-center">
+                                <i class="bi bi-file-earmark-pdf display-4 text-danger"></i>
+                                <h6 class="mt-3">Exportação PDF</h6>
+                                <p class="text-muted small">Exporte seus relatórios em formato PDF</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const periodoSelect = document.getElementById('id_periodo_predefinido');
+    const dataInicioInput = document.getElementById('id_data_inicio');
+    const dataFimInput = document.getElementById('id_data_fim');
+    const categoriaSelect = document.getElementById('id_categoria_relatorio');
+    const subcategoriaSelect = document.getElementById('id_subcategoria_relatorio');
+
+    // Função para controlar período personalizado vs pré-definido
+    function togglePeriodoPersonalizado() {
+        const temPeriodoPredefinido = periodoSelect.value !== '';
+        dataInicioInput.disabled = temPeriodoPredefinido;
+        dataFimInput.disabled = temPeriodoPredefinido;
+        
+        if (temPeriodoPredefinido) {
+            dataInicioInput.value = '';
+            dataFimInput.value = '';
+        }
+    }
+
+    // Função para carregar subcategorias via AJAX
+    function carregarSubcategorias() {
+        const categoriaId = categoriaSelect.value;
+        
+        if (categoriaId) {
+            fetch(`{% url 'dashboard:get_subcategorias' %}?categoria_id=${categoriaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    subcategoriaSelect.innerHTML = '<option value="">Todas as subcategorias</option>';
+                    data.forEach(subcat => {
+                        const option = document.createElement('option');
+                        option.value = subcat.id;
+                        option.textContent = subcat.nome;
+                        subcategoriaSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar subcategorias:', error);
+                });
+        } else {
+            subcategoriaSelect.innerHTML = '<option value="">Todas as subcategorias</option>';
+        }
+    }
+
+    // Event listeners
+    periodoSelect.addEventListener('change', togglePeriodoPersonalizado);
+    categoriaSelect.addEventListener('change', carregarSubcategorias);
+    
+    // Limpar período pré-definido ao alterar datas manualmente
+    dataInicioInput.addEventListener('change', function() {
+        if (this.value) {
+            periodoSelect.value = '';
+        }
+    });
+    
+    dataFimInput.addEventListener('change', function() {
+        if (this.value) {
+            periodoSelect.value = '';
+        }
+    });
+
+    // Inicializar
+    togglePeriodoPersonalizado();
+    
+    // Se já tem categoria selecionada, carregar subcategorias
+    if (categoriaSelect.value) {
+        carregarSubcategorias();
+    }
+});
+
+// Função para imprimir relatório
+function imprimirRelatorio() {
+    const conteudo = document.getElementById('relatorio_tabela').outerHTML;
+    const janela = window.open('', '_blank');
+    
+    janela.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Relatório Financeiro - Central MEI</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                @media print {
+                    .btn { display: none !important; }
+                    .card { box-shadow: none !important; border: 1px solid #ddd !important; }
+                }
+                body { font-size: 12px; }
+                h1, h2, h3, h4, h5, h6 { color: #333; }
+            </style>
+        </head>
+        <body>
+            <div class="container-fluid">
+                <div class="row mb-3">
+                    <div class="col-12 text-center">
+                        <h3>Central MEI - Relatório Financeiro</h3>
+                        <p class="text-muted">Gerado em ${new Date().toLocaleString('pt-BR')}</p>
+                    </div>
+                </div>
+                ${conteudo}
+            </div>
+        </body>
+        </html>
+    `);
+    
+    janela.document.close();
+    setTimeout(() => {
+        janela.print();
+        janela.close();
+    }, 500);
+}
+
+// Função para exportar dados como CSV
+function exportarCSV() {
+    const tabela = document.querySelector('#relatorio_tabela table');
+    if (!tabela) {
+        alert('Nenhum dado para exportar');
+        return;
+    }
+    
+    let csv = 'Data;Tipo;Descrição;Categoria;Subcategoria;Valor\n';
+    
+    const linhas = tabela.querySelectorAll('tbody tr');
+    linhas.forEach(linha => {
+        const colunas = linha.querySelectorAll('td');
+        if (colunas.length >= 6) {
+            const data = colunas[0].textContent.trim().replace('\n', ' ');
+            const tipo = colunas[1].textContent.trim();
+            const descricao = colunas[2].textContent.trim().replace('\n', ' ');
+            const categoria = colunas[3].textContent.trim();
+            const subcategoria = colunas[4].textContent.trim();
+            const valor = colunas[5].textContent.trim();
+            
+            csv += `"${data}";"${tipo}";"${descricao}";"${categoria}";"${subcategoria}";"${valor}"\n`;
+        }
+    });
+    
+    // Criar e baixar arquivo
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `relatorio_financeiro_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+{% endblock %}
