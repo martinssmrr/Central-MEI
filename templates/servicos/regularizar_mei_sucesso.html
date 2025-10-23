@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block title %}Regularização MEI Solicitada com Sucesso - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary: #04acec;
+        --color-secondary: #1c943c;
+        --color-tertiary: #fccc2b;
+        --color-quaternary: #026d96;
+    }
+    
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 3rem;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .bg-gradient-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        background: linear-gradient(135deg, var(--color-quaternary), var(--color-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .protocol-highlight {
+        background: linear-gradient(45deg, rgba(4, 172, 236, 0.1), rgba(252, 204, 43, 0.1));
+        border-left: 4px solid var(--color-primary);
+    }
+    
+    .contact-gradient {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Card de Sucesso -->
+                <div class="card shadow border-0 rounded-4">
+                    <div class="card-body p-5 text-center">
+                        <!-- Ícone de Sucesso -->
+                        <div class="mb-4">
+                            <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center success-icon">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                        </div>
+
+                        <!-- Título -->
+                        <h2 class="text-success mb-3">Solicitação de Regularização Enviada com Sucesso!</h2>
+                        
+                        <!-- Protocolo -->
+                        <div class="alert protocol-highlight border-0 mb-4" role="alert">
+                            <h4 class="alert-heading">
+                                <i class="bi bi-clipboard-check me-2"></i>
+                                Protocolo #{{ protocolo }}
+                            </h4>
+                            <p class="mb-0">Guarde este número para acompanhar o andamento da sua regularização</p>
+                        </div>
+
+                        <!-- Informações da Solicitação -->
+                        <div class="row text-start mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="bi bi-person me-1"></i>
+                                            Dados de Contato
+                                        </h6>
+                                        <p class="mb-1"><strong>Nome:</strong> {{ regularizacao.nome_completo }}</p>
+                                        <p class="mb-1"><strong>E-mail:</strong> {{ regularizacao.email }}</p>
+                                        <p class="mb-0"><strong>Telefone:</strong> {{ regularizacao.telefone }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            Status da Solicitação
+                                        </h6>
+                                        <p class="mb-1"><strong>Status:</strong> 
+                                            <span class="badge bg-warning text-dark">Em Análise</span>
+                                        </p>
+                                        <p class="mb-1"><strong>Data:</strong> {{ data_solicitacao|date:"d/m/Y H:i" }}</p>
+                                        <p class="mb-0"><strong>CNPJ:</strong> {{ regularizacao.cnpj }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Próximos Passos -->
+                        <div class="card border-primary mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    Próximos Passos
+                                </h5>
+                            </div>
+                            <div class="card-body text-start">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">1</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Análise da Situação</h6>
+                                                <small class="text-muted">Nossa equipe irá verificar a situação atual do seu MEI</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">2</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Contato em até 24h</h6>
+                                                <small class="text-muted">Entraremos em contato via e-mail ou WhatsApp</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">3</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Orçamento Detalhado</h6>
+                                                <small class="text-muted">Apresentaremos um orçamento com todos os serviços necessários</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex mb-3">
+                                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3 step-number">
+                                                <span class="fw-bold">4</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Regularização</h6>
+                                                <small class="text-muted">Executaremos todos os procedimentos para regularizar seu MEI</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contato e WhatsApp -->
+                        <div class="card contact-gradient text-white mb-4">
+                            <div class="card-body">
+                                <h5 class="mb-3">
+                                    <i class="bi bi-headset me-2"></i>
+                                    Precisa de Ajuda?
+                                </h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <p class="mb-2">
+                                            <i class="bi bi-telephone me-2"></i>
+                                            <strong>Telefone:</strong> (11) 99999-9999
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-2">
+                                            <i class="bi bi-envelope me-2"></i>
+                                            <strong>E-mail:</strong> contato@centralmei.com.br
+                                        </p>
+                                    </div>
+                                </div>
+                                <small class="opacity-75">
+                                    Tenha sempre em mãos o número do seu protocolo: <strong>#{{ protocolo }}</strong>
+                                </small>
+                                <div class="mt-3">
+                                    <a href="https://wa.me/5511999999999?text=Olá! Acabei de enviar uma solicitação de regularização de MEI (Protocolo #{{ protocolo }}). Gostaria de mais informações." 
+                                       class="btn btn-success btn-sm" 
+                                       target="_blank" 
+                                       rel="noopener">
+                                        <i class="bi bi-whatsapp me-2"></i>
+                                        Falar no WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <a href="{% url 'core:home' %}" class="btn btn-custom btn-lg">
+                                <i class="bi bi-house me-2"></i>Voltar ao Início
+                            </a>
+                            <a href="{% url 'core:home' %}#servicos" class="btn btn-outline-primary btn-lg">
+                                <i class="bi bi-grid me-2"></i>Outros Serviços
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumo dos Dados Enviados -->
+                <div class="card border-0 shadow mt-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clipboard-data me-2"></i>
+                            Resumo dos Dados Enviados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Dados de Contato -->
+                            <div class="col-md-6 mb-3">
+                                <h6 class="border-bottom pb-2 mb-3 text-primary">
+                                    <i class="bi bi-person me-1"></i>
+                                    Dados de Contato
+                                </h6>
+                                <p class="mb-1"><strong>Nome:</strong> {{ regularizacao.nome_completo }}</p>
+                                <p class="mb-1"><strong>E-mail:</strong> {{ regularizacao.email }}</p>
+                                <p class="mb-1"><strong>Telefone:</strong> {{ regularizacao.telefone }}</p>
+                            </div>
+
+                            <!-- Dados Pessoais e MEI -->
+                            <div class="col-md-6 mb-3">
+                                <h6 class="border-bottom pb-2 mb-3 text-primary">
+                                    <i class="bi bi-building me-1"></i>
+                                    Dados do MEI
+                                </h6>
+                                <p class="mb-1"><strong>CPF:</strong> {{ regularizacao.cpf }}</p>
+                                <p class="mb-1"><strong>RG:</strong> {{ regularizacao.rg }}</p>
+                                <p class="mb-1"><strong>CNPJ:</strong> {{ regularizacao.cnpj }}</p>
+                            </div>
+
+                            <!-- Endereço -->
+                            <div class="col-12">
+                                <h6 class="border-bottom pb-2 mb-3 text-primary">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    Endereço
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <p class="mb-1">
+                                            <strong>Endereço:</strong> 
+                                            {{ regularizacao.rua }}, {{ regularizacao.numero }}
+                                            {% if regularizacao.complemento %} - {{ regularizacao.complemento }}{% endif %}
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Bairro:</strong> {{ regularizacao.bairro }}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class="mb-1">
+                                            <strong>Cidade/UF:</strong> {{ regularizacao.cidade }}/{{ regularizacao.estado }}
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>CEP:</strong> {{ regularizacao.cep }}
+                                        </p>
+                                    </div>
+                                </div>
+                                {% if regularizacao.observacoes %}
+                                <div class="mt-2">
+                                    <p class="mb-1">
+                                        <strong>Observações:</strong> {{ regularizacao.observacoes }}
+                                    </p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -27,6 +27,8 @@ urlpatterns = [
     path('planos/', include('planos.urls')),
     path('blog/', include('blog.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('usuarios/', include('usuarios.urls')),
+    path('pagamentos/', include('pagamentos.urls')),
 ]
 
 # Servir arquivos de media e static em desenvolvimento

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pagamento Pendente - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pending-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #ffa726 0%, #ffcc02 100%);
+        padding: 60px 0;
+    }
+    
+    .pending-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        padding: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .pending-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ffa726 0%, #ffcc02 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        font-size: 40px;
+        color: white;
+    }
+    
+    .pending-title {
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    
+    .pending-text {
+        color: #666;
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    
+    .btn-home {
+        background: linear-gradient(135deg, #ffa726 0%, #ffcc02 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 16px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+    
+    .btn-home:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255, 167, 38, 0.3);
+        color: white;
+    }
+    
+    .info-box {
+        background: #fff3cd;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 30px 0;
+        border-left: 5px solid #ffc107;
+        text-align: left;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pending-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="pending-card">
+                    <div class="pending-icon">
+                        <i class="bi bi-clock-fill"></i>
+                    </div>
+                    
+                    <h1 class="pending-title">Pagamento Pendente</h1>
+                    
+                    <div class="pending-text">
+                        <p>Seu pagamento está sendo processado.</p>
+                        <p>Em alguns minutos você receberá a confirmação por e-mail.</p>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h6 class="text-warning mb-3">
+                            <i class="bi bi-info-circle me-2"></i>O que acontece agora?
+                        </h6>
+                        <ul class="text-muted mb-0">
+                            <li>Aguarde a confirmação do pagamento</li>
+                            <li>Você receberá um e-mail com o status</li>
+                            <li>O processo pode levar alguns minutos</li>
+                            <li>Não é necessário fazer um novo pagamento</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'core:home' %}" class="btn-home">
+                            <i class="bi bi-house me-2"></i>Voltar ao Início
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <i class="bi bi-envelope text-primary fs-3 mb-2"></i>
+                                <h6 class="fw-bold">E-mail</h6>
+                                <small class="text-muted">Confirmação automática</small>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="bi bi-headset text-success fs-3 mb-2"></i>
+                                <h6 class="fw-bold">Suporte</h6>
+                                <small class="text-muted">Atendimento disponível</small>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="bi bi-shield-check text-warning fs-3 mb-2"></i>
+                                <h6 class="fw-bold">Segurança</h6>
+                                <small class="text-muted">Transação protegida</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,467 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Central MEI - Detalhes da Solicitação{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--quaternary-color));
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .detail-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    
+    .section-header {
+        background: var(--gray-100);
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        margin-right: 1rem;
+    }
+    
+    .section-icon.primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--quaternary-color));
+        color: white;
+    }
+    
+    .section-icon.secondary {
+        background: linear-gradient(135deg, var(--secondary-color), #157f34);
+        color: white;
+    }
+    
+    .section-icon.tertiary {
+        background: linear-gradient(135deg, var(--tertiary-color), #e6b626);
+        color: var(--quaternary-color);
+    }
+    
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .status-pendente {
+        background: linear-gradient(135deg, rgba(252, 204, 43, 0.2), rgba(230, 182, 38, 0.2));
+        color: var(--quaternary-color);
+        border: 2px solid var(--tertiary-color);
+    }
+    
+    .status-processando {
+        background: linear-gradient(135deg, rgba(4, 172, 236, 0.2), rgba(2, 109, 150, 0.2));
+        color: var(--quaternary-color);
+        border: 2px solid var(--primary-color);
+    }
+    
+    .status-concluido {
+        background: linear-gradient(135deg, rgba(28, 148, 60, 0.2), rgba(21, 127, 52, 0.2));
+        color: var(--secondary-color);
+        border: 2px solid var(--secondary-color);
+    }
+    
+    .status-cancelado {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(176, 42, 55, 0.2));
+        color: #dc3545;
+        border: 2px solid #dc3545;
+    }
+    
+    .info-row {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: var(--quaternary-color);
+        margin-bottom: 0.25rem;
+    }
+    
+    .info-value {
+        color: var(--gray-800);
+    }
+    
+    .btn-back {
+        background: var(--gray-600);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-back:hover {
+        background: var(--gray-800);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+    }
+    
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin-bottom: 0;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .breadcrumb-item a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white;
+        text-decoration: underline;
+    }
+    
+    .breadcrumb-item.active {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .highlight-box {
+        background: linear-gradient(135deg, rgba(4, 172, 236, 0.05), rgba(252, 204, 43, 0.05));
+        border: 1px solid rgba(4, 172, 236, 0.2);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .detail-header {
+            padding: 1.5rem 0;
+        }
+        
+        .section-header {
+            padding: 1rem;
+        }
+        
+        .detail-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="detail-header">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'core:home' %}">
+                        <i class="bi bi-house-door me-1"></i>Início
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'core:minha_conta' %}">Minha Conta</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Detalhes da Solicitação</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="h2 mb-2">
+                    <i class="bi bi-file-earmark-text me-2"></i>
+                    Detalhes da Solicitação
+                </h1>
+                <p class="mb-0 opacity-90">
+                    {% if tipo == 'mei' %}
+                        Abertura de MEI - {{ solicitacao.nome_completo }}
+                    {% else %}
+                        {{ solicitacao.servico.nome }}
+                    {% endif %}
+                </p>
+            </div>
+            <div>
+                <span class="status-badge status-{{ solicitacao.status }}">
+                    {% if solicitacao.status == 'pendente' %}
+                        <i class="bi bi-clock"></i>Pendente
+                    {% elif solicitacao.status == 'processando' %}
+                        <i class="bi bi-gear"></i>Processando  
+                    {% elif solicitacao.status == 'concluido' %}
+                        <i class="bi bi-check-circle"></i>Concluído
+                    {% else %}
+                        <i class="bi bi-x-circle"></i>Cancelado
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    {% if tipo == 'mei' %}
+        <!-- Informações da Solicitação MEI -->
+        <div class="highlight-box">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-primary mb-3">
+                        <i class="bi bi-info-circle me-2"></i>Informações Gerais
+                    </h5>
+                    <div class="info-row">
+                        <div class="info-label">Data da Solicitação</div>
+                        <div class="info-value">{{ solicitacao.criado_em|date:"d/m/Y às H:i" }}</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Última Atualização</div>
+                        <div class="info-value">{{ solicitacao.atualizado_em|date:"d/m/Y às H:i" }}</div>
+                    </div>
+                    {% if solicitacao.valor_servico %}
+                    <div class="info-row">
+                        <div class="info-label">Valor do Serviço</div>
+                        <div class="info-value text-success fw-bold">R$ {{ solicitacao.valor_servico }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-primary mb-3">
+                        <i class="bi bi-clipboard-check me-2"></i>Status do Processo
+                    </h5>
+                    {% if solicitacao.status == 'pendente' %}
+                        <p class="text-muted">Sua solicitação foi recebida e está aguardando análise da nossa equipe.</p>
+                    {% elif solicitacao.status == 'processando' %}
+                        <p class="text-muted">Sua solicitação está sendo processada. Em breve você receberá atualizações.</p>
+                    {% elif solicitacao.status == 'concluido' %}
+                        <p class="text-success">Parabéns! Sua solicitação foi concluída com sucesso.</p>
+                    {% else %}
+                        <p class="text-danger">Esta solicitação foi cancelada. Entre em contato para mais informações.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Dados Pessoais -->
+        <div class="card detail-card">
+            <div class="section-header">
+                <div class="d-flex align-items-center">
+                    <div class="section-icon primary">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h4 class="mb-0">Dados Pessoais</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">Nome Completo</div>
+                            <div class="info-value">{{ solicitacao.nome_completo }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">CPF</div>
+                            <div class="info-value">{{ solicitacao.cpf }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">RG</div>
+                            <div class="info-value">{{ solicitacao.rg }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Órgão Expedidor</div>
+                            <div class="info-value">{{ solicitacao.orgao_expedidor }}{% if solicitacao.estado_expedidor %}/{{ solicitacao.estado_expedidor }}{% endif %}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">E-mail</div>
+                            <div class="info-value">{{ solicitacao.email }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Telefone</div>
+                            <div class="info-value">{{ solicitacao.telefone }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dados Empresariais -->
+        <div class="card detail-card">
+            <div class="section-header">
+                <div class="d-flex align-items-center">
+                    <div class="section-icon secondary">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <h4 class="mb-0">Dados Empresariais</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">CNAE Primário</div>
+                            <div class="info-value">{{ solicitacao.cnae_primario }}</div>
+                        </div>
+                        {% if solicitacao.cnaes_secundarios %}
+                        <div class="info-row">
+                            <div class="info-label">CNAEs Secundários</div>
+                            <div class="info-value">{{ solicitacao.cnaes_secundarios }}</div>
+                        </div>
+                        {% endif %}
+                        <div class="info-row">
+                            <div class="info-label">Forma de Atuação</div>
+                            <div class="info-value">{{ solicitacao.get_forma_atuacao_display }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">Capital Inicial</div>
+                            <div class="info-value">R$ {{ solicitacao.capital_inicial }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Endereço -->
+        <div class="card detail-card">
+            <div class="section-header">
+                <div class="d-flex align-items-center">
+                    <div class="section-icon tertiary">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <h4 class="mb-0">Endereço</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">CEP</div>
+                            <div class="info-value">{{ solicitacao.cep }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Cidade</div>
+                            <div class="info-value">{{ solicitacao.cidade }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Estado</div>
+                            <div class="info-value">{{ solicitacao.estado }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <div class="info-label">Rua</div>
+                            <div class="info-value">{{ solicitacao.rua }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Número</div>
+                            <div class="info-value">{{ solicitacao.numero }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Bairro</div>
+                            <div class="info-value">{{ solicitacao.bairro }}</div>
+                        </div>
+                        {% if solicitacao.complemento %}
+                        <div class="info-row">
+                            <div class="info-label">Complemento</div>
+                            <div class="info-value">{{ solicitacao.complemento }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Informações da Solicitação de Serviço -->
+        <div class="card detail-card">
+            <div class="section-header">
+                <div class="d-flex align-items-center">
+                    <div class="section-icon primary">
+                        <i class="bi bi-file-earmark"></i>
+                    </div>
+                    <h4 class="mb-0">{{ solicitacao.servico.nome }}</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="info-row">
+                            <div class="info-label">Descrição do Serviço</div>
+                            <div class="info-value">{{ solicitacao.servico.descricao }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Data da Solicitação</div>
+                            <div class="info-value">{{ solicitacao.criado_em|date:"d/m/Y às H:i" }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Tempo Estimado</div>
+                            <div class="info-value">{{ solicitacao.servico.tempo_estimado }}</div>
+                        </div>
+                        {% if solicitacao.observacoes %}
+                        <div class="info-row">
+                            <div class="info-label">Observações</div>
+                            <div class="info-value">{{ solicitacao.observacoes }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <div class="highlight-box text-center">
+                            <h5 class="text-success mb-2">Valor do Serviço</h5>
+                            <div class="h3 text-success fw-bold">R$ {{ solicitacao.servico.preco }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Observações -->
+    {% if solicitacao.observacoes %}
+    <div class="card detail-card">
+        <div class="section-header">
+            <div class="d-flex align-items-center">
+                <div class="section-icon primary">
+                    <i class="bi bi-chat-text"></i>
+                </div>
+                <h4 class="mb-0">Observações</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="mb-0">{{ solicitacao.observacoes }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Botão Voltar -->
+    <div class="text-center mb-4">
+        <a href="{% url 'core:minha_conta' %}" class="btn btn-back">
+            <i class="bi bi-arrow-left me-2"></i>Voltar para Minha Conta
+        </a>
+    </div>
+</div>
+{% endblock %}

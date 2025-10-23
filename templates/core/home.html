@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Central MEI - Sua contabilidade MEI simplificada{% endblock %}
+{% block title %}Central MEI - Sua assessoria MEI simplificada{% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/comentarios-horizontal.js' %}"></script>
@@ -14,15 +14,21 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="hero-content">
-                    <h1>Sua contabilidade MEI <span class="text-warning">simplificada</span></h1>
+                    <h1>Sua assessoria MEI <span class="text-warning">simplificada</span></h1>
                     <p class="lead">Oferecemos todos os serviços que você precisa para manter seu MEI em dia. Abertura, declarações, regularização e muito mais!</p>
                     <div class="d-flex flex-wrap gap-3 mt-4">
                         <a href="{% url 'servicos:abrir_mei' %}" class="btn btn-warning btn-lg shadow" aria-label="Contratar serviço de abertura de MEI">
-                            <i class="bi bi-person-plus me-2"></i>Abrir MEI
+                            <i class="bi bi-person-plus me-2"></i>SOLICITAR ABERTURA
                         </a>
                         <a href="{% url 'servicos:declaracao_mei' %}" class="btn btn-outline-light btn-lg" aria-label="Contratar declaração anual do MEI">
-                            <i class="bi bi-file-text me-2"></i>Declaração Anual
+                            <i class="bi bi-file-text me-2"></i>DECLARAÇÃO ANUAL
                         </a>
+                    </div>
+                    
+                    <!-- Imagens de Confiança -->
+                    <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-lg-start trust-images">
+                        <img src="{% static 'img/ra1000.png' %}" alt="RA1000">
+                        <img src="{% static 'img/siteseguro.png' %}" alt="Site Seguro">
                     </div>
                 </div>
             </div>
@@ -79,8 +85,8 @@
                                 <span class="service-price">R$ 97,00</span>
                                 <small class="text-muted fw-medium">2-3 dias</small>
                             </div> -->
-                            <a href="{% url 'servicos:abrir_mei' %}" class="btn btn-primary" aria-label="Contratar abertura de MEI">
-                                Contratar Serviço
+                            <a href="{% url 'servicos:abrir_mei' %}" class="btn btn-primary" aria-label="Iniciar abertura de MEI">
+                                Iniciar
                             </a>
                         </div>
                     </div>
@@ -102,8 +108,8 @@
                                 <span class="service-price">R$ 147,00</span>
                                 <small class="text-muted fw-medium">3-5 dias</small>
                             </div> -->
-                            <a href="{% url 'servicos:regularizar_mei' %}" class="btn btn-secondary" aria-label="Contratar regularização de MEI">
-                                Contratar Serviço
+                            <a href="{% url 'servicos:regularizar_mei' %}" class="btn btn-secondary" aria-label="Iniciar regularização de MEI">
+                                Iniciar
                             </a>
                         </div>
                     </div>
@@ -125,8 +131,8 @@
                                 <span class="service-price">R$ 67,00</span>
                                 <small class="text-muted fw-medium">1-2 dias</small>
                             </div> -->
-                            <a href="{% url 'servicos:declaracao_mei' %}" class="btn btn-warning" aria-label="Contratar declaração anual MEI">
-                                Contratar Serviço
+                            <a href="{% url 'servicos:declaracao_mei' %}" class="btn btn-warning" aria-label="Iniciar declaração anual MEI">
+                                Iniciar
                             </a>
                         </div>
                     </div>
@@ -139,6 +145,59 @@
             <a href="{% url 'servicos:lista' %}" class="btn btn-outline-secondary btn-lg shadow" aria-label="Ver lista completa de serviços">
                 <i class="bi bi-grid-3x3-gap me-2"></i>Ver Todos os Serviços
             </a>
+        </div>
+    </div>
+</section>
+
+<!-- Quem pode abrir um CNPJ MEI Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Quem pode abrir um CNPJ MEI?</h2>
+            <p class="section-subtitle">Conheça os requisitos para se tornar um Microempreendedor Individual</p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card mei-requirements-card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <div class="row align-items-center">
+                            <div class="col-lg-7 mb-4 mb-lg-0">
+                                <h5 class="card-title text-primary mb-4">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Requisitos para ser MEI
+                                </h5>
+                                <ul class="list-unstyled mei-requirements-list">
+                                    <li class="mb-3">
+                                        <i class="bi bi-person-check text-primary me-3"></i>
+                                        <span>Pessoa física maior de 18 anos (ou ter entre 16 – 18 anos e/ou ser emancipado)</span>
+                                    </li>
+                                    <li class="mb-3">
+                                        <i class="bi bi-briefcase text-primary me-3"></i>
+                                        <span>Atuar com uma das atividades permitidas pelo MEI</span>
+                                    </li>
+                                    <li class="mb-3">
+                                        <i class="bi bi-currency-dollar text-primary me-3"></i>
+                                        <span>Faturamento limitado a R$ 81.000,00 por ano (receita bruta)</span>
+                                    </li>
+                                    <li class="mb-3">
+                                        <i class="bi bi-building text-primary me-3"></i>
+                                        <span>Não participar como sócio, administrador ou titular de outra empresa</span>
+                                    </li>
+                                    <li class="mb-0">
+                                        <i class="bi bi-people text-primary me-3"></i>
+                                        <span>Não ter empregado ou ter no máximo um</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="text-center">
+                                    <img src="{% static 'img/1.jpg' %}" alt="Quem pode ser MEI" class="img-fluid rounded-custom shadow-sm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -242,58 +301,20 @@
 </section>
 {% endif %}
 
-<!-- Blog Section
-{% if posts_recentes %}
+<!-- Call to Action Section -->
 <section class="py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-primary">Últimas do Blog</h2>
-            <p class="lead text-muted">Fique por dentro das novidades do mundo MEI</p>
-        </div>
-        
-        <div class="row g-4">
-            {% for post in posts_recentes %}
-            <div class="col-md-4">
-                <div class="card blog-card">
-                    {% if post.imagem %}
-                        <img src="{{ post.imagem.url }}" class="card-img-top" alt="{{ post.titulo }}">
-                    {% else %}
-                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center blog-img-placeholder">
-                            <i class="bi bi-file-text fs-1 text-muted"></i>
-                        </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ post.titulo }}</h5>
-                        <p class="card-text">{{ post.resumo }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary">Ler mais</a>
-                            <small class="text-muted">{{ post.criado_em|date:"d/m/Y" }}</small>
-                        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="attention-card">
+                    <div class="attention-card-content">
+                        <h3 class="attention-title"><strong>ATENÇÃO</strong></h3>
+                        <p class="attention-text"> 
+                            <strong>ESTE NÃO É UM SITE GOVERNAMENTAL</strong><br>
+                            O serviço prestado através do site centralgestaomei.com.br é um serviço privado e opcional. O registro do MEI pode ser feito gratuitamente no portal oficial gov.br. Aqui você conta com suporte profissional, orientação especializada e acompanhamento personalizado em cada etapa.
+                        </p>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="text-center mt-5">
-            <a href="{% url 'blog:post_list' %}" class="btn btn-outline-primary btn-lg">Ver Todos os Posts</a>
-        </div>
-    </div>
-</section>
-{% endif %} -->
-
-<!-- Call to Action Section -->
-<section class="py-5 bg-gradient-primary text-white">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h3 class="display-6 fw-bold mb-3">Atenção</h3>
-                <p class="lead mb-0"> <Strong>ESTE NÃO É UM SITE GOVERNAMENTAL</Strong> O serviço prestado através do site centralgestaomei.com.br é um serviço privado e opcional. O registro do MEI pode ser feito gratuitamente no portal oficial gov.br. Aqui você conta com suporte profissional, orientação especializada e acompanhamento personalizado em cada etapa.</p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <a href="{% url 'servicos:lista' %}" class="btn btn-warning btn-lg shadow" aria-label="Começar a usar os serviços da Central MEI">
-                    <i class="bi bi-rocket-takeoff me-2"></i>Começar Agora
-                </a>
             </div>
         </div>
     </div>

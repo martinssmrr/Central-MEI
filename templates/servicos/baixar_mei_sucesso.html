@@ -1,0 +1,451 @@
+{% extends 'base.html' %}
+
+{% block title %}Baixa MEI Solicitada com Sucesso - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary: #04acec;
+        --color-secondary: #1c943c;
+        --color-tertiary: #fccc2b;
+        --color-quaternary: #026d96;
+    }
+    
+    .bg-gradient-success {
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+    }
+    
+    .bg-gradient-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        background: linear-gradient(135deg, var(--color-quaternary), var(--color-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .btn-secondary-custom {
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary-custom:hover {
+        background: linear-gradient(135deg, var(--color-tertiary), var(--color-secondary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(28, 148, 60, 0.3);
+        color: white;
+    }
+    
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card-custom:hover {
+        transform: translateY(-5px);
+    }
+    
+    .icon-success {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin: 0 auto 2rem;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(28, 148, 60, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(28, 148, 60, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(28, 148, 60, 0);
+        }
+    }
+    
+    .protocolo-box {
+        background: linear-gradient(45deg, rgba(28, 148, 60, 0.1), rgba(252, 204, 43, 0.1));
+        border: 2px dashed var(--color-secondary);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .protocolo-numero {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--color-secondary);
+        letter-spacing: 2px;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .step-completed {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin: 0 auto 0.5rem;
+    }
+    
+    .dados-resumo {
+        background: linear-gradient(45deg, rgba(4, 172, 236, 0.1), rgba(252, 204, 43, 0.1));
+        border-left: 4px solid var(--color-primary);
+    }
+    
+    .whatsapp-btn {
+        background: #25d366;
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .whatsapp-btn:hover {
+        background: #20c157;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(37, 211, 102, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .email-btn {
+        background: #ea4335;
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .email-btn:hover {
+        background: #d93025;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(234, 67, 53, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Success Header Section -->
+<section class="py-5 bg-gradient-success text-white">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <div class="icon-success">
+                    <i class="bi bi-check-circle-fill h1 mb-0"></i>
+                </div>
+                <h1 class="display-4 fw-bold mb-3">Baixa MEI Solicitada com Sucesso!</h1>
+                <p class="lead mb-4">Sua solicitação de baixa do MEI foi recebida e está sendo processada</p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock me-2"></i>
+                        <span>Processamento em até 5 dias úteis</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-envelope me-2"></i>
+                        <span>Confirmação por e-mail</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-headset me-2"></i>
+                        <span>Suporte disponível</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Content Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}" class="text-decoration-none">Início</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'servicos:lista' %}" class="text-decoration-none">Serviços</a></li>
+                <li class="breadcrumb-item">Baixar MEI</li>
+                <li class="breadcrumb-item active" aria-current="page">Sucesso</li>
+            </ol>
+        </nav>
+
+        <!-- Indicador de Progresso Completo -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card card-custom">
+                    <div class="card-body p-4">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="step-completed">
+                                    <i class="bi bi-check"></i>
+                                </div>
+                                <h6 class="text-success fw-bold">Dados de Contato</h6>
+                                <small class="text-muted">Concluído</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="step-completed">
+                                    <i class="bi bi-check"></i>
+                                </div>
+                                <h6 class="text-success fw-bold">Dados do MEI</h6>
+                                <small class="text-muted">Concluído</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="step-completed">
+                                    <i class="bi bi-check"></i>
+                                </div>
+                                <h6 class="text-success fw-bold">Processamento</h6>
+                                <small class="text-muted">Em andamento</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Barra de Progresso Completa -->
+                        <div class="progress mt-4" style="height: 8px;">
+                            <div class="progress-bar bg-success" 
+                                 role="progressbar" 
+                                 style="width: 100%;" 
+                                 aria-valuenow="100" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Informações do Protocolo -->
+            <div class="col-lg-8">
+                <div class="card card-custom">
+                    <div class="card-header bg-gradient-custom text-white border-0 p-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-file-earmark-check text-white me-3" style="font-size: 2rem;"></i>
+                            <div>
+                                <h3 class="h4 text-white mb-1">Protocolo de Atendimento</h3>
+                                <p class="text-white-50 mb-0">Guarde este número para acompanhar sua solicitação</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="protocolo-box">
+                            <i class="bi bi-qr-code text-success h3 mb-3"></i>
+                            <h4 class="text-success mb-2">Número do Protocolo</h4>
+                            <div class="protocolo-numero">{{ protocolo }}</div>
+                            <p class="text-muted mb-3">Anote ou tire uma foto deste número</p>
+                            <button class="btn btn-outline-success" onclick="copiarProtocolo()">
+                                <i class="bi bi-clipboard me-2"></i>Copiar Protocolo
+                            </button>
+                        </div>
+
+                        <!-- Próximos Passos -->
+                        <h5 class="text-primary mb-3">
+                            <i class="bi bi-list-check me-2"></i>Próximos Passos
+                        </h5>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start p-3 bg-light rounded">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-size: 0.8rem;">1</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Confirmação por E-mail</h6>
+                                        <small class="text-muted">Você receberá um e-mail de confirmação em alguns minutos</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start p-3 bg-light rounded">
+                                    <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-size: 0.8rem;">2</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Análise Documental</h6>
+                                        <small class="text-muted">Nossa equipe irá analisar seus documentos</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start p-3 bg-light rounded">
+                                    <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-size: 0.8rem;">3</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Processamento</h6>
+                                        <small class="text-muted">Daremos entrada na baixa junto aos órgãos competentes</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start p-3 bg-light rounded">
+                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px; font-size: 0.8rem;">4</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Finalização</h6>
+                                        <small class="text-muted">Você receberá todos os documentos por e-mail</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4 pt-3 border-top">
+                            <a href="{% url 'core:home' %}" class="btn btn-custom">
+                                <i class="bi bi-house me-2"></i>
+                                Voltar ao Início
+                            </a>
+                            <a href="{% url 'servicos:lista' %}" class="btn btn-secondary-custom">
+                                <i class="bi bi-grid me-2"></i>
+                                Outros Serviços
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações Adicionais -->
+            <div class="col-lg-4">
+                <!-- Resumo da Solicitação -->
+                <div class="card card-custom mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="text-primary mb-3">
+                            <i class="bi bi-file-earmark-text me-2"></i>Resumo da Solicitação
+                        </h5>
+                        <div class="alert dados-resumo border-0 mb-3">
+                            <div class="mb-2">
+                                <strong>Serviço:</strong><br>
+                                <span class="text-muted">Baixa do MEI</span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>Data:</strong><br>
+                                <span class="text-muted">{{ data_solicitacao|date:"d/m/Y às H:i" }}</span>
+                            </div>
+                            <div class="mb-2">
+                                <strong>CNPJ:</strong><br>
+                                <span class="text-muted">{{ solicitacao.cnpj_mei }}</span>
+                            </div>
+                            <div class="mb-0">
+                                <strong>Status:</strong><br>
+                                <span class="badge bg-warning">Em Processamento</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contato e Suporte -->
+                <div class="card card-custom">
+                    <div class="card-header bg-gradient-custom text-white border-0 p-4">
+                        <div class="text-center">
+                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                                <i class="bi bi-headset text-white" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Precisa de Ajuda?</h4>
+                            <p class="mb-0 opacity-90">Nossa equipe está pronta para atender</p>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <h6 class="text-secondary mb-3">Entre em contato conosco:</h6>
+                        
+                        <div class="d-grid gap-3">
+                            <a href="https://wa.me/5511999999999?text=Olá! Tenho o protocolo {{ protocolo }} e preciso de ajuda com minha Baixa MEI." 
+                               class="whatsapp-btn text-center text-decoration-none" 
+                               target="_blank"
+                               rel="noopener">
+                                <i class="bi bi-whatsapp me-2"></i>
+                                WhatsApp
+                            </a>
+                            
+                            <a href="mailto:contato@centralmei.com.br?subject=Protocolo {{ protocolo }} - Baixa MEI&body=Olá! Tenho o protocolo {{ protocolo }} e preciso de ajuda com minha Baixa MEI." 
+                               class="email-btn text-center text-decoration-none">
+                                <i class="bi bi-envelope me-2"></i>
+                                E-mail
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="text-muted mb-2">Horário de Atendimento:</h6>
+                            <p class="mb-1 small">Segunda a Sexta: 8h às 18h</p>
+                            <p class="mb-0 small">Sábado: 8h às 12h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function copiarProtocolo() {
+    const protocolo = "{{ protocolo }}";
+    navigator.clipboard.writeText(protocolo).then(function() {
+        // Mudamos o texto do botão temporariamente
+        const btn = event.target.closest('button');
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check me-2"></i>Copiado!';
+        btn.classList.remove('btn-outline-success');
+        btn.classList.add('btn-success');
+        
+        setTimeout(function() {
+            btn.innerHTML = textoOriginal;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-success');
+        }, 2000);
+    }).catch(function() {
+        alert('Protocolo: ' + protocolo);
+    });
+}
+
+// Animação de entrada
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.card-custom');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 150);
+    });
+});
+</script>
+{% endblock %}

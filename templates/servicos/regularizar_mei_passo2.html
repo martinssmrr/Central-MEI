@@ -1,0 +1,550 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Regularizar MEI - Passo 2: Dados do MEI - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary: #04acec;
+        --color-secondary: #1c943c;
+        --color-tertiary: #fccc2b;
+        --color-quaternary: #026d96;
+    }
+    
+    .bg-gradient-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        background: linear-gradient(135deg, var(--color-quaternary), var(--color-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(4, 172, 236, 0.25);
+    }
+    
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card-custom:hover {
+        transform: translateY(-5px);
+    }
+    
+    .icon-step {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem;
+    }
+    
+    .step-indicator {
+        background: var(--color-tertiary);
+        color: var(--color-quaternary);
+        font-weight: bold;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+    
+    .card-header-icon {
+        font-size: 2rem;
+    }
+    
+    .list-group-item:hover {
+        background-color: rgba(4, 172, 236, 0.05);
+        transition: all 0.2s ease;
+    }
+    
+    .progress-step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin: 0 auto 0.5rem;
+    }
+    
+    .progress-step.active {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        color: white;
+    }
+    
+    .progress-step.completed {
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        color: white;
+    }
+    
+    .progress-step.pending {
+        background: #e9ecef;
+        color: #6c757d;
+    }
+    
+    .card-info-highlight {
+        background: linear-gradient(45deg, rgba(4, 172, 236, 0.1), rgba(252, 204, 43, 0.1));
+        border-left: 4px solid var(--color-primary);
+    }
+    
+    .section-divider {
+        border-bottom: 2px solid #e9ecef;
+        margin: 2rem 0 1.5rem;
+        padding-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-gradient-custom text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="step-indicator mb-3">ETAPA 2 DE 2</div>
+                <h1 class="display-4 fw-bold mb-3">Regularização de MEI</h1>
+                <p class="lead mb-4">Passo 2: Dados do MEI - Agora precisamos dos dados específicos do seu MEI</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <span>100% Seguro</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock me-2"></i>
+                        <span>Processo Rápido</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-headset me-2"></i>
+                        <span>Suporte Completo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="icon-step">
+                    <i class="bi bi-building"></i>
+                </div>
+                <h5>Dados do MEI</h5>
+                <p class="mb-0">Última etapa</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Form Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Progress Steps -->
+                <div class="row text-center mb-4">
+                    <div class="col-4">
+                        <div class="progress-step completed">1</div>
+                        <small class="text-success fw-bold">Dados de Contato</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="progress-step active">2</div>
+                        <small class="text-primary fw-bold">Dados do MEI</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="progress-step pending">3</div>
+                        <small class="text-muted">Confirmação</small>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress mb-5" style="height: 8px;">
+                    <div class="progress-bar" 
+                         role="progressbar" 
+                         style="width: 66.66%;" 
+                         aria-valuenow="66.66" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100"
+                         aria-label="Progresso da regularização MEI">
+                    </div>
+                </div>
+
+                <!-- Data Confirmation Card -->
+                {% if dados_passo1 %}
+                <div class="card border-success mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Dados de Contato Confirmados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Nome:</strong><br>
+                                <span class="text-muted">{{ dados_passo1.nome_completo }}</span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>E-mail:</strong><br>
+                                <span class="text-muted">{{ dados_passo1.email }}</span>
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Telefone:</strong><br>
+                                <span class="text-muted">{{ dados_passo1.telefone }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Main Form Card -->
+                <div class="card card-custom">
+                    <div class="card-header bg-gradient-custom text-white p-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-building card-header-icon me-3"></i>
+                            <div>
+                                <h3 class="h4 text-white mb-1">Passo 2: Dados do MEI</h3>
+                                <p class="text-white-50 mb-0">Informações específicas do seu MEI e endereço</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Seção: Dados Pessoais -->
+                            <h5 class="section-divider">
+                                <i class="bi bi-person-circle me-2 text-primary"></i>
+                                Dados Pessoais
+                            </h5>
+                            
+                            <div class="row g-3 mb-4">
+                                <!-- CPF -->
+                                <div class="col-md-6">
+                                    <label for="{{ form.cpf.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-credit-card me-1 text-primary"></i>{{ form.cpf.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.cpf.id_for_label }}"
+                                           name="{{ form.cpf.html_name }}"
+                                           placeholder="000.000.000-00"
+                                           value="{{ form.cpf.value|default:'' }}"
+                                           aria-label="CPF"
+                                           required>
+                                    {% if form.cpf.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.cpf.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- RG -->
+                                <div class="col-md-6">
+                                    <label for="{{ form.rg.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-card-text me-1 text-primary"></i>{{ form.rg.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.rg.id_for_label }}"
+                                           name="{{ form.rg.html_name }}"
+                                           placeholder="12.345.678-9"
+                                           value="{{ form.rg.value|default:'' }}"
+                                           aria-label="RG"
+                                           required>
+                                    {% if form.rg.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.rg.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Seção: Dados do MEI -->
+                            <h5 class="section-divider">
+                                <i class="bi bi-shop me-2 text-primary"></i>
+                                Dados do MEI
+                            </h5>
+
+                            <div class="row g-3 mb-4">
+                                <!-- CNPJ -->
+                                <div class="col-12">
+                                    <label for="{{ form.cnpj.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-building me-1 text-primary"></i>{{ form.cnpj.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.cnpj.id_for_label }}"
+                                           name="{{ form.cnpj.html_name }}"
+                                           placeholder="00.000.000/0000-00"
+                                           value="{{ form.cnpj.value|default:'' }}"
+                                           aria-label="CNPJ"
+                                           required>
+                                    {% if form.cnpj.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.cnpj.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Seção: Endereço -->
+                            <h5 class="section-divider">
+                                <i class="bi bi-geo-alt me-2 text-primary"></i>
+                                Endereço Completo
+                            </h5>
+
+                            <div class="row g-3">
+                                <!-- CEP e Rua -->
+                                <div class="col-md-3">
+                                    <label for="{{ form.cep.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-mailbox me-1 text-primary"></i>{{ form.cep.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.cep.id_for_label }}"
+                                           name="{{ form.cep.html_name }}"
+                                           placeholder="00000-000"
+                                           value="{{ form.cep.value|default:'' }}"
+                                           aria-label="CEP"
+                                           required>
+                                    {% if form.cep.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.cep.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-9">
+                                    <label for="{{ form.rua.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-signpost me-1 text-primary"></i>{{ form.rua.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.rua.id_for_label }}"
+                                           name="{{ form.rua.html_name }}"
+                                           placeholder="Nome da rua"
+                                           value="{{ form.rua.value|default:'' }}"
+                                           aria-label="Rua"
+                                           required>
+                                    {% if form.rua.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.rua.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Número e Complemento -->
+                                <div class="col-md-3">
+                                    <label for="{{ form.numero.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-hash me-1 text-primary"></i>{{ form.numero.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.numero.id_for_label }}"
+                                           name="{{ form.numero.html_name }}"
+                                           placeholder="123"
+                                           value="{{ form.numero.value|default:'' }}"
+                                           aria-label="Número"
+                                           required>
+                                    {% if form.numero.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.numero.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="{{ form.complemento.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-plus-circle me-1 text-muted"></i>{{ form.complemento.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.complemento.id_for_label }}"
+                                           name="{{ form.complemento.html_name }}"
+                                           placeholder="Apto, Bloco, etc."
+                                           value="{{ form.complemento.value|default:'' }}"
+                                           aria-label="Complemento">
+                                    {% if form.complemento.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.complemento.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                    <small class="text-muted">Opcional</small>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <label for="{{ form.bairro.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-map me-1 text-primary"></i>{{ form.bairro.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.bairro.id_for_label }}"
+                                           name="{{ form.bairro.html_name }}"
+                                           placeholder="Nome do bairro"
+                                           value="{{ form.bairro.value|default:'' }}"
+                                           aria-label="Bairro"
+                                           required>
+                                    {% if form.bairro.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.bairro.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Cidade e Estado -->
+                                <div class="col-md-7">
+                                    <label for="{{ form.cidade.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-buildings me-1 text-primary"></i>{{ form.cidade.label }}
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="{{ form.cidade.id_for_label }}"
+                                           name="{{ form.cidade.html_name }}"
+                                           placeholder="Nome da cidade"
+                                           value="{{ form.cidade.value|default:'' }}"
+                                           aria-label="Cidade"
+                                           required>
+                                    {% if form.cidade.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.cidade.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-5">
+                                    <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-flag me-1 text-primary"></i>{{ form.estado.label }}
+                                    </label>
+                                    <select class="form-control form-control-lg" 
+                                            id="{{ form.estado.id_for_label }}"
+                                            name="{{ form.estado.html_name }}"
+                                            aria-label="Estado"
+                                            required>
+                                        <option value="">Selecione o estado</option>
+                                        <option value="AC" {% if form.estado.value == 'AC' %}selected{% endif %}>Acre</option>
+                                        <option value="AL" {% if form.estado.value == 'AL' %}selected{% endif %}>Alagoas</option>
+                                        <option value="AP" {% if form.estado.value == 'AP' %}selected{% endif %}>Amapá</option>
+                                        <option value="AM" {% if form.estado.value == 'AM' %}selected{% endif %}>Amazonas</option>
+                                        <option value="BA" {% if form.estado.value == 'BA' %}selected{% endif %}>Bahia</option>
+                                        <option value="CE" {% if form.estado.value == 'CE' %}selected{% endif %}>Ceará</option>
+                                        <option value="DF" {% if form.estado.value == 'DF' %}selected{% endif %}>Distrito Federal</option>
+                                        <option value="ES" {% if form.estado.value == 'ES' %}selected{% endif %}>Espírito Santo</option>
+                                        <option value="GO" {% if form.estado.value == 'GO' %}selected{% endif %}>Goiás</option>
+                                        <option value="MA" {% if form.estado.value == 'MA' %}selected{% endif %}>Maranhão</option>
+                                        <option value="MT" {% if form.estado.value == 'MT' %}selected{% endif %}>Mato Grosso</option>
+                                        <option value="MS" {% if form.estado.value == 'MS' %}selected{% endif %}>Mato Grosso do Sul</option>
+                                        <option value="MG" {% if form.estado.value == 'MG' %}selected{% endif %}>Minas Gerais</option>
+                                        <option value="PA" {% if form.estado.value == 'PA' %}selected{% endif %}>Pará</option>
+                                        <option value="PB" {% if form.estado.value == 'PB' %}selected{% endif %}>Paraíba</option>
+                                        <option value="PR" {% if form.estado.value == 'PR' %}selected{% endif %}>Paraná</option>
+                                        <option value="PE" {% if form.estado.value == 'PE' %}selected{% endif %}>Pernambuco</option>
+                                        <option value="PI" {% if form.estado.value == 'PI' %}selected{% endif %}>Piauí</option>
+                                        <option value="RJ" {% if form.estado.value == 'RJ' %}selected{% endif %}>Rio de Janeiro</option>
+                                        <option value="RN" {% if form.estado.value == 'RN' %}selected{% endif %}>Rio Grande do Norte</option>
+                                        <option value="RS" {% if form.estado.value == 'RS' %}selected{% endif %}>Rio Grande do Sul</option>
+                                        <option value="RO" {% if form.estado.value == 'RO' %}selected{% endif %}>Rondônia</option>
+                                        <option value="RR" {% if form.estado.value == 'RR' %}selected{% endif %}>Roraima</option>
+                                        <option value="SC" {% if form.estado.value == 'SC' %}selected{% endif %}>Santa Catarina</option>
+                                        <option value="SP" {% if form.estado.value == 'SP' %}selected{% endif %}>São Paulo</option>
+                                        <option value="SE" {% if form.estado.value == 'SE' %}selected{% endif %}>Sergipe</option>
+                                        <option value="TO" {% if form.estado.value == 'TO' %}selected{% endif %}>Tocantins</option>
+                                    </select>
+                                    {% if form.estado.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.estado.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Observações -->
+                                <div class="col-12 mt-4">
+                                    <label for="{{ form.observacoes.id_for_label }}" class="form-label fw-bold">
+                                        <i class="bi bi-chat-text me-1 text-primary"></i>{{ form.observacoes.label }}
+                                    </label>
+                                    <textarea class="form-control" 
+                                              id="{{ form.observacoes.id_for_label }}"
+                                              name="{{ form.observacoes.html_name }}"
+                                              rows="3"
+                                              placeholder="Informe qualquer informação adicional sobre sua situação..."
+                                              aria-label="Observações">{{ form.observacoes.value|default:'' }}</textarea>
+                                    {% if form.observacoes.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.observacoes.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                    <small class="text-muted">
+                                        Informe qualquer informação adicional sobre sua situação (opcional)
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-between mt-5">
+                                <a href="{% url 'servicos:regularizar_mei_passo_1' %}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="bi bi-arrow-left me-2"></i>Passo Anterior
+                                </a>
+                                <button type="submit" class="btn btn-custom btn-lg">
+                                    Enviar Solicitação
+                                    <i class="bi bi-check-circle ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Security Benefits -->
+                <div class="row mt-5">
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="card border-0 h-100">
+                            <div class="card-body">
+                                <i class="bi bi-lock text-success display-6 mb-3"></i>
+                                <h6 class="fw-bold">100% Seguro</h6>
+                                <small class="text-muted">Dados protegidos com criptografia SSL</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="card border-0 h-100">
+                            <div class="card-body">
+                                <i class="bi bi-award text-warning display-6 mb-3"></i>
+                                <h6 class="fw-bold">Regularização Completa</h6>
+                                <small class="text-muted">Cuidamos de toda a documentação</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="card border-0 h-100">
+                            <div class="card-body">
+                                <i class="bi bi-people text-primary display-6 mb-3"></i>
+                                <h6 class="fw-bold">Suporte Especializado</h6>
+                                <small class="text-muted">Contadores experientes em MEI</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

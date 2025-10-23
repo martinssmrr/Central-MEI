@@ -142,3 +142,489 @@ class SolicitacaoMEI(models.Model):
         verbose_name = 'Solicitação de Abertura MEI'
         verbose_name_plural = 'Solicitações de Abertura MEI'
         ordering = ['-criado_em']
+
+
+class SolicitacaoBaixaMEI(models.Model):
+    """
+    Modelo para solicitações de baixa do MEI.
+    
+    Armazena todas as informações necessárias para processar
+    a solicitação de baixa de um Microempreendedor Individual.
+    """
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('processando', 'Em Processamento'),
+        ('concluido', 'Concluído'),
+        ('cancelado', 'Cancelado'),
+    ]
+    
+    ESTADO_CHOICES = [
+        ('AC', 'Acre'),
+        ('AL', 'Alagoas'),
+        ('AP', 'Amapá'),
+        ('AM', 'Amazonas'),
+        ('BA', 'Bahia'),
+        ('CE', 'Ceará'),
+        ('DF', 'Distrito Federal'),
+        ('ES', 'Espírito Santo'),
+        ('GO', 'Goiás'),
+        ('MA', 'Maranhão'),
+        ('MT', 'Mato Grosso'),
+        ('MS', 'Mato Grosso do Sul'),
+        ('MG', 'Minas Gerais'),
+        ('PA', 'Pará'),
+        ('PB', 'Paraíba'),
+        ('PR', 'Paraná'),
+        ('PE', 'Pernambuco'),
+        ('PI', 'Piauí'),
+        ('RJ', 'Rio de Janeiro'),
+        ('RN', 'Rio Grande do Norte'),
+        ('RS', 'Rio Grande do Sul'),
+        ('RO', 'Rondônia'),
+        ('RR', 'Roraima'),
+        ('SC', 'Santa Catarina'),
+        ('SP', 'São Paulo'),
+        ('SE', 'Sergipe'),
+        ('TO', 'Tocantins'),
+    ]
+    
+    # Dados do MEI
+    cnpj_mei = models.CharField(
+        max_length=18,
+        verbose_name='CNPJ do MEI',
+        help_text='Formato: 00.000.000/0001-00'
+    )
+    nome_fantasia = models.CharField(
+        max_length=200,
+        verbose_name='Nome Fantasia',
+        help_text='Razão social ou nome fantasia do MEI'
+    )
+    
+    # Dados do Titular
+    nome_completo = models.CharField(
+        max_length=200,
+        verbose_name='Nome Completo do Titular'
+    )
+    cpf = models.CharField(
+        max_length=14,
+        verbose_name='CPF do Titular',
+        help_text='Formato: 000.000.000-00'
+    )
+    rg = models.CharField(
+        max_length=15,
+        verbose_name='RG'
+    )
+    orgao_emissor = models.CharField(
+        max_length=10,
+        verbose_name='Órgão Emissor',
+        help_text='Ex: SSP, DETRAN, PC'
+    )
+    data_nascimento = models.DateField(
+        verbose_name='Data de Nascimento'
+    )
+    nome_mae = models.CharField(
+        max_length=200,
+        verbose_name='Nome Completo da Mãe'
+    )
+    
+    # Contato
+    email = models.EmailField(
+        verbose_name='E-mail'
+    )
+    telefone = models.CharField(
+        max_length=15,
+        verbose_name='Telefone',
+        help_text='Formato: (00) 00000-0000'
+    )
+    
+    # Endereço Comercial
+    cep = models.CharField(
+        max_length=9,
+        verbose_name='CEP',
+        help_text='Formato: 00000-000'
+    )
+    rua = models.CharField(
+        max_length=200,
+        verbose_name='Rua/Logradouro'
+    )
+    numero = models.CharField(
+        max_length=10,
+        verbose_name='Número'
+    )
+    complemento = models.CharField(
+        max_length=100,
+        verbose_name='Complemento',
+        blank=True,
+        help_text='Apartamento, sala, bloco, etc. (opcional)'
+    )
+    bairro = models.CharField(
+        max_length=100,
+        verbose_name='Bairro'
+    )
+    cidade = models.CharField(
+        max_length=100,
+        verbose_name='Cidade'
+    )
+    estado = models.CharField(
+        max_length=2,
+        choices=ESTADO_CHOICES,
+        verbose_name='Estado'
+    )
+    
+    # Controle
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Usuário Solicitante'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pendente',
+        verbose_name='Status'
+    )
+    observacoes = models.TextField(
+        blank=True,
+        verbose_name='Observações',
+        help_text='Informações adicionais sobre a solicitação'
+    )
+    criado_em = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Data da Solicitação'
+    )
+    atualizado_em = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Última Atualização'
+    )
+    
+    class Meta:
+        verbose_name = 'Solicitação de Baixa MEI'
+        verbose_name_plural = 'Solicitações de Baixa MEI'
+        ordering = ['-criado_em']
+    
+    def __str__(self):
+        return f"Baixa MEI - {self.nome_completo} ({self.cnpj_mei})"
+    
+    def get_status_display_class(self):
+        """Retorna classe CSS baseada no status."""
+        status_classes = {
+            'pendente': 'status-pendente',
+            'processando': 'status-processando',
+            'concluido': 'status-concluido',
+            'cancelado': 'status-cancelado',
+        }
+        return status_classes.get(self.status, 'status-pendente')
+
+
+class SolicitacaoDeclaracaoMEI(models.Model):
+    """
+    Modelo para solicitações de Declaração Anual MEI (DASN-SIMEI).
+    
+    Armazena todas as informações necessárias para processar
+    a declaração anual do Microempreendedor Individual.
+    """
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('processando', 'Em Processamento'),
+        ('concluido', 'Concluído'),
+        ('cancelado', 'Cancelado'),
+    ]
+    
+    ESTADO_CHOICES = [
+        ('AC', 'Acre'),
+        ('AL', 'Alagoas'),
+        ('AP', 'Amapá'),
+        ('AM', 'Amazonas'),
+        ('BA', 'Bahia'),
+        ('CE', 'Ceará'),
+        ('DF', 'Distrito Federal'),
+        ('ES', 'Espírito Santo'),
+        ('GO', 'Goiás'),
+        ('MA', 'Maranhão'),
+        ('MT', 'Mato Grosso'),
+        ('MS', 'Mato Grosso do Sul'),
+        ('MG', 'Minas Gerais'),
+        ('PA', 'Pará'),
+        ('PB', 'Paraíba'),
+        ('PR', 'Paraná'),
+        ('PE', 'Pernambuco'),
+        ('PI', 'Piauí'),
+        ('RJ', 'Rio de Janeiro'),
+        ('RN', 'Rio Grande do Norte'),
+        ('RS', 'Rio Grande do Sul'),
+        ('RO', 'Rondônia'),
+        ('RR', 'Roraima'),
+        ('SC', 'Santa Catarina'),
+        ('SP', 'São Paulo'),
+        ('SE', 'Sergipe'),
+        ('TO', 'Tocantins'),
+    ]
+    
+    # Dados de Contato (Passo 1)
+    nome_completo = models.CharField(
+        max_length=200,
+        verbose_name='Nome Completo'
+    )
+    email = models.EmailField(
+        verbose_name='E-mail'
+    )
+    telefone = models.CharField(
+        max_length=15,
+        verbose_name='Telefone',
+        help_text='Formato: (00) 00000-0000'
+    )
+    
+    # Dados do MEI (Passo 2)
+    cnpj = models.CharField(
+        max_length=18,
+        verbose_name='CNPJ do MEI',
+        help_text='Formato: 00.000.000/0001-00'
+    )
+    cpf = models.CharField(
+        max_length=14,
+        verbose_name='CPF',
+        help_text='Formato: 000.000.000-00'
+    )
+    
+    # Endereço
+    cep = models.CharField(
+        max_length=9,
+        verbose_name='CEP',
+        help_text='Formato: 00000-000'
+    )
+    rua = models.CharField(
+        max_length=200,
+        verbose_name='Rua/Logradouro'
+    )
+    numero = models.CharField(
+        max_length=10,
+        verbose_name='Número'
+    )
+    complemento = models.CharField(
+        max_length=100,
+        verbose_name='Complemento',
+        blank=True,
+        help_text='Apartamento, sala, bloco, etc. (opcional)'
+    )
+    bairro = models.CharField(
+        max_length=100,
+        verbose_name='Bairro'
+    )
+    cidade = models.CharField(
+        max_length=100,
+        verbose_name='Cidade'
+    )
+    estado = models.CharField(
+        max_length=2,
+        choices=ESTADO_CHOICES,
+        verbose_name='Estado'
+    )
+    
+    # Controle
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Usuário Solicitante'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pendente',
+        verbose_name='Status'
+    )
+    valor_servico = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=67.00,
+        help_text="Valor cobrado pelo serviço de declaração MEI"
+    )
+    observacoes = models.TextField(
+        blank=True,
+        verbose_name='Observações',
+        help_text='Informações adicionais sobre a solicitação'
+    )
+    criado_em = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Data da Solicitação'
+    )
+    atualizado_em = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Última Atualização'
+    )
+    
+    class Meta:
+        verbose_name = 'Solicitação de Declaração MEI'
+        verbose_name_plural = 'Solicitações de Declaração MEI'
+        ordering = ['-criado_em']
+    
+    def __str__(self):
+        return f"Declaração MEI - {self.nome_completo} ({self.cnpj})"
+    
+    def get_status_display_class(self):
+        """Retorna classe CSS baseada no status."""
+        status_classes = {
+            'pendente': 'status-pendente',
+            'processando': 'status-processando',
+            'concluido': 'status-concluido',
+            'cancelado': 'status-cancelado',
+        }
+        return status_classes.get(self.status, 'status-pendente')
+
+
+class RegularizacaoMEI(models.Model):
+    """
+    Modelo para solicitações de regularização do MEI.
+    
+    Armazena todas as informações necessárias para processar
+    a regularização de um Microempreendedor Individual.
+    """
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('processando', 'Em Processamento'),
+        ('concluido', 'Concluído'),
+        ('cancelado', 'Cancelado'),
+    ]
+    
+    ESTADO_CHOICES = [
+        ('AC', 'Acre'),
+        ('AL', 'Alagoas'),
+        ('AP', 'Amapá'),
+        ('AM', 'Amazonas'),
+        ('BA', 'Bahia'),
+        ('CE', 'Ceará'),
+        ('DF', 'Distrito Federal'),
+        ('ES', 'Espírito Santo'),
+        ('GO', 'Goiás'),
+        ('MA', 'Maranhão'),
+        ('MT', 'Mato Grosso'),
+        ('MS', 'Mato Grosso do Sul'),
+        ('MG', 'Minas Gerais'),
+        ('PA', 'Pará'),
+        ('PB', 'Paraíba'),
+        ('PR', 'Paraná'),
+        ('PE', 'Pernambuco'),
+        ('PI', 'Piauí'),
+        ('RJ', 'Rio de Janeiro'),
+        ('RN', 'Rio Grande do Norte'),
+        ('RS', 'Rio Grande do Sul'),
+        ('RO', 'Rondônia'),
+        ('RR', 'Roraima'),
+        ('SC', 'Santa Catarina'),
+        ('SP', 'São Paulo'),
+        ('SE', 'Sergipe'),
+        ('TO', 'Tocantins'),
+    ]
+    
+    # Dados de Contato (Passo 1)
+    nome_completo = models.CharField(
+        max_length=200,
+        verbose_name='Nome Completo'
+    )
+    email = models.EmailField(
+        verbose_name='E-mail'
+    )
+    telefone = models.CharField(
+        max_length=15,
+        verbose_name='Telefone',
+        help_text='Formato: (00) 00000-0000'
+    )
+    
+    # Dados do MEI (Passo 2)
+    cpf = models.CharField(
+        max_length=14,
+        verbose_name='CPF',
+        help_text='Formato: 000.000.000-00'
+    )
+    rg = models.CharField(
+        max_length=15,
+        verbose_name='RG'
+    )
+    cnpj = models.CharField(
+        max_length=18,
+        verbose_name='CNPJ do MEI',
+        help_text='Formato: 00.000.000/0001-00'
+    )
+    
+    # Endereço
+    cep = models.CharField(
+        max_length=9,
+        verbose_name='CEP',
+        help_text='Formato: 00000-000'
+    )
+    rua = models.CharField(
+        max_length=200,
+        verbose_name='Rua/Logradouro'
+    )
+    numero = models.CharField(
+        max_length=10,
+        verbose_name='Número'
+    )
+    complemento = models.CharField(
+        max_length=100,
+        verbose_name='Complemento',
+        blank=True,
+        help_text='Apartamento, sala, bloco, etc. (opcional)'
+    )
+    bairro = models.CharField(
+        max_length=100,
+        verbose_name='Bairro'
+    )
+    cidade = models.CharField(
+        max_length=100,
+        verbose_name='Cidade'
+    )
+    estado = models.CharField(
+        max_length=2,
+        choices=ESTADO_CHOICES,
+        verbose_name='Estado'
+    )
+    
+    # Controle
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Usuário Solicitante'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pendente',
+        verbose_name='Status'
+    )
+    observacoes = models.TextField(
+        blank=True,
+        verbose_name='Observações',
+        help_text='Informações adicionais sobre a regularização'
+    )
+    criado_em = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Data da Solicitação'
+    )
+    atualizado_em = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Última Atualização'
+    )
+    
+    class Meta:
+        verbose_name = 'Regularização MEI'
+        verbose_name_plural = 'Regularizações MEI'
+        ordering = ['-criado_em']
+    
+    def __str__(self):
+        return f"Regularização MEI - {self.nome_completo} ({self.cnpj})"
+    
+    def get_status_display_class(self):
+        """Retorna classe CSS baseada no status."""
+        status_classes = {
+            'pendente': 'status-pendente',
+            'processando': 'status-processando',
+            'concluido': 'status-concluido',
+            'cancelado': 'status-cancelado',
+        }
+        return status_classes.get(self.status, 'status-pendente')

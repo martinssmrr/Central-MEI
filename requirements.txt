@@ -1,5 +1,54 @@
-Django==4.2.7
-Pillow==10.0.1
-django-crispy-forms==2.1
-crispy-bootstrap5==0.7
+# =============================================================================
+# CENTRAL MEI - DEPENDÊNCIAS PYTHON
+# =============================================================================
+
+# Core Django
+Django==5.2.3
+
+# Formulários e UI
+django-crispy-forms==2.3
+crispy-bootstrap5==2024.2
+
+# Gerenciamento de variáveis de ambiente
+python-decouple==3.8
+
+# Processamento de imagens
+Pillow==10.4.0
+
+# Pagamentos
 mercadopago==2.2.1
+
+# Banco de dados (descomente conforme necessário)
+# PostgreSQL
+# psycopg2-binary==2.9.9
+
+# MySQL
+# mysqlclient==2.2.4
+
+# Desenvolvimento e Debug (apenas em desenvolvimento)
+# django-debug-toolbar==4.4.6
+
+# Produção (descomente para produção)
+# gunicorn==21.2.0
+# whitenoise==6.6.0
+
+# Cache e Redis (para produção)
+# redis==5.0.8
+# django-redis==5.4.0
+
+# AWS S3 (para arquivos estáticos em produção)
+# boto3==1.34.162
+# django-storages==1.14.4
+
+# Monitoramento de erros (opcional)
+# sentry-sdk[django]==2.12.0
+
+# Testes
+# pytest==8.3.2
+# pytest-django==4.8.0
+# coverage==7.6.1
+
+# Linting e formatação (desenvolvimento)
+# black==24.8.0
+# flake8==7.1.1
+# isort==5.13.2

@@ -12,7 +12,7 @@ from django.utils import timezone
 from decimal import Decimal
 import logging
 
-from .models import SolicitacaoMEI
+from .models import SolicitacaoMEI, SolicitacaoBaixaMEI
 from dashboard.models import Venda, Produto, CategoriaPlanoContas, SubcategoriaPlanoContas
 
 # Configurar logging para rastrear as operações
@@ -206,3 +206,127 @@ def criar_movimentacao_caixa_venda(sender, instance, created, **kwargs):
                 
             except Exception as e:
                 logger.error(f"Erro ao criar movimentação de caixa para venda #{instance.pk}: {str(e)}")
+
+
+# ============================================================================
+# SIGNALS PARA SOLICITAÇÕES DE BAIXA MEI
+# ============================================================================
+
+# Cache para evitar múltiplas criações de vendas (Baixa MEI)
+_baixa_mei_previous_status = {}
+
+@receiver(pre_save, sender=SolicitacaoBaixaMEI)
+def store_baixa_mei_previous_status(sender, instance, **kwargs):
+    """
+    Armazena o status anterior da solicitação de baixa MEI antes de salvar.
+    """
+    if instance.pk:
+        try:
+            previous = SolicitacaoBaixaMEI.objects.get(pk=instance.pk)
+            _baixa_mei_previous_status[instance.pk] = previous.status
+        except SolicitacaoBaixaMEI.DoesNotExist:
+            _baixa_mei_previous_status[instance.pk] = None
+    else:
+        _baixa_mei_previous_status[instance.pk] = None
+
+@receiver(post_save, sender=SolicitacaoBaixaMEI)
+def criar_venda_baixa_mei_automatica(sender, instance, created, **kwargs):
+    """
+    Cria automaticamente uma venda quando uma solicitação de baixa MEI é concluída.
+    
+    Args:
+        sender: Model class (SolicitacaoBaixaMEI)
+        instance: Instância da solicitação salva
+        created: Boolean indicando se foi criação ou atualização
+        **kwargs: Argumentos adicionais
+    """
+    # Obter status anterior
+    previous_status = _baixa_mei_previous_status.get(instance.pk)
+    current_status = instance.status
+    
+    # Verificar se houve mudança para 'concluido'
+    if current_status == 'concluido' and previous_status != 'concluido':
+        
+        logger.info(f"Processando conclusão da solicitação de baixa MEI #{instance.pk} - {instance.nome_completo}")
+        
+        try:
+            # Verificar dupla segurança por CPF e produto
+            venda_existente = Venda.objects.filter(
+                cliente_cpf_cnpj=instance.cpf,
+                produto__nome__icontains='Baixa de MEI',
+                observacoes__icontains=f'solicitação de baixa MEI #{instance.pk}'
+            ).first()
+            
+            if venda_existente:
+                logger.warning(f"Venda já existe para solicitação de baixa MEI #{instance.pk} - Venda #{venda_existente.pk}")
+                return
+            
+            # Obter ou criar categoria e subcategoria para serviços MEI
+            categoria_entrada, _ = CategoriaPlanoContas.objects.get_or_create(
+                nome='Serviços MEI',
+                tipo='entrada',
+                defaults={'ativo': True}
+            )
+            
+            subcategoria_baixa_mei, _ = SubcategoriaPlanoContas.objects.get_or_create(
+                categoria=categoria_entrada,
+                nome='Baixa de MEI',
+                defaults={
+                    'descricao': 'Serviços de baixa/encerramento de MEI',
+                    'ativo': True
+                }
+            )
+            
+            # Obter ou criar produto/serviço "Baixa de MEI"
+            produto_baixa_mei, created_produto = Produto.objects.get_or_create(
+                nome='Baixa de MEI',
+                categoria=subcategoria_baixa_mei,
+                defaults={
+                    'descricao': 'Serviço de encerramento/baixa de MEI',
+                    'preco': Decimal('150.00'),  # Valor padrão para baixa de MEI
+                    'ativo': True
+                }
+            )
+            
+            if created_produto:
+                logger.info(f"Produto 'Baixa de MEI' criado automaticamente")
+            
+            # Obter usuário para vincular à venda
+            vendedor = instance.usuario
+            if not vendedor:
+                # Se não há usuário vinculado à solicitação, usar o primeiro superuser
+                vendedor = User.objects.filter(is_superuser=True).first()
+                if not vendedor:
+                    logger.error("Nenhum superuser encontrado para criar venda de baixa MEI")
+                    return
+            
+            # Criar a venda
+            venda = Venda.objects.create(
+                produto=produto_baixa_mei,
+                quantidade=1,
+                valor_unitario=produto_baixa_mei.preco,
+                valor_final=produto_baixa_mei.preco,
+                cliente_nome=instance.nome_completo,
+                cliente_cpf_cnpj=instance.cpf,
+                cliente_email=instance.email,
+                cliente_telefone=instance.telefone,
+                vendedor=vendedor,
+                status='pago',  # Marcar como pago automaticamente
+                data_venda=timezone.now(),
+                data_pagamento=timezone.now(),
+                observacoes=(
+                    f'Venda automática - Solicitação de baixa MEI #{instance.pk}\n'
+                    f'CNPJ MEI: {instance.cnpj_mei}\n'
+                    f'Nome Fantasia: {instance.nome_fantasia or "Não informado"}\n'
+                    f'Cidade: {instance.cidade}/{instance.estado}'
+                )
+            )
+            
+            logger.info(
+                f"Venda #{venda.pk} criada automaticamente para baixa MEI #{instance.pk} "
+                f"- Cliente: {instance.nome_completo} - Valor: R$ {produto_baixa_mei.preco}"
+            )
+            
+        except Exception as e:
+            logger.error(f"Erro ao criar venda automática para baixa MEI #{instance.pk}: {str(e)}")
+            # Não propagar a exceção para não interromper o salvamento da solicitação

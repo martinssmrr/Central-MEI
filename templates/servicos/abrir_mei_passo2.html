@@ -123,7 +123,7 @@
             <div class="col-lg-8">
                 <div class="step-indicator mb-3">ETAPA 2 DE 2</div>
                 <h1 class="display-4 fw-bold mb-3">Abertura de MEI</h1>
-                <p class="lead mb-4">Passo 2: Dados Empresariais - Finalize sua abertura de MEI</p>
+                <p class="lead mb-4">Passo 2: Identificação e Dados Empresariais - Finalize sua abertura de MEI</p>
                 <div class="d-flex flex-wrap gap-3">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-shield-check me-2"></i>
@@ -143,7 +143,7 @@
                 <div class="icon-step">
                     <i class="bi bi-briefcase"></i>
                 </div>
-                <h5>Dados Empresariais</h5>
+                <h5>Identificação & Empresa</h5>
                 <p class="mb-0">Última etapa</p>
             </div>
         </div>
@@ -215,6 +215,86 @@
                     <div class="card-body p-4">
                         <form method="post" class="needs-validation" novalidate>
                             {% csrf_token %}
+                            
+                            <!-- Seção Identificação -->
+                            <div class="mb-4">
+                                <h5 class="text-primary border-bottom pb-2 mb-3">
+                                    <i class="bi bi-person-badge me-1"></i>
+                                    Dados de Identificação
+                                </h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.cpf.id_for_label }}" class="form-label fw-semibold">
+                                            <i class="bi bi-card-text me-1 text-primary"></i>{{ form.cpf.label }}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control form-control-lg" 
+                                               id="{{ form.cpf.id_for_label }}"
+                                               name="{{ form.cpf.html_name }}"
+                                               placeholder="000.000.000-00"
+                                               value="{{ form.cpf.value|default:'' }}"
+                                               aria-label="CPF"
+                                               required>
+                                        {% if form.cpf.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.cpf.errors.0 }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Digite seu CPF</div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.rg.id_for_label }}" class="form-label fw-semibold">
+                                            <i class="bi bi-card-heading me-1 text-primary"></i>{{ form.rg.label }}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control form-control-lg" 
+                                               id="{{ form.rg.id_for_label }}"
+                                               name="{{ form.rg.html_name }}"
+                                               placeholder="00.000.000-0"
+                                               value="{{ form.rg.value|default:'' }}"
+                                               aria-label="RG"
+                                               required>
+                                        {% if form.rg.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.rg.errors.0 }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Digite seu RG</div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.orgao_expedidor.id_for_label }}" class="form-label fw-semibold">
+                                            <i class="bi bi-building me-1 text-primary"></i>{{ form.orgao_expedidor.label }}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.orgao_expedidor }}
+                                        {% if form.orgao_expedidor.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.orgao_expedidor.errors.0 }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Órgão que emitiu o RG</div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ form.estado_expedidor.id_for_label }}" class="form-label fw-semibold">
+                                            <i class="bi bi-geo-alt me-1 text-primary"></i>{{ form.estado_expedidor.label }}
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.estado_expedidor }}
+                                        {% if form.estado_expedidor.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {{ form.estado_expedidor.errors.0 }}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Estado onde foi emitido</div>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <!-- Seção CNAE -->
                             <div class="mb-4">
@@ -409,31 +489,27 @@
 
             <!-- Sidebar com Resumo -->
             <div class="col-lg-4">
-                <!-- Resumo dos Dados Pessoais -->
-                {% if dados_pessoais %}
+                <!-- Resumo dos Dados de Contato -->
+                {% if dados_passo1 %}
                 <div class="card shadow-sm border-0 rounded-4 mb-3">
                     <div class="card-header bg-light rounded-top-4">
                         <h5 class="mb-0 text-primary">
                             <i class="bi bi-person-check me-2"></i>
-                            Resumo - Dados Pessoais
+                            Resumo - Dados de Contato
                         </h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="mb-2">
                             <strong>Nome:</strong><br>
-                            <span class="text-muted">{{ dados_pessoais.nome_completo }}</span>
-                        </div>
-                        <div class="mb-2">
-                            <strong>CPF:</strong><br>
-                            <span class="text-muted">{{ dados_pessoais.cpf }}</span>
+                            <span class="text-muted">{{ dados_passo1.nome_completo }}</span>
                         </div>
                         <div class="mb-2">
                             <strong>E-mail:</strong><br>
-                            <span class="text-muted">{{ dados_pessoais.email }}</span>
+                            <span class="text-muted">{{ dados_passo1.email }}</span>
                         </div>
                         <div class="mb-0">
                             <strong>Telefone:</strong><br>
-                            <span class="text-muted">{{ dados_pessoais.telefone }}</span>
+                            <span class="text-muted">{{ dados_passo1.telefone }}</span>
                         </div>
                         
                         <div class="text-center mt-3 pt-3 border-top">

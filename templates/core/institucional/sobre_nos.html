@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sobre Nós - Central MEI{% endblock %}
+
+{% block description %}Conheça a Central MEI, empresa especializada em serviços para Microempreendedores Individuais. Nossa missão, história e compromisso com seu sucesso.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold text-primary mb-4">Sobre a Central MEI</h1>
+            <p class="lead">A Central MEI nasceu para facilitar a vida do microempreendedor individual, oferecendo soluções práticas e acessíveis para a formalização e gestão do seu negócio.</p>
+        </div>
+        <div class="col-lg-6">
+            <img src="{% static 'img/home.jpg' %}" alt="Equipe Central MEI" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Nossa História -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <h2 class="h3 text-primary mb-4">
+                        <i class="bi bi-building me-2"></i>
+                        Nossa História
+                    </h2>
+                    <p class="mb-4">A Central MEI nasceu da necessidade de oferecer um serviço de qualidade e acessível para Microempreendedores Individuais em todo o Brasil. Fundada por profissionais com vasta experiência em contabilidade e gestão empresarial, nossa empresa tem como objetivo principal facilitar a vida de quem empreende.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="h5 text-primary">Início</h4>
+                            <p>Começamos atendendo empreendedores da região, percebendo as dificuldades e burocracias que enfrentavam diariamente.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="h5 text-primary">Crescimento</h4>
+                            <p>Com o tempo, expandimos nossos serviços e hoje atendemos MEIs de todo o país com soluções digitais e personalizadas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Missão, Visão e Valores -->
+    <div class="row mb-5">
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="bi bi-bullseye text-white fs-4"></i>
+                    </div>
+                    <h3 class="h5 text-primary mb-3">Nossa Missão</h3>
+                    <p>Simplificar e democratizar o acesso aos serviços contábeis para Microempreendedores Individuais, oferecendo soluções eficientes e acessíveis.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="bg-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="bi bi-eye text-white fs-4"></i>
+                    </div>
+                    <h3 class="h5 text-success mb-3">Nossa Visão</h3>
+                    <p>Ser reconhecida como a principal referência em serviços para MEI no Brasil, contribuindo para o crescimento do empreendedorismo nacional.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="bg-warning rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="bi bi-heart text-white fs-4"></i>
+                    </div>
+                    <h3 class="h5 text-warning mb-3">Nossos Valores</h3>
+                    <p>Transparência, qualidade, agilidade e compromisso com o sucesso de cada cliente. Acreditamos no poder do empreendedorismo brasileiro.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Por que escolher a Central MEI -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">Por que escolher a Central MEI?</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex">
+                        <div class="bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
+                            <i class="bi bi-shield-check text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5">Experiência Comprovada</h4>
+                            <p>Anos de experiência atendendo Microempreendedores Individuais com excelência e qualidade.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex">
+                        <div class="bg-success rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
+                            <i class="bi bi-lightning text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5">Agilidade no Atendimento</h4>
+                            <p>Processos otimizados e digitais para entregar resultados no menor tempo possível.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex">
+                        <div class="bg-info rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
+                            <i class="bi bi-headset text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5">Suporte Personalizado</h4>
+                            <p>Atendimento humano e personalizado para esclarecer todas as suas dúvidas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="d-flex">
+                        <div class="bg-warning rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
+                            <i class="bi bi-wallet text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5">Preços Justos</h4>
+                            <p>Tarifas transparentes e acessíveis, sem surpresas ou taxas ocultas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-primary text-white rounded p-5 text-center">
+                <h2 class="mb-3">Pronto para começar?</h2>
+                <p class="lead mb-4">Conheça todos os nossos serviços e descubra como podemos ajudar você a manter seu MEI sempre em dia.</p>
+                <a href="{% url 'servicos:lista' %}" class="btn btn-light btn-lg me-3">
+                    <i class="bi bi-list-ul me-2"></i>
+                    Ver Todos os Serviços
+                </a>
+                <a href="{% url 'core:home' %}#contato" class="btn btn-outline-light btn-lg">
+                    <i class="bi bi-chat-dots me-2"></i>
+                    Fale Conosco
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

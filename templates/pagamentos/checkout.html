@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - {{ pagamento.get_tipo_servico_display }} - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 0;
+    }
+    
+    .checkout-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .checkout-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .checkout-body {
+        padding: 40px;
+    }
+    
+    .service-info {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 5px solid #667eea;
+    }
+    
+    .price-display {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #28a745;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .payment-form {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-control {
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-pagar {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 15px;
+        padding: 15px 40px;
+        font-weight: 600;
+        font-size: 18px;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-pagar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        color: white;
+    }
+    
+    .security-info {
+        background: #e8f5e8;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .loading-content {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+    }
+    
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .payment-methods {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+    }
+    
+    .payment-methods img {
+        height: 40px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .checkout-body {
+            padding: 20px;
+        }
+        
+        .price-display {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="checkout-card">
+                    <div class="checkout-header">
+                        <img src="{% static 'img/logo.png' %}" alt="Central MEI" height="50" class="mb-3">
+                        <h2 class="mb-2">Finalizar Pagamento</h2>
+                        <p class="mb-0 opacity-90">Ambiente 100% seguro e protegido</p>
+                    </div>
+                    
+                    <div class="checkout-body">
+                        <!-- Informações do Serviço -->
+                        <div class="service-info">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="text-primary mb-2">
+                                        <i class="bi bi-briefcase me-2"></i>
+                                        {{ pagamento.get_tipo_servico_display }}
+                                    </h4>
+                                    <p class="text-muted mb-2">
+                                        <strong>Cliente:</strong> {{ pagamento.nome_cliente }}
+                                    </p>
+                                    <p class="text-muted mb-0">
+                                        <strong>Protocolo:</strong> {{ pagamento.mp_external_reference }}
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="price-display">
+                                        {{ pagamento.valor_formatado }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Formulário de Pagamento -->
+                        <div class="payment-form">
+                            <h5 class="mb-4 text-center">
+                                <i class="bi bi-credit-card me-2"></i>
+                                Dados do Pagamento
+                            </h5>
+                            
+                            <!-- Métodos de Pagamento Aceitos -->
+                            <div class="payment-methods">
+                                <img src="https://http2.mlstatic.com/checkout/c/logos/visa.png" alt="Visa">
+                                <img src="https://http2.mlstatic.com/checkout/c/logos/master.png" alt="Mastercard">
+                                <img src="https://http2.mlstatic.com/checkout/c/logos/amex.png" alt="American Express">
+                                <img src="https://http2.mlstatic.com/checkout/c/logos/hipercard.png" alt="Hipercard">
+                                <img src="https://http2.mlstatic.com/checkout/c/logos/pix.png" alt="PIX">
+                            </div>
+                            
+                            <form id="payment-form">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="cardNumber">Número do Cartão</label>
+                                            <input type="text" class="form-control" id="cardNumber" 
+                                                   data-checkout="cardNumber" 
+                                                   placeholder="0000 0000 0000 0000"
+                                                   maxlength="19" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="cardholderName">Nome no Cartão</label>
+                                            <input type="text" class="form-control" id="cardholderName" 
+                                                   data-checkout="cardholderName" 
+                                                   placeholder="Nome como no cartão" 
+                                                   value="{{ pagamento.nome_cliente }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="cardExpirationMonth">Mês</label>
+                                            <select class="form-control" id="cardExpirationMonth" data-checkout="cardExpirationMonth" required>
+                                                <option value="">Mês</option>
+                                                <option value="01">01</option>
+                                                <option value="02">02</option>
+                                                <option value="03">03</option>
+                                                <option value="04">04</option>
+                                                <option value="05">05</option>
+                                                <option value="06">06</option>
+                                                <option value="07">07</option>
+                                                <option value="08">08</option>
+                                                <option value="09">09</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="cardExpirationYear">Ano</label>
+                                            <select class="form-control" id="cardExpirationYear" data-checkout="cardExpirationYear" required>
+                                                <option value="">Ano</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                                <option value="2029">2029</option>
+                                                <option value="2030">2030</option>
+                                                <option value="2031">2031</option>
+                                                <option value="2032">2032</option>
+                                                <option value="2033">2033</option>
+                                                <option value="2034">2034</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="securityCode">Código de Segurança</label>
+                                            <input type="text" class="form-control" id="securityCode" 
+                                                   data-checkout="securityCode" 
+                                                   placeholder="123" maxlength="4" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="docNumber">CPF</label>
+                                            <input type="text" class="form-control" id="docNumber" 
+                                                   data-checkout="docNumber" 
+                                                   placeholder="000.000.000-00" maxlength="14" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="cardholderEmail">E-mail</label>
+                                    <input type="email" class="form-control" id="cardholderEmail" 
+                                           data-checkout="cardholderEmail" 
+                                           placeholder="email@exemplo.com" 
+                                           value="{{ pagamento.email_cliente }}" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-pagar" id="btn-pagar">
+                                    <i class="bi bi-lock-fill me-2"></i>
+                                    Pagar {{ pagamento.valor_formatado }}
+                                </button>
+                            </form>
+                            
+                            <!-- Informações de Segurança -->
+                            <div class="security-info">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2 text-center">
+                                        <i class="bi bi-shield-check text-success" style="font-size: 2rem;"></i>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h6 class="mb-1 text-success">Pagamento 100% Seguro</h6>
+                                        <small class="text-muted">
+                                            Seus dados são protegidos com criptografia SSL. 
+                                            Processamento via Mercado Pago, líder em pagamentos online no Brasil.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <h5>Processando Pagamento...</h5>
+        <p class="text-muted">Aguarde, não feche esta página.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar Mercado Pago (Produção)
+    const mp = new MercadoPago('{{ mercadopago_public_key }}');
+    
+    // Máscaras para os campos
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+        let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+        e.target.value = formattedValue;
+    });
+    
+    document.getElementById('docNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length <= 11) {
+            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+        e.target.value = value;
+    });
+    
+    // Formulário de pagamento
+    const form = document.getElementById('payment-form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Mostrar loading
+        loadingOverlay.style.display = 'flex';
+        
+        // Criar token do cartão
+        mp.createCardToken({
+            cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
+            cardholderName: document.getElementById('cardholderName').value,
+            cardExpirationMonth: document.getElementById('cardExpirationMonth').value,
+            cardExpirationYear: document.getElementById('cardExpirationYear').value,
+            securityCode: document.getElementById('securityCode').value,
+            identificationType: 'CPF',
+            identificationNumber: document.getElementById('docNumber').value.replace(/\D/g, '')
+        }).then(function(result) {
+            if (result.error) {
+                loadingOverlay.style.display = 'none';
+                alert('Erro nos dados do cartão: ' + result.error.message);
+                return;
+            }
+            
+            // Processar pagamento
+            processPayment(result.id);
+            
+        }).catch(function(error) {
+            loadingOverlay.style.display = 'none';
+            console.error('Erro no processamento:', error);
+            alert('Erro ao processar cartão: ' + (error.message || error || 'Erro desconhecido'));
+        });
+    });
+    
+    function processPayment(token) {
+        fetch('/pagamentos/pagamento-cartao/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                token: token,
+                pagamento_id: '{{ pagamento.id }}',
+                cardholderEmail: document.getElementById('cardholderEmail').value,
+                cardholderName: document.getElementById('cardholderName').value,
+                identificationType: 'CPF',
+                identificationNumber: document.getElementById('docNumber').value.replace(/\D/g, '')
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingOverlay.style.display = 'none';
+            
+            if (data.status === 'approved') {
+                window.location.href = '/pagamentos/sucesso/?collection_id=' + data.payment_id + '&external_reference={{ pagamento.mp_external_reference }}';
+            } else if (data.status === 'pending') {
+                window.location.href = '/pagamentos/pendente/?collection_id=' + data.payment_id + '&external_reference={{ pagamento.mp_external_reference }}';
+            } else {
+                window.location.href = '/pagamentos/erro/?collection_id=' + data.payment_id + '&external_reference={{ pagamento.mp_external_reference }}';
+            }
+        })
+        .catch(error => {
+            loadingOverlay.style.display = 'none';
+            console.error('Erro no processamento de pagamento:', error);
+            alert('Erro ao processar pagamento: ' + (error.message || error || 'Erro desconhecido'));
+        });
+    }
+});
+</script>
+{% endblock %}

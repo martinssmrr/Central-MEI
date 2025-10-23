@@ -198,8 +198,8 @@
                         <div class="d-flex align-items-center">
                             <i class="bi bi-person-circle text-white me-3 card-header-icon"></i>
                             <div>
-                                <h3 class="h4 text-white mb-1">Passo 1: Dados Pessoais</h3>
-                                <p class="text-white-50 mb-0">Informações básicas para abertura do MEI</p>
+                                <h3 class="h4 text-white mb-1">Passo 1: Dados de Contato</h3>
+                                <p class="text-white-50 mb-0">Informações básicas para contato</p>
                             </div>
                         </div>
                     </div>
@@ -226,78 +226,6 @@
                                             {{ form.nome_completo.errors.0 }}
                                         </div>
                                     {% endif %}
-                                </div>
-
-                                <!-- CPF e RG -->
-                                <div class="col-md-6">
-                                    <label for="{{ form.cpf.id_for_label }}" class="form-label fw-bold">
-                                        <i class="bi bi-card-text me-1 text-primary"></i>{{ form.cpf.label }}
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control form-control-lg" 
-                                           id="{{ form.cpf.id_for_label }}"
-                                           name="{{ form.cpf.html_name }}"
-                                           placeholder="000.000.000-00"
-                                           value="{{ form.cpf.value|default:'' }}"
-                                           aria-label="CPF"
-                                           required>
-                                    {% if form.cpf.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.cpf.errors.0 }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="{{ form.rg.id_for_label }}" class="form-label fw-bold">
-                                        <i class="bi bi-card-heading me-1 text-primary"></i>{{ form.rg.label }}
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control form-control-lg" 
-                                           id="{{ form.rg.id_for_label }}"
-                                           name="{{ form.rg.html_name }}"
-                                           placeholder="00.000.000-0"
-                                           value="{{ form.rg.value|default:'' }}"
-                                           aria-label="RG"
-                                           required>
-                                    {% if form.rg.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.rg.errors.0 }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <!-- Órgão Expedidor e Estado -->
-                                <div class="col-md-6">
-                                    <label for="{{ form.orgao_expedidor.id_for_label }}" class="form-label fw-bold">
-                                        <i class="bi bi-building me-1 text-primary"></i>{{ form.orgao_expedidor.label }}
-                                    </label>
-                                    {{ form.orgao_expedidor }}
-                                    {% if form.orgao_expedidor.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.orgao_expedidor.errors.0 }}
-                                        </div>
-                                    {% endif %}
-                                    <div class="form-text">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Órgão que emitiu o RG
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="{{ form.estado_expedidor.id_for_label }}" class="form-label fw-bold">
-                                        <i class="bi bi-geo-alt me-1 text-primary"></i>{{ form.estado_expedidor.label }}
-                                    </label>
-                                    {{ form.estado_expedidor }}
-                                    {% if form.estado_expedidor.errors %}
-                                        <div class="invalid-feedback d-block">
-                                            {{ form.estado_expedidor.errors.0 }}
-                                        </div>
-                                    {% endif %}
-                                    <div class="form-text">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Estado onde foi emitido
-                                    </div>
                                 </div>
 
                                 <!-- E-mail e Telefone -->
@@ -382,7 +310,7 @@
                             </div>
                             
                             <h5 class="text-secondary mb-3">
-                                <i class="bi bi-check-circle me-2"></i>Documentos necessários:
+                                <i class="bi bi-check-circle me-2"></i>INFORMAÇÕES IMPORTANTES.
                             </h5>
                             
                             <div class="list-group list-group-flush">
@@ -390,8 +318,8 @@
                                     <div class="d-flex align-items-start">
                                         <i class="bi bi-card-text text-primary me-2 mt-1"></i>
                                         <div>
-                                            <strong class="text-dark">RG, CPF e Órgão Expedidor</strong><br>
-                                            <small class="text-muted">Dados que você está preenchendo</small>
+                                            <strong class="text-dark">Atividade Permitida</strong><br>
+                                            <small class="text-muted">Exercer uma das atividades econômicas incluídas na lista de ocupações permitidas para o MEI.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -400,8 +328,8 @@
                                     <div class="d-flex align-items-start">
                                         <i class="bi bi-house text-success me-2 mt-1"></i>
                                         <div>
-                                            <strong class="text-dark">Comprovante de endereço</strong><br>
-                                            <small class="text-muted">Residencial ou comercial</small>
+                                            <strong class="text-dark">Faturamento</strong><br>
+                                            <small class="text-muted">Ter um faturamento anual de até R$ 81.000,00. No ano de abertura, é considerado o valor proporcional ao número de meses de atuação, levando em conta um faturamento médio de R$ 6.750,00 por mês.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -410,8 +338,8 @@
                                     <div class="d-flex align-items-start">
                                         <i class="bi bi-envelope text-warning me-2 mt-1"></i>
                                         <div>
-                                            <strong class="text-dark">E-mail válido</strong><br>
-                                            <small class="text-muted">Para receber notificações</small>
+                                            <strong class="text-dark">Contratação</strong><br>
+                                            <small class="text-muted">Poder contratar no máximo um funcionário, que receba o piso da categoria ou um salário mínimo.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -420,8 +348,8 @@
                                     <div class="d-flex align-items-start">
                                         <i class="bi bi-telephone text-info me-2 mt-1"></i>
                                         <div>
-                                            <strong class="text-dark">Telefone de contato</strong><br>
-                                            <small class="text-muted">Para suporte durante o processo</small>
+                                            <strong class="text-dark">Idade Mínima</strong><br>
+                                            <small class="text-muted">Ter no mínimo 18 anos. Jovens com 16 e 17 anos podem se formalizar apenas se forem legalmente emancipados.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -430,7 +358,7 @@
                     </div>
                     
                     <!-- Card Secundário: Suporte -->
-                    <div class="card card-custom">
+                    <div class="card card-custom mb-4">
                         <div class="card-body p-4 text-center">
                             <div class="icon-step mb-3">
                                 <i class="bi bi-headset"></i>
@@ -446,10 +374,31 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Card Secundário: Atenção -->
+                    <div class="card card-custom mb-4">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-step mb-3">
+                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                            </div>
+                            <h5 class="text-primary mb-3">Atenção</h5>
+                            <p class="text-muted mb-4"> <strong>ESTE NÃO É UM SITE GOVERNAMENTAL</strong> <br> O serviço prestado através do site centralgestaomei.com.br é um serviço privado e opcional. O registro do MEI pode ser feito gratuitamente no portal oficial gov.br. Aqui você conta com suporte profissional, orientação especializada e acompanhamento personalizado em cada etapa.</p>
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <i class="bi bi-whatsapp text-success me-2"></i>
+                                    <span class="text-muted small">Suporte via WhatsApp</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>
+    
+
+    
 </section>
 
 <script>

@@ -1,0 +1,173 @@
+# =============================================================================
+# CENTRAL MEI - .gitignore
+# =============================================================================
+
+# =============================================================================
+# ARQUIVOS SENSÍVEIS - NUNCA COMMITAR!
+# =============================================================================
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.production
+
+# Configurações do Mercado Pago
+mercadopago_settings.py
+
+# Chaves e certificados
+*.key
+*.pem
+*.crt
+*.p12
+
+# =============================================================================
+# DJANGO
+# =============================================================================
+
+# Banco de dados
+db.sqlite3
+db.sqlite3-journal
+*.db
+
+# Arquivos de migração locais
+**/migrations/__pycache__/
+**/migrations/*.pyc
+
+# Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Arquivos de distribuição
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Arquivos de logs
+logs/
+*.log
+
+# Arquivos de sessão
+django_session/
+
+# Arquivos temporários do Django
+*.pot
+
+# =============================================================================
+# MEDIA E STATIC FILES (apenas em produção)
+# =============================================================================
+
+# Descomente se usando CDN ou S3 em produção
+# /static/
+# /media/
+
+# =============================================================================
+# IDE E EDITORES
+# =============================================================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Atom
+.atom/
+
+# =============================================================================
+# SISTEMA OPERACIONAL
+# =============================================================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# =============================================================================
+# AMBIENTES VIRTUAIS
+# =============================================================================
+
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# =============================================================================
+# FERRAMENTAS DE DESENVOLVIMENTO
+# =============================================================================
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# =============================================================================
+# ARQUIVOS DE BACKUP
+# =============================================================================
+
+*.bak
+*.backup
+*.tmp
+*.temp
+
+# =============================================================================
+# ARQUIVOS ESPECÍFICOS DO PROJETO
+# =============================================================================
+
+# Uploads temporários
+temp_uploads/
+
+# Relatórios gerados
+reports/
+
+# Arquivos de teste
+test_files/

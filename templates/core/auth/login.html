@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Central MEI - Login{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(4, 172, 236, 0.05), rgba(252, 204, 43, 0.05));
+    }
+    
+    .auth-card {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(4, 172, 236, 0.15);
+        border: none;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .auth-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 80px rgba(4, 172, 236, 0.2);
+    }
+    
+    .auth-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--quaternary-color));
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .auth-header .icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+    
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-floating .form-control {
+        border: 2px solid var(--gray-200);
+        border-radius: 15px;
+        padding: 1rem 0.75rem;
+        transition: all 0.3s ease;
+        background: var(--gray-100);
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(4, 172, 236, 0.1);
+        background: var(--white);
+    }
+    
+    .form-floating label {
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, var(--primary-color), var(--quaternary-color));
+        border: none;
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-login:hover {
+        background: linear-gradient(135deg, var(--quaternary-color), var(--primary-color));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .btn-login:focus {
+        box-shadow: 0 0 0 0.25rem rgba(4, 172, 236, 0.25);
+        color: white;
+    }
+    
+    .link-primary {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .link-primary:hover {
+        color: var(--quaternary-color);
+        text-decoration: underline;
+    }
+    
+    .auth-footer {
+        background: var(--gray-100);
+        padding: 1.5rem;
+        text-align: center;
+        border-top: 1px solid var(--gray-200);
+    }
+    
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: var(--primary-color);
+    }
+    
+    .input-group-text {
+        background: var(--gray-100);
+        border: 2px solid var(--gray-200);
+        border-radius: 15px 0 0 15px;
+        color: var(--gray-600);
+        transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        .auth-container {
+            padding: 1rem;
+        }
+        
+        .auth-card {
+            margin: 1rem 0;
+        }
+        
+        .auth-header {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'core:home' %}" class="link-primary">
+                        <i class="bi bi-house-door me-1"></i>Início
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Login</li>
+            </ol>
+        </nav>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card auth-card">
+                    <!-- Header -->
+                    <div class="auth-header">
+                        <div class="icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h1 class="h3 mb-2">Bem-vindo de volta!</h1>
+                        <p class="mb-0 opacity-90">Acesse sua conta Central MEI</p>
+                    </div>
+
+                    <!-- Formulário -->
+                    <div class="card-body p-4">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Campo E-mail -->
+                            <div class="form-floating">
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="id_username" 
+                                       name="username"
+                                       placeholder="seu@email.com"
+                                       value="{{ form.username.value|default:'' }}"
+                                       required
+                                       autofocus
+                                       aria-describedby="emailHelp">
+                                <label for="id_username">
+                                    <i class="bi bi-envelope text-primary me-2"></i>E-mail
+                                </label>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ form.username.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Campo Senha -->
+                            <div class="form-floating">
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="id_password" 
+                                       name="password"
+                                       placeholder="Sua senha"
+                                       required
+                                       aria-describedby="passwordHelp">
+                                <label for="id_password">
+                                    <i class="bi bi-lock text-primary me-2"></i>Senha
+                                </label>
+                                {% if form.password.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ form.password.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Checkbox Lembrar -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                                <label class="form-check-label text-muted" for="remember">
+                                    Manter-me logado
+                                </label>
+                            </div>
+
+                            <!-- Botão Submit -->
+                            <button type="submit" class="btn btn-login">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                Entrar
+                            </button>
+
+                            <!-- Links auxiliares -->
+                            <div class="text-center mt-4">
+                                <a href="#" class="link-primary small">
+                                    <i class="bi bi-key me-1"></i>
+                                    Esqueci minha senha
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="auth-footer">
+                        <p class="mb-0 text-muted small">
+                            Não tem uma conta? 
+                            <a href="{% url 'servicos:abrir_mei' %}" class="link-primary">
+                                <i class="bi bi-person-plus me-1"></i>
+                                Solicite abertura do MEI
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Foco automático no campo e-mail
+    const emailInput = document.getElementById('id_username');
+    if (emailInput && !emailInput.value) {
+        emailInput.focus();
+    }
+    
+    // Validação do formulário
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+    
+    // Efeito de foco nos campos
+    const formControls = document.querySelectorAll('.form-control');
+    formControls.forEach(control => {
+        control.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        control.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+        
+        // Verificar se já tem valor
+        if (control.value) {
+            control.parentElement.classList.add('focused');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Baixar MEI - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary: #04acec;
+        --color-secondary: #1c943c;
+        --color-tertiary: #fccc2b;
+        --color-quaternary: #026d96;
+    }
+    
+    .bg-gradient-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        background: linear-gradient(135deg, var(--color-quaternary), var(--color-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(4, 172, 236, 0.25);
+    }
+    
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .card-custom:hover {
+        transform: translateY(-5px);
+    }
+    
+    .icon-step {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem;
+    }
+    
+    .step-indicator {
+        background: var(--color-tertiary);
+        color: var(--color-quaternary);
+        font-weight: bold;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+    
+    .card-header-icon {
+        font-size: 2rem;
+    }
+    
+    .card-info-highlight {
+        background: linear-gradient(45deg, rgba(4, 172, 236, 0.1), rgba(252, 204, 43, 0.1));
+        border-left: 4px solid var(--color-primary);
+    }
+    
+    .section-header {
+        background: linear-gradient(45deg, var(--color-primary), var(--color-quaternary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="py-5 bg-gradient-custom text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="step-indicator mb-3">ENCERRAMENTO DE ATIVIDADES</div>
+                <h1 class="display-4 fw-bold mb-3">Baixar MEI</h1>
+                <p class="lead mb-4">Encerre seu MEI de forma rápida e segura com nosso suporte especializado</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        <span>100% Seguro</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-clock me-2"></i>
+                        <span>Processo Rápido</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-headset me-2"></i>
+                        <span>Suporte Completo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="icon-step">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <h5>Baixa Gratuita</h5>
+                <p class="mb-0">Portal do Empreendedor</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Informações Importantes -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="card card-custom card-info-highlight">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <i class="fas fa-exclamation-triangle card-header-icon text-warning"></i>
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>Informações Importantes sobre a Baixa do MEI
+                                </h5>
+                                <ul class="mb-0">
+                                    <li class="mb-2">A baixa do MEI deve ser solicitada até o último dia de janeiro do ano seguinte ao encerramento das atividades.</li>
+                                    <li class="mb-2">Certifique-se de que todas as obrigações fiscais estão em dia antes de solicitar a baixa.</li>
+                                    <li class="mb-2">Após a baixa, você não poderá mais emitir notas fiscais como MEI.</li>
+                                    <li class="mb-0">O processo de baixa é <strong>gratuito</strong> no Portal do Empreendedor.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Form Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="card card-custom">
+                    <div class="card-header bg-gradient-custom text-white text-center py-4">
+                        <div class="icon-step">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3 class="mb-0">Formulário de Solicitação de Baixa MEI</h3>
+                        <p class="mb-0 opacity-75">Preencha todos os dados para processar sua solicitação</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Dados do MEI -->
+                            <div class="mb-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="section-header mb-3">
+                                            <i class="fas fa-building me-2"></i>Dados do MEI
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {{ form.cnpj_mei|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.nome_fantasia|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dados Pessoais -->
+                            <div class="mb-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="section-header mb-3">
+                                            <i class="fas fa-user me-2"></i>Dados Pessoais
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                {{ form.nome_completo|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.cpf|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.data_nascimento|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.rg|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.orgao_emissor|as_crispy_field }}
+                                            </div>
+                                            <div class="col-12">
+                                                {{ form.nome_mae|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dados de Contato -->
+                            <div class="mb-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="section-header mb-3">
+                                            <i class="fas fa-phone me-2"></i>Dados de Contato
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {{ form.telefone|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.email|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Endereço Comercial -->
+                            <div class="mb-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="section-header mb-3">
+                                            <i class="fas fa-map-marker-alt me-2"></i>Endereço Comercial
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                {{ form.cep|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-8">
+                                                {{ form.rua|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-3">
+                                                {{ form.numero|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-9">
+                                                {{ form.complemento|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-4">
+                                                {{ form.bairro|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.cidade|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-2">
+                                                {{ form.estado|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Observações -->
+                            <div class="mb-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="section-header mb-3">
+                                            <i class="fas fa-comment me-2"></i>Observações
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                {{ form.observacoes|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Termos e Condições -->
+                            <div class="card border-warning mb-4">
+                                <div class="card-body bg-warning bg-opacity-10">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-exclamation-triangle text-warning me-3 mt-1"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="aceito_termos" required>
+                                                <label class="form-check-label fw-bold" for="aceito_termos">
+                                                    Declaro que:
+                                                </label>
+                                            </div>
+                                            <ul class="mt-2 mb-0 small">
+                                                <li>Todas as informações fornecidas são verdadeiras;</li>
+                                                <li>Estou ciente de que a baixa encerrará definitivamente o MEI;</li>
+                                                <li>Todas as obrigações fiscais estão em dia;</li>
+                                                <li>Assumo total responsabilidade pelas informações prestadas.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                                <a href="{% url 'core:home' %}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-arrow-left me-2"></i>Voltar
+                                </a>
+                                <button type="submit" class="btn btn-custom btn-lg">
+                                    <i class="fas fa-file-upload me-2"></i>Solicitar Baixa do MEI
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Support Section -->
+<section class="py-5 bg-gradient-custom text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="mb-3">Precisa de Ajuda?</h3>
+                <p class="mb-0">Nossa equipe está pronta para ajudá-lo em todo o processo de baixa do MEI.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-column flex-lg-row gap-3">
+                    <a href="mailto:contato@centralmei.com.br" class="btn btn-outline-light">
+                        <i class="fas fa-envelope me-2"></i>E-mail
+                    </a>
+                    <a href="https://wa.me/5511999999999" class="btn btn-outline-light" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Script para validação do formulário -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const submitButton = document.querySelector('button[type="submit"]');
+    const termsCheckbox = document.getElementById('aceito_termos');
+    
+    // Função para validar se os termos foram aceitos
+    function validateTerms() {
+        if (termsCheckbox.checked) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('btn-secondary');
+            submitButton.classList.add('btn-primary');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.remove('btn-primary');
+            submitButton.classList.add('btn-secondary');
+        }
+    }
+    
+    // Inicializar estado do botão
+    validateTerms();
+    
+    // Escutar mudanças no checkbox
+    termsCheckbox.addEventListener('change', validateTerms);
+    
+    // Máscara para campos
+    const cnpjField = document.querySelector('input[name="cnpj_mei"]');
+    const cpfField = document.querySelector('input[name="cpf"]');
+    const telefoneField = document.querySelector('input[name="telefone"]');
+    const cepField = document.querySelector('input[name="cep"]');
+    
+    // CNPJ Mask (14 dígitos)
+    if (cnpjField) {
+        cnpjField.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+            value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+            value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+    // CPF Mask (11 dígitos)
+    if (cpfField) {
+        cpfField.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+    
+    // Telefone Mask
+    if (telefoneField) {
+        telefoneField.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 10) {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            } else {
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    }
+    
+    // CEP Mask
+    if (cepField) {
+        cepField.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+    }
+});
+</script>
+{% endblock %}

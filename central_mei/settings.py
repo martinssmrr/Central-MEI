@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config, Csv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-3fr_849$!n4wg4-f5@+24k3kxw!7%lx1@0y1qs^+eqw_yr=a9#"
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 
 # Application definition
@@ -40,6 +42,8 @@ INSTALLED_APPS = [
     # Third party apps
     "crispy_forms",
     "crispy_bootstrap5",
+    "django_extensions",
+    "sslserver",
     # Local apps
     "core",
     "servicos",
@@ -48,6 +52,7 @@ INSTALLED_APPS = [
     "depoimentos",
     "usuarios",
     "dashboard",
+    "pagamentos",
 ]
 
 MIDDLEWARE = [
@@ -73,6 +78,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.company_context",
             ],
         },
     },
@@ -85,9 +91,13 @@ WSGI_APPLICATION = "central_mei.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': config('DB_NAME', default=BASE_DIR / 'db.sqlite3'),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default=''),
+        'PORT': config('DB_PORT', default=''),
     }
 }
 
@@ -144,13 +154,85 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Mercado Pago Settings
-try:
-    from .mercadopago_settings import *
-except ImportError:
-    # Configurações padrão para desenvolvimento
-    MERCADOPAGO_ACCESS_TOKEN = 'TEST-ACCESS-TOKEN'
-    MERCADOPAGO_PUBLIC_KEY = 'TEST-PUBLIC-KEY'
-    MERCADOPAGO_SUCCESS_URL = 'http://localhost:8000/pagamento/sucesso/'
-    MERCADOPAGO_FAILURE_URL = 'http://localhost:8000/pagamento/erro/'
-    MERCADOPAGO_PENDING_URL = 'http://localhost:8000/pagamento/pendente/'
+# Authentication URLs
+LOGIN_URL = 'core:login'
+LOGIN_REDIRECT_URL = 'core:minha_conta'
+LOGOUT_REDIRECT_URL = 'core:home'
+
+# =============================================================================
+# CONFIGURAÇÕES DE EMAIL
+# =============================================================================
+
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+# Email padrão
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@centralgestaomei.com.br')
+CONTACT_EMAIL = config('CONTACT_EMAIL', default='contato@centralgestaomei.com.br')
+
+# =============================================================================
+# CONFIGURAÇÕES DO MERCADO PAGO
+# =============================================================================
+
+MERCADOPAGO_ACCESS_TOKEN = config('MERCADOPAGO_ACCESS_TOKEN', default='TEST-ACCESS-TOKEN')
+MERCADOPAGO_PUBLIC_KEY = config('MERCADOPAGO_PUBLIC_KEY', default='TEST-PUBLIC-KEY')
+MERCADOPAGO_SUCCESS_URL = config('MERCADOPAGO_SUCCESS_URL', default='https://centralmeumei.com.br/pagamentos/sucesso/')
+MERCADOPAGO_FAILURE_URL = config('MERCADOPAGO_FAILURE_URL', default='https://centralmeumei.com.br/pagamentos/erro/')
+MERCADOPAGO_PENDING_URL = config('MERCADOPAGO_PENDING_URL', default='https://centralmeumei.com.br/pagamentos/pendente/')
+
+# =============================================================================
+# CONFIGURAÇÕES PERSONALIZADAS DA EMPRESA
+# =============================================================================
+
+COMPANY_NAME = config('COMPANY_NAME', default='Central MEI')
+COMPANY_PHONE = config('COMPANY_PHONE', default='(11) 99999-9999')
+COMPANY_EMAIL = config('COMPANY_EMAIL', default='contato@centralgestaomei.com.br')
+COMPANY_ADDRESS = config('COMPANY_ADDRESS', default='São Paulo, SP')
+
+# =============================================================================
+# CONFIGURAÇÕES DE LOGS
+# =============================================================================
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': config('LOG_LEVEL', default='INFO'),
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'django.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': config('LOG_LEVEL', default='INFO'),
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': config('LOG_LEVEL', default='INFO'),
+            'propagate': True,
+        },
+        'central_mei': {
+            'handlers': ['file', 'console'],
+            'level': config('LOG_LEVEL', default='INFO'),
+            'propagate': False,
+        },
+    },
+}

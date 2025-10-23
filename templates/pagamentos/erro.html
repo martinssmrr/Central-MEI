@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pagamento Rejeitado - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+        padding: 60px 0;
+    }
+    
+    .error-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        padding: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .error-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        font-size: 40px;
+        color: white;
+    }
+    
+    .error-title {
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    
+    .error-text {
+        color: #666;
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    
+    .btn-retry {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 16px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin-right: 15px;
+    }
+    
+    .btn-retry:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+    
+    .btn-home {
+        border: 2px solid #667eea;
+        color: #667eea;
+        background: transparent;
+        border-radius: 10px;
+        padding: 10px 30px;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+    
+    .btn-home:hover {
+        background: #667eea;
+        color: white;
+    }
+    
+    .help-info {
+        background: #fff3cd;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 30px 0;
+        border-left: 5px solid #ffc107;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="error-card">
+                    <div class="error-icon">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </div>
+                    
+                    <h1 class="error-title">Pagamento Não Aprovado</h1>
+                    
+                    <div class="error-text">
+                        <p>Infelizmente, não foi possível processar seu pagamento.</p>
+                        <p>Isso pode acontecer por diversos motivos, como dados incorretos ou limite insuficiente.</p>
+                    </div>
+                    
+                    <div class="help-info">
+                        <h6 class="text-warning mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Possíveis Causas
+                        </h6>
+                        <ul class="text-start text-muted">
+                            <li>Dados do cartão incorretos</li>
+                            <li>Cartão vencido ou inválido</li>
+                            <li>Limite insuficiente</li>
+                            <li>Problemas na operadora</li>
+                            <li>Bloqueio por segurança</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="javascript:history.back()" class="btn-retry">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Tentar Novamente
+                        </a>
+                        <a href="{% url 'core:home' %}" class="btn-home">
+                            <i class="bi bi-house me-2"></i>Voltar ao Início
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <i class="bi bi-headset text-primary fs-3 mb-2"></i>
+                                <h6 class="fw-bold">Precisa de Ajuda?</h6>
+                                <small class="text-muted">Entre em contato conosco</small>
+                                <br>
+                                <small class="text-muted">WhatsApp: (11) 99999-9999</small>
+                            </div>
+                            <div class="col-md-6">
+                                <i class="bi bi-credit-card text-success fs-3 mb-2"></i>
+                                <h6 class="fw-bold">Outros Métodos</h6>
+                                <small class="text-muted">PIX, Boleto ou outro cartão</small>
+                                <br>
+                                <small class="text-muted">Tente com outro método</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

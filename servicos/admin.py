@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib import messages
-from .models import Servico, SolicitacaoServico, SolicitacaoMEI
+from .models import Servico, SolicitacaoServico, SolicitacaoMEI, SolicitacaoBaixaMEI
 
 @admin.register(Servico)
 class ServicoAdmin(admin.ModelAdmin):
@@ -104,6 +104,106 @@ class SolicitacaoMEIAdmin(admin.ModelAdmin):
                     f'✅ Solicitação de {obj.nome_completo} marcada como concluída. '
                     f'Uma venda de R$ {obj.valor_servico} será criada automaticamente no painel financeiro.',
                     level='SUCCESS'
+                )
+        
+        super().save_model(request, obj, form, change)
+
+
+@admin.register(SolicitacaoBaixaMEI)
+class SolicitacaoBaixaMEIAdmin(admin.ModelAdmin):
+    list_display = [
+        'id', 'nome_completo', 'cnpj_mei', 'status', 'usuario', 'criado_em'
+    ]
+    list_filter = [
+        'status', 'criado_em', 'atualizado_em', 'estado'
+    ]
+    search_fields = [
+        'nome_completo', 'cpf', 'cnpj_mei', 'email', 'telefone', 'cidade'
+    ]
+    list_editable = ['status']
+    readonly_fields = ['criado_em', 'atualizado_em']
+    ordering = ['-criado_em']
+    list_per_page = 25
+    actions = ['marcar_como_processando', 'marcar_como_concluido', 'marcar_como_cancelado']
+    
+    fieldsets = (
+        ('Dados do MEI', {
+            'fields': ('cnpj_mei', 'nome_fantasia')
+        }),
+        ('Dados Pessoais', {
+            'fields': (
+                'nome_completo', 'cpf', 'data_nascimento', 'rg', 
+                'orgao_emissor', 'nome_mae'
+            )
+        }),
+        ('Contato', {
+            'fields': ('email', 'telefone')
+        }),
+        ('Endereço Comercial', {
+            'fields': (
+                'cep', 'rua', 'numero', 'complemento', 
+                'bairro', 'cidade', 'estado'
+            )
+        }),
+        ('Controle e Observações', {
+            'fields': ('status', 'observacoes', 'usuario'),
+        }),
+        ('Datas', {
+            'fields': ('criado_em', 'atualizado_em'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def marcar_como_processando(self, request, queryset):
+        """Action para marcar solicitações como em processamento."""
+        updated = queryset.update(status='processando')
+        
+        if updated:
+            self.message_user(
+                request,
+                f'{updated} solicitação(ões) marcada(s) como em processamento.',
+                level='INFO'
+            )
+    
+    marcar_como_processando.short_description = "🔄 Marcar como processando"
+    
+    def marcar_como_concluido(self, request, queryset):
+        """Action para marcar solicitações como concluídas."""
+        updated = queryset.update(status='concluido')
+        
+        if updated:
+            self.message_user(
+                request,
+                f'{updated} solicitação(ões) de baixa MEI marcada(s) como concluída(s).',
+                level='SUCCESS'
+            )
+    
+    marcar_como_concluido.short_description = "✅ Marcar como concluído"
+    
+    def marcar_como_cancelado(self, request, queryset):
+        """Action para marcar solicitações como canceladas."""
+        updated = queryset.update(status='cancelado')
+        
+        if updated:
+            self.message_user(
+                request,
+                f'{updated} solicitação(ões) de baixa MEI cancelada(s).',
+                level='WARNING'
+            )
+    
+    marcar_como_cancelado.short_description = "❌ Marcar como cancelado"
+    
+    def save_model(self, request, obj, form, change):
+        """Customiza o salvamento para mostrar mensagens informativas."""
+        if change:
+            original = SolicitacaoBaixaMEI.objects.get(pk=obj.pk)
+            if original.status != obj.status:
+                status_display = obj.get_status_display()
+                self.message_user(
+                    request,
+                    f'Status da solicitação de baixa MEI de {obj.nome_completo} '
+                    f'alterado para: {status_display}',
+                    level='INFO'
                 )
         
         super().save_model(request, obj, form, change)

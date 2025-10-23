@@ -1,6 +1,28 @@
-# Central MEI - Sistema de Contabilidade MEI
+# � Central MEI - Sistema de Contabilidade MEI
 
 Sistema web completo desenvolvido em Django para gestão de serviços contábeis para Microempreendedores Individuais (MEI).
+
+**🌐 Site:** https://centralmeumei.com.br  
+**💳 Checkout Transparente:** Integrado com Mercado Pago
+
+## ⚠️ CONFIGURAÇÃO OBRIGATÓRIA - ARQUIVO .env
+
+**IMPORTANTE:** Este projeto agora usa variáveis de ambiente para proteger dados sensíveis.
+
+### 🔧 Configuração Inicial
+
+1. **Copie o arquivo de exemplo:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edite o arquivo .env com suas configurações:**
+   - `SECRET_KEY`: Gere uma nova chave em https://djecrety.ir/
+   - `MERCADOPAGO_ACCESS_TOKEN`: Token do Mercado Pago
+   - `MERCADOPAGO_PUBLIC_KEY`: Chave pública do Mercado Pago
+   - Configure outros parâmetros conforme necessário
+
+3. **NUNCA commite o arquivo .env no Git!**
 
 ## 🚀 Funcionalidades
 

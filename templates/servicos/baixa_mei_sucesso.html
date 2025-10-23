@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}Solicitação de Baixa MEI Enviada - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --color-primary: #04acec;
+        --color-secondary: #1c943c;
+        --color-tertiary: #fccc2b;
+        --color-quaternary: #026d96;
+    }
+    
+    .bg-gradient-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+    }
+    
+    .btn-custom {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-quaternary));
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        background: linear-gradient(135deg, var(--color-quaternary), var(--color-primary));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(4, 172, 236, 0.3);
+        color: white;
+    }
+    
+    .card-custom {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .icon-success {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--color-secondary), var(--color-tertiary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Card de Sucesso -->
+                <div class="card card-custom shadow border-0">
+                    <div class="card-body p-5 text-center">
+                        <!-- Ícone de Sucesso -->
+                        <div class="icon-success">
+                            <i class="fas fa-check"></i>
+                        </div>
+
+                        <!-- Título -->
+                        <h2 class="text-success mb-3">Solicitação de Baixa MEI Enviada com Sucesso!</h2>
+                        
+                        <!-- Protocolo -->
+                        <div class="alert alert-success border-0 mb-4" role="alert">
+                            <h4 class="alert-heading">
+                                <i class="fas fa-clipboard-check me-2"></i>
+                                Protocolo #{{ solicitacao.id|stringformat:"06d" }}
+                            </h4>
+                            <p class="mb-0">Guarde este número para acompanhar o andamento da sua solicitação</p>
+                        </div>
+
+                        <!-- Informações da Solicitação -->
+                        <div class="row text-start mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="fas fa-building me-1"></i>
+                                            Dados do MEI
+                                        </h6>
+                                        <p class="mb-1"><strong>CNPJ:</strong> {{ solicitacao.cnpj_mei }}</p>
+                                        <p class="mb-1"><strong>Razão Social:</strong> {{ solicitacao.razao_social }}</p>
+                                        {% if solicitacao.nome_fantasia %}
+                                        <p class="mb-0"><strong>Nome Fantasia:</strong> {{ solicitacao.nome_fantasia }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0 h-100">
+                                    <div class="card-body">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="fas fa-user me-1"></i>
+                                            Dados Pessoais
+                                        </h6>
+                                        <p class="mb-1"><strong>Nome:</strong> {{ solicitacao.nome_completo }}</p>
+                                        <p class="mb-1"><strong>CPF:</strong> {{ solicitacao.cpf }}</p>
+                                        <p class="mb-0"><strong>E-mail:</strong> {{ solicitacao.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status e Data -->
+                        <div class="row text-start mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-primary text-white border-0">
+                                    <div class="card-body">
+                                        <h6 class="mb-2">
+                                            <i class="fas fa-clock me-1"></i>
+                                            Status da Solicitação
+                                        </h6>
+                                        <span class="badge bg-light text-primary fs-6">{{ solicitacao.get_status_display }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-info text-white border-0">
+                                    <div class="card-body">
+                                        <h6 class="mb-2">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            Data da Solicitação
+                                        </h6>
+                                        <p class="mb-0">{{ solicitacao.data_solicitacao|date:"d/m/Y H:i" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Próximos Passos -->
+                        <div class="alert alert-info border-0 text-start mb-4">
+                            <h5 class="alert-heading text-primary">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Próximos Passos
+                            </h5>
+                            <ul class="mb-0">
+                                <li class="mb-2">Nossa equipe irá analisar sua solicitação em até <strong>2 dias úteis</strong></li>
+                                <li class="mb-2">Você receberá um e-mail de confirmação com os próximos passos</li>
+                                <li class="mb-2">Se necessário, entraremos em contato para solicitar documentação adicional</li>
+                                <li class="mb-0">O processo de baixa será realizado diretamente no Portal do Empreendedor</li>
+                            </ul>
+                        </div>
+
+                        <!-- Informações Importantes -->
+                        <div class="alert alert-warning border-0 text-start mb-4">
+                            <h6 class="text-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Importante
+                            </h6>
+                            <ul class="mb-0 small">
+                                <li>Mantenha suas obrigações fiscais em dia até a confirmação da baixa</li>
+                                <li>Não emita mais notas fiscais após solicitar a baixa</li>
+                                <li>Guarde o número do protocolo para consultas futuras</li>
+                                <li>Em caso de dúvidas, entre em contato conosco</li>
+                            </ul>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                            <a href="{% url 'core:home' %}" class="btn btn-custom btn-lg">
+                                <i class="fas fa-home me-2"></i>
+                                Voltar ao Início
+                            </a>
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'dashboard:home' %}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Ir para Dashboard
+                            </a>
+                            {% endif %}
+                            <button onclick="window.print()" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-print me-2"></i>
+                                Imprimir Comprovante
+                            </button>
+                        </div>
+
+                        <!-- Contato -->
+                        <div class="mt-4 pt-4 border-top">
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-phone me-2"></i>
+                                Dúvidas? Entre em contato conosco
+                            </p>
+                            <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                                <a href="mailto:contato@centralmei.com.br" class="text-decoration-none">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    contato@centralmei.com.br
+                                </a>
+                                <a href="tel:+5511999999999" class="text-decoration-none">
+                                    <i class="fas fa-phone me-1"></i>
+                                    (11) 99999-9999
+                                </a>
+                                <a href="https://wa.me/5511999999999" class="text-decoration-none text-success">
+                                    <i class="fab fa-whatsapp me-1"></i>
+                                    WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+@media print {
+    .btn, .navbar, .footer {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Regularização MEI Solicitada com Sucesso | Central MEI{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% for breadcrumb in breadcrumbs %}
+                {% if forloop.last %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.name }}</li>
+                {% else %}
+                    <li class="breadcrumb-item">
+                        {% if breadcrumb.url %}
+                            <a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a>
+                        {% else %}
+                            {{ breadcrumb.name }}
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </nav>
+
+    <!-- Progresso dos Passos - Completo -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="progress-container">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="step-indicator completed">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Dados de Contato</span>
+                    </div>
+                    <div class="step-divider completed"></div>
+                    <div class="step-indicator completed">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Dados do MEI</span>
+                    </div>
+                    <div class="step-divider completed"></div>
+                    <div class="step-indicator completed">
+                        <span class="step-number">3</span>
+                        <span class="step-label">Confirmação</span>
+                    </div>
+                </div>
+                <div class="progress progress-complete">
+                    <div class="progress-bar progress-100 bg-success" role="progressbar" aria-label="Regularização MEI concluída" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Página de Sucesso -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Card de Sucesso Principal -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center p-5">
+                    <!-- Ícone de Sucesso -->
+                    <div class="success-icon mb-4">
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+
+                    <!-- Título Principal -->
+                    <h1 class="h2 text-success mb-3">
+                        Solicitação Enviada com Sucesso!
+                    </h1>
+
+                    <!-- Mensagem de Confirmação -->
+                    <p class="lead text-muted mb-4">
+                        Sua solicitação de regularização do MEI foi recebida e será processada 
+                        por nossa equipe especializada.
+                    </p>
+
+                    <!-- Informações do Protocolo -->
+                    <div class="protocol-info bg-light p-4 rounded mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="mb-2">
+                                    <i class="fas fa-file-alt text-primary me-2"></i>
+                                    Número do Protocolo
+                                </h5>
+                                <h3 class="text-primary mb-0">#{{ protocolo }}</h3>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-2">
+                                    <i class="fas fa-calendar text-muted me-2"></i>
+                                    Data da Solicitação
+                                </h6>
+                                <p class="mb-0">{{ data_solicitacao|date:"d/m/Y às H:i" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informações sobre o que acontece agora -->
+                    <div class="what-happens-next mb-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-route text-primary me-2"></i>
+                            O que acontece agora?
+                        </h5>
+                        <div class="row text-start">
+                            <div class="col-md-4 mb-3">
+                                <div class="step-item">
+                                    <div class="step-number-small bg-primary text-white">1</div>
+                                    <h6>Análise dos Dados</h6>
+                                    <small class="text-muted">
+                                        Nossa equipe irá analisar suas informações e a situação do seu MEI
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="step-item">
+                                    <div class="step-number-small bg-warning text-white">2</div>
+                                    <h6>Contato Inicial</h6>
+                                    <small class="text-muted">
+                                        Entraremos em contato em até 24 horas para confirmar os detalhes
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="step-item">
+                                    <div class="step-number-small bg-success text-white">3</div>
+                                    <h6>Regularização</h6>
+                                    <small class="text-muted">
+                                        Cuidamos de todo o processo para regularizar seu MEI
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informações de Contato -->
+                    <div class="contact-info bg-primary text-white p-4 rounded mb-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-headset me-2"></i>
+                            Precisou de Ajuda?
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <i class="fas fa-phone me-2"></i>
+                                    <strong>Telefone:</strong> (11) 99999-9999
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <strong>E-mail:</strong> contato@centralmei.com.br
+                                </p>
+                            </div>
+                        </div>
+                        <small>
+                            Tenha sempre em mãos o número do seu protocolo: <strong>#{{ protocolo }}</strong>
+                        </small>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="action-buttons">
+                        <a href="{% url 'core:home' %}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-home me-2"></i>Voltar ao Início
+                        </a>
+                        <a href="{% url 'core:home' %}#servicos" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-list me-2"></i>Outros Serviços
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumo dos Dados Enviados -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Resumo dos Dados Enviados
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Dados de Contato -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="border-bottom pb-2 mb-3">Dados de Contato</h6>
+                            <p class="mb-1"><strong>Nome:</strong> {{ regularizacao.nome_completo }}</p>
+                            <p class="mb-1"><strong>E-mail:</strong> {{ regularizacao.email }}</p>
+                            <p class="mb-1"><strong>Telefone:</strong> {{ regularizacao.telefone }}</p>
+                        </div>
+
+                        <!-- Dados Pessoais e MEI -->
+                        <div class="col-md-6 mb-3">
+                            <h6 class="border-bottom pb-2 mb-3">Dados do MEI</h6>
+                            <p class="mb-1"><strong>CPF:</strong> {{ regularizacao.cpf }}</p>
+                            <p class="mb-1"><strong>RG:</strong> {{ regularizacao.rg }}</p>
+                            <p class="mb-1"><strong>CNPJ:</strong> {{ regularizacao.cnpj }}</p>
+                        </div>
+
+                        <!-- Endereço -->
+                        <div class="col-12">
+                            <h6 class="border-bottom pb-2 mb-3">Endereço</h6>
+                            <p class="mb-1">
+                                <strong>Endereço Completo:</strong> 
+                                {{ regularizacao.rua }}, {{ regularizacao.numero }}
+                                {% if regularizacao.complemento %} - {{ regularizacao.complemento }}{% endif %}
+                            </p>
+                            <p class="mb-1">
+                                <strong>Bairro:</strong> {{ regularizacao.bairro }}
+                            </p>
+                            <p class="mb-1">
+                                <strong>Cidade/Estado:</strong> {{ regularizacao.cidade }}/{{ regularizacao.estado }}
+                            </p>
+                            <p class="mb-1">
+                                <strong>CEP:</strong> {{ regularizacao.cep }}
+                            </p>
+                            {% if regularizacao.observacoes %}
+                            <p class="mb-1">
+                                <strong>Observações:</strong> {{ regularizacao.observacoes }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.success-icon i {
+    font-size: 5rem;
+}
+
+.protocol-info {
+    border-left: 4px solid #0d6efd;
+}
+
+.step-item {
+    text-align: center;
+    padding: 1rem;
+    height: 100%;
+}
+
+.step-number-small {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.step-indicator {
+    text-align: center;
+    flex: 1;
+}
+
+.step-indicator.completed .step-number {
+    background-color: #198754;
+    color: white;
+}
+
+.step-indicator .step-number {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.step-indicator .step-label {
+    display: block;
+    font-size: 0.875rem;
+    color: #198754;
+    font-weight: 600;
+}
+
+.step-divider {
+    flex: 0 0 50px;
+    height: 2px;
+    background-color: #e9ecef;
+    margin: 20px 0;
+    align-self: flex-start;
+}
+
+.step-divider.completed {
+    background-color: #198754;
+}
+
+.progress-complete {
+    height: 6px;
+}
+
+.progress-100 {
+    width: 100%;
+}
+
+.btn-lg {
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.contact-info {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+}
+
+@media (max-width: 768px) {
+    .action-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .action-buttons .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+</style>
+{% endblock %}

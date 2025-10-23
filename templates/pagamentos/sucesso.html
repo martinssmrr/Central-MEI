@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pagamento Aprovado - Central MEI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        padding: 60px 0;
+    }
+    
+    .success-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        padding: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        font-size: 40px;
+        color: white;
+    }
+    
+    .success-title {
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    
+    .success-text {
+        color: #666;
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    
+    .payment-info {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 30px 0;
+        text-align: left;
+    }
+    
+    .btn-home {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 16px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin-right: 15px;
+    }
+    
+    .btn-home:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(17, 153, 142, 0.3);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="success-card">
+                    <div class="success-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    
+                    <h1 class="success-title">Pagamento Aprovado!</h1>
+                    
+                    <div class="success-text">
+                        <p>Parabéns! Seu pagamento foi processado com sucesso.</p>
+                        <p>Sua solicitação já está sendo processada por nossa equipe especializada.</p>
+                    </div>
+                    
+                    {% if collection_id or external_reference %}
+                    <div class="payment-info">
+                        <h6 class="text-primary mb-3">
+                            <i class="bi bi-receipt me-2"></i>Detalhes do Pagamento
+                        </h6>
+                        {% if collection_id %}
+                        <p class="mb-2">
+                            <strong>ID do Pagamento:</strong> {{ collection_id }}
+                        </p>
+                        {% endif %}
+                        {% if external_reference %}
+                        <p class="mb-2">
+                            <strong>Protocolo:</strong> {{ external_reference }}
+                        </p>
+                        {% endif %}
+                        <p class="mb-0 text-muted">
+                            <small>Guarde essas informações para consultas futuras.</small>
+                        </p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'core:home' %}" class="btn-home">
+                            <i class="bi bi-house me-2"></i>Voltar ao Início
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <i class="bi bi-clock text-primary fs-3 mb-2"></i>
+                                <h6 class="fw-bold">Processamento</h6>
+                                <small class="text-muted">Em até 24 horas úteis</small>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="bi bi-headset text-success fs-3 mb-2"></i>
+                                <h6 class="fw-bold">Suporte</h6>
+                                <small class="text-muted">Atendimento especializado</small>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="bi bi-shield-check text-warning fs-3 mb-2"></i>
+                                <h6 class="fw-bold">Segurança</h6>
+                                <small class="text-muted">Transação protegida</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

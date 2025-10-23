@@ -1,0 +1,448 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Regularizar MEI - Dados do MEI | Central MEI{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% for breadcrumb in breadcrumbs %}
+                {% if forloop.last %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.name }}</li>
+                {% else %}
+                    <li class="breadcrumb-item">
+                        {% if breadcrumb.url %}
+                            <a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a>
+                        {% else %}
+                            {{ breadcrumb.name }}
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </nav>
+
+    <!-- Progresso dos Passos -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="progress-container">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="step-indicator completed">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Dados de Contato</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-indicator active">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Dados do MEI</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-indicator">
+                        <span class="step-number">3</span>
+                        <span class="step-label">Confirmação</span>
+                    </div>
+                </div>
+                <div class="progress progress-step-2">
+                    <div class="progress-bar progress-66" role="progressbar" aria-label="Progresso da regularização MEI" aria-valuenow="66.66" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho da Página -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0">
+                        <i class="fas fa-clipboard-check me-2"></i>
+                        Regularizar MEI - Dados do MEI
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Resumo dos dados do passo anterior -->
+                    {% if dados_passo1 %}
+                    <div class="alert alert-success border-0 mb-4">
+                        <div class="d-flex">
+                            <i class="fas fa-check-circle mt-1 me-3"></i>
+                            <div>
+                                <h6 class="alert-heading mb-2">Dados de Contato Confirmados</h6>
+                                <div class="small">
+                                    <strong>Nome:</strong> {{ dados_passo1.nome_completo }}<br>
+                                    <strong>E-mail:</strong> {{ dados_passo1.email }}<br>
+                                    <strong>Telefone:</strong> {{ dados_passo1.telefone }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Informações sobre esta etapa -->
+                    <div class="alert alert-info border-0 mb-4">
+                        <div class="d-flex">
+                            <i class="fas fa-info-circle mt-1 me-3"></i>
+                            <div>
+                                <h6 class="alert-heading mb-2">Dados do MEI e Endereço</h6>
+                                <p class="mb-0 small">
+                                    Agora precisamos dos dados do seu MEI e endereço completo para 
+                                    iniciar o processo de regularização.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulário -->
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Seção: Dados Pessoais -->
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-user-circle me-2 text-primary"></i>
+                            Dados Pessoais
+                        </h5>
+                        
+                        <div class="row">
+                            <!-- CPF -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.cpf.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.cpf.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.cpf }}
+                                {% if form.cpf.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.cpf.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-id-card me-1"></i>
+                                    Apenas números - Ex: 12345678901
+                                </small>
+                            </div>
+
+                            <!-- RG -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.rg.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.rg.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.rg }}
+                                {% if form.rg.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.rg.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-id-card-alt me-1"></i>
+                                    Documento de identidade
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Seção: Dados do MEI -->
+                        <h5 class="border-bottom pb-2 mb-3 mt-4">
+                            <i class="fas fa-store me-2 text-primary"></i>
+                            Dados do MEI
+                        </h5>
+
+                        <div class="row">
+                            <!-- CNPJ -->
+                            <div class="col-12 mb-3">
+                                <label for="{{ form.cnpj.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.cnpj.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.cnpj }}
+                                {% if form.cnpj.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.cnpj.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-building me-1"></i>
+                                    Apenas números - Ex: 12345678000199
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Seção: Endereço -->
+                        <h5 class="border-bottom pb-2 mb-3 mt-4">
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                            Endereço Completo
+                        </h5>
+
+                        <div class="row">
+                            <!-- CEP -->
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.cep.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.cep.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.cep }}
+                                {% if form.cep.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.cep.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-mail-bulk me-1"></i>
+                                    Formato: 12345-678
+                                </small>
+                            </div>
+
+                            <!-- Rua -->
+                            <div class="col-md-8 mb-3">
+                                <label for="{{ form.rua.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.rua.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.rua }}
+                                {% if form.rua.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.rua.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Número -->
+                            <div class="col-md-3 mb-3">
+                                <label for="{{ form.numero.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.numero.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.numero }}
+                                {% if form.numero.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.numero.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Complemento -->
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.complemento.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.complemento.label }}
+                                </label>
+                                {{ form.complemento }}
+                                {% if form.complemento.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.complemento.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">Opcional</small>
+                            </div>
+
+                            <!-- Bairro -->
+                            <div class="col-md-5 mb-3">
+                                <label for="{{ form.bairro.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.bairro.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.bairro }}
+                                {% if form.bairro.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.bairro.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Cidade -->
+                            <div class="col-md-7 mb-3">
+                                <label for="{{ form.cidade.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.cidade.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.cidade }}
+                                {% if form.cidade.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.cidade.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Estado -->
+                            <div class="col-md-5 mb-3">
+                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.estado.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.estado }}
+                                {% if form.estado.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.estado.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Observações -->
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="{{ form.observacoes.id_for_label }}" class="form-label fw-semibold">
+                                    {{ form.observacoes.label }}
+                                </label>
+                                {{ form.observacoes }}
+                                {% if form.observacoes.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.observacoes.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-comment me-1"></i>
+                                    Informe qualquer informação adicional sobre sua situação
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'servicos:regularizar_mei_passo_1' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Passo Anterior
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Enviar Solicitação
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Informações de Segurança -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="fas fa-lock text-success fa-2x mb-2"></i>
+                        <h6>100% Seguro</h6>
+                        <small class="text-muted">Dados protegidos com criptografia SSL</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="fas fa-certificate text-warning fa-2x mb-2"></i>
+                        <h6>Regularização Completa</h6>
+                        <small class="text-muted">Cuidamos de toda a documentação</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="fas fa-user-tie text-primary fa-2x mb-2"></i>
+                        <h6>Suporte Especializado</h6>
+                        <small class="text-muted">Contadores experientes em MEI</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.step-indicator {
+    text-align: center;
+    flex: 1;
+}
+
+.step-indicator.active .step-number,
+.step-indicator.completed .step-number {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.step-indicator.completed .step-number {
+    background-color: #198754;
+}
+
+.step-indicator .step-number {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.step-indicator .step-label {
+    display: block;
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.step-indicator.active .step-label {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.step-indicator.completed .step-label {
+    color: #198754;
+    font-weight: 600;
+}
+
+.step-divider {
+    flex: 0 0 50px;
+    height: 2px;
+    background-color: #e9ecef;
+    margin: 20px 0;
+    align-self: flex-start;
+}
+
+.progress-step-2 {
+    height: 6px;
+}
+
+.progress-66 {
+    width: 66.66%;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-lg {
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+}
+
+select.form-control {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 12px;
+}
+</style>
+{% endblock %}

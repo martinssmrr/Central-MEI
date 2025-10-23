@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Teste Mercado Pago{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-cog"></i> Teste de Integração - Mercado Pago</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Status das Chaves -->
+                    <div class="mb-4">
+                        <h5>Configuração das Chaves</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><strong>Access Token:</strong></label>
+                                    <div class="d-flex align-items-center">
+                                        {% if access_token_set %}
+                                            <span class="badge badge-success me-2">✓ Configurado</span>
+                                        {% else %}
+                                            <span class="badge badge-danger me-2">✗ Não Configurado</span>
+                                        {% endif %}
+                                        <small class="text-muted">{{ access_token_preview }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><strong>Public Key:</strong></label>
+                                    <div class="d-flex align-items-center">
+                                        {% if public_key_set %}
+                                            <span class="badge badge-success me-2">✓ Configurado</span>
+                                        {% else %}
+                                            <span class="badge badge-danger me-2">✗ Não Configurado</span>
+                                        {% endif %}
+                                        <small class="text-muted">{{ public_key_preview }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Resultado do Teste -->
+                    <div class="mb-4">
+                        <h5>Resultado do Teste</h5>
+                        
+                        {% if success %}
+                            <div class="alert alert-success">
+                                <h6><i class="fas fa-check-circle"></i> {{ message }}</h6>
+                                <ul class="mb-0">
+                                    <li><strong>Status da Resposta:</strong> {{ mp_response_status }}</li>
+                                    <li><strong>ID da Preferência:</strong> <code>{{ preference_id }}</code></li>
+                                    {% if init_point %}
+                                        <li><strong>Link de Pagamento:</strong> 
+                                            <a href="{{ init_point }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                Testar Checkout
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% elif error %}
+                            <div class="alert alert-danger">
+                                <h6><i class="fas fa-exclamation-triangle"></i> Erro na Integração</h6>
+                                <p class="mb-0">{{ error }}</p>
+                                {% if mp_response_status %}
+                                    <small>Status da resposta: {{ mp_response_status }}</small>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Instruções -->
+                    <div class="mb-4">
+                        <h5>Instruções</h5>
+                        <div class="alert alert-info">
+                            <ul class="mb-0">
+                                <li>Se as chaves não estão configuradas, verifique o arquivo <code>.env</code></li>
+                                <li>Se o teste falhar, verifique se as chaves são válidas</li>
+                                <li>Para produção, use chaves de produção</li>
+                                <li>Para testes, use chaves de sandbox/teste</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="text-center">
+                        <a href="{% url 'core:home' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </a>
+                        <a href="{% url 'pagamentos:test_mp' %}" class="btn btn-primary">
+                            <i class="fas fa-redo"></i> Testar Novamente
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
