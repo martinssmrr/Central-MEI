@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Checkout - {{ pagamento.get_tipo_servico_display }} - Central MEI{% endblock %}
+{% block title %}
+{% if servico %}
+Checkout - {{ servico.nome }} - Central MEI
+{% else %}
+Checkout - {{ pagamento.get_tipo_servico_display }} - Central MEI
+{% endif %}
+{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -16,17 +22,15 @@
         border-radius: 20px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         overflow: hidden;
+        max-width: 800px;
+        margin: 0 auto;
     }
     
     .checkout-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: #fff;
         padding: 30px;
         text-align: center;
-    }
-    
-    .checkout-body {
-        padding: 40px;
+        border-bottom: 1px solid #e9ecef;
     }
     
     .service-info {
@@ -45,11 +49,81 @@
         margin: 20px 0;
     }
     
-    .payment-form {
-        background: #fff;
+    .checkout-body {
+        padding: 40px;
+    }
+    
+    .payment-container {
+        margin-top: 30px;
+    }
+    
+    .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .loading-content {
+        background: white;
+        padding: 30px;
         border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .security-info {
+        background: #e3f2fd;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .security-badges {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .security-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #1976d2;
+        font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+        .checkout-body {
+            padding: 20px;
+        }
+        
+        .price-display {
+            font-size: 2rem;
+        }
     }
     
     .form-group {
@@ -158,54 +232,89 @@
 {% block content %}
 <div class="checkout-container">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="checkout-card">
-                    <div class="checkout-header">
-                        <img src="{% static 'img/logo.png' %}" alt="Central MEI" height="50" class="mb-3">
-                        <h2 class="mb-2">Finalizar Pagamento</h2>
-                        <p class="mb-0 opacity-90">Ambiente 100% seguro e protegido</p>
-                    </div>
+        <div class="checkout-card">
+            <!-- Header -->
+            <div class="checkout-header">
+                <h2 class="mb-3">
+                    <i class="bi bi-credit-card-2-front text-primary me-2"></i>
+                    Finalizar Pagamento
+                </h2>
+                <p class="text-muted mb-0">Complete os dados abaixo para contratar o serviço</p>
+            </div>
+            
+            <!-- Body -->
+            <div class="checkout-body">
+                <!-- Informações do Serviço -->
+                <div class="service-info">
+                    <h4 class="text-primary mb-3">
+                        {% if servico %}
+                            {{ servico.nome }}
+                        {% else %}
+                            {{ pagamento.get_tipo_servico_display }}
+                        {% endif %}
+                    </h4>
                     
-                    <div class="checkout-body">
-                        <!-- Informações do Serviço -->
-                        <div class="service-info">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <h4 class="text-primary mb-2">
-                                        <i class="bi bi-briefcase me-2"></i>
-                                        {{ pagamento.get_tipo_servico_display }}
-                                    </h4>
-                                    <p class="text-muted mb-2">
-                                        <strong>Cliente:</strong> {{ pagamento.nome_cliente }}
-                                    </p>
-                                    <p class="text-muted mb-0">
-                                        <strong>Protocolo:</strong> {{ pagamento.mp_external_reference }}
-                                    </p>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="price-display">
-                                        {{ pagamento.valor_formatado }}
-                                    </div>
-                                </div>
-                            </div>
+                    {% if servico %}
+                        <p class="text-muted mb-3">{{ servico.descricao }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Tempo estimado:</span>
+                            <span class="fw-bold">{{ servico.tempo_estimado }}</span>
                         </div>
-                        
-                        <!-- Formulário de Pagamento -->
-                        <div class="payment-form">
-                            <h5 class="mb-4 text-center">
-                                <i class="bi bi-credit-card me-2"></i>
-                                Dados do Pagamento
-                            </h5>
-                            
-                            <!-- Métodos de Pagamento Aceitos -->
-                            <div class="payment-methods">
-                                <img src="https://http2.mlstatic.com/checkout/c/logos/visa.png" alt="Visa">
-                                <img src="https://http2.mlstatic.com/checkout/c/logos/master.png" alt="Mastercard">
-                                <img src="https://http2.mlstatic.com/checkout/c/logos/amex.png" alt="American Express">
-                                <img src="https://http2.mlstatic.com/checkout/c/logos/hipercard.png" alt="Hipercard">
-                                <img src="https://http2.mlstatic.com/checkout/c/logos/pix.png" alt="PIX">
-                            </div>
+                    {% endif %}
+                    
+                    <div class="price-display">
+                        {% if servico %}
+                            R$ {{ servico.preco }}
+                        {% else %}
+                            R$ {{ pagamento.valor }}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Container do Payment Brick -->
+                <div class="payment-container">
+                    <h5 class="mb-3">Escolha a forma de pagamento:</h5>
+                    <div id="paymentBrick_container"></div>
+                </div>
+                
+                <!-- Informações de Segurança -->
+                <div class="security-info">
+                    <h6 class="text-primary mb-3">
+                        <i class="bi bi-shield-check me-2"></i>
+                        Pagamento 100% Seguro
+                    </h6>
+                    <p class="text-muted mb-3">
+                        Seus dados estão protegidos com a tecnologia de segurança do Mercado Pago
+                    </p>
+                    <div class="security-badges">
+                        <div class="security-badge">
+                            <i class="bi bi-lock-fill"></i>
+                            <span>SSL 256 bits</span>
+                        </div>
+                        <div class="security-badge">
+                            <i class="bi bi-shield-check"></i>
+                            <span>PCI Compliant</span>
+                        </div>
+                        <div class="security-badge">
+                            <i class="bi bi-check-circle"></i>
+                            <span>Mercado Pago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <h5>Processando pagamento...</h5>
+        <p class="text-muted mb-0">Por favor, aguarde</p>
+    </div>
+</div>
+
                             
                             <form id="payment-form">
                                 <div class="row">
@@ -338,97 +447,156 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Mercado Pago SDK -->
 <script src="https://sdk.mercadopago.com/js/v2"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar Mercado Pago (Produção)
     const mp = new MercadoPago('{{ mercadopago_public_key }}');
     
-    // Máscaras para os campos
-    document.getElementById('cardNumber').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\s/g, '');
-        let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
-        e.target.value = formattedValue;
-    });
+    const bricksBuilder = mp.bricks();
     
-    document.getElementById('docNumber').addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length <= 11) {
-            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        }
-        e.target.value = value;
-    });
+    // Garantir que o valor seja um número válido (substituir vírgula por ponto)
+    const amountStr = '{% if servico %}{{ servico.preco }}{% else %}{{ pagamento.valor }}{% endif %}';
+    const amount = parseFloat(amountStr.replace(',', '.'));
     
-    // Formulário de pagamento
-    const form = document.getElementById('payment-form');
-    const loadingOverlay = document.getElementById('loading-overlay');
-    
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Mostrar loading
-        loadingOverlay.style.display = 'flex';
-        
-        // Criar token do cartão
-        mp.createCardToken({
-            cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
-            cardholderName: document.getElementById('cardholderName').value,
-            cardExpirationMonth: document.getElementById('cardExpirationMonth').value,
-            cardExpirationYear: document.getElementById('cardExpirationYear').value,
-            securityCode: document.getElementById('securityCode').value,
-            identificationType: 'CPF',
-            identificationNumber: document.getElementById('docNumber').value.replace(/\D/g, '')
-        }).then(function(result) {
-            if (result.error) {
-                loadingOverlay.style.display = 'none';
-                alert('Erro nos dados do cartão: ' + result.error.message);
-                return;
-            }
-            
-            // Processar pagamento
-            processPayment(result.id);
-            
-        }).catch(function(error) {
-            loadingOverlay.style.display = 'none';
-            console.error('Erro no processamento:', error);
-            alert('Erro ao processar cartão: ' + (error.message || error || 'Erro desconhecido'));
-        });
-    });
-    
-    function processPayment(token) {
-        fetch('/pagamentos/pagamento-cartao/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    // Configuração do Payment Brick
+    const renderPaymentBrick = async () => {
+        const settings = {
+            initialization: {
+                amount: amount, // Valor em reais
+                preferenceId: '{{ preference_id }}', // ID da preferência criada no backend
             },
-            body: JSON.stringify({
-                token: token,
-                pagamento_id: '{{ pagamento.id }}',
-                cardholderEmail: document.getElementById('cardholderEmail').value,
-                cardholderName: document.getElementById('cardholderName').value,
-                identificationType: 'CPF',
-                identificationNumber: document.getElementById('docNumber').value.replace(/\D/g, '')
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            loadingOverlay.style.display = 'none';
+            customization: {
+                paymentMethods: {
+                    creditCard: "all",
+                    debitCard: "all", 
+                    ticket: "all",
+                    bankTransfer: "all",
+                },
+                visual: {
+                    style: {
+                        customVariables: {
+                            formBackgroundColor: '#ffffff',
+                            inputBackgroundColor: '#ffffff',
+                            inputFocusedBackgroundColor: '#ffffff',
+                            inputBorderColor: '#ced4da',
+                            inputFocusedBorderColor: '#667eea',
+                            baseColor: '#667eea',
+                            baseColorFirstVariant: '#764ba2',
+                            baseColorSecondVariant: '#667eea',
+                            errorColor: '#dc3545',
+                            successColor: '#28a745',
+                            outlinePrimaryColor: '#667eea',
+                            outlineSecondaryColor: '#6c757d',
+                            buttonTextColor: '#ffffff',
+                            fontSizeExtraSmall: '12px',
+                            fontSizeSmall: '14px',
+                            fontSizeMedium: '16px',
+                            fontSizeLarge: '18px',
+                            fontSizeExtraLarge: '24px',
+                            fontWeightNormal: '400',
+                            fontWeightSemiBold: '600',
+                            formInputsTextTransform: 'none',
+                            inputVerticalPadding: '12px',
+                            inputHorizontalPadding: '16px',
+                            inputFocusedBoxShadow: '0 0 0 0.2rem rgba(102, 126, 234, 0.25)',
+                            inputErrorFocusedBoxShadow: '0 0 0 0.2rem rgba(220, 53, 69, 0.25)',
+                            buttonVerticalPadding: '12px',
+                            buttonHorizontalPadding: '24px',
+                            buttonBorderRadius: '8px',
+                            inputBorderRadius: '8px',
+                            buttonPrimaryBoxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                            buttonSecondaryBoxShadow: 'none',
+                            buttonFocusedBoxShadow: '0 0 0 0.2rem rgba(102, 126, 234, 0.5)',
+                            buttonActiveBoxShadow: 'inset 0 3px 5px rgba(0, 0, 0, 0.125)'
+                        }
+                    }
+                }
+            },
+            callbacks: {
+                onReady: () => {
+                    // Callback chamado quando o Brick estiver pronto
+                    console.log('Payment Brick ready');
+                },
+                onSubmit: ({ selectedPaymentMethod, formData }) => {
+                    // Callback chamado quando o usuário clica no botão de pagar
+                    console.log('Payment method selected:', selectedPaymentMethod);
+                    console.log('Form data:', formData);
+                    
+                    // Mostrar loading
+                    document.getElementById('loadingOverlay').style.display = 'flex';
+                    
+                    // Processar pagamento
+                    return processPayment(formData);
+                },
+                onError: (error) => {
+                    // Callback chamado para todos os casos de erro do Brick
+                    console.error('Payment Brick error:', error);
+                    alert('Erro no formulário de pagamento: ' + (error.message || error));
+                }
+            }
+        };
+        
+        window.paymentBrickController = await bricksBuilder.create('payment', 'paymentBrick_container', settings);
+    };
+    
+    // Processar pagamento via API
+    async function processPayment(formData) {
+        try {
+            const response = await fetch('/pagamentos/processar/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    pagamento_id: '{{ pagamento.id }}',
+                    {% if servico %}
+                    servico_slug: '{{ servico.slug }}',
+                    {% endif %}
+                })
+            });
+            
+            const data = await response.json();
+            
+            // Esconder loading
+            document.getElementById('loadingOverlay').style.display = 'none';
             
             if (data.status === 'approved') {
-                window.location.href = '/pagamentos/sucesso/?collection_id=' + data.payment_id + '&external_reference={{ pagamento.mp_external_reference }}';
+                window.location.href = '/pagamentos/sucesso/?collection_id=' + data.payment_id;
             } else if (data.status === 'pending') {
-                window.location.href = '/pagamentos/pendente/?collection_id=' + data.payment_id + '&external_reference={{ pagamento.mp_external_reference }}';
+                window.location.href = '/pagamentos/pendente/?collection_id=' + data.payment_id;
             } else {
-                window.location.href = '/pagamentos/erro/?collection_id=' + data.payment_id + '&external_reference={{ pagamento.mp_external_reference }}';
+                window.location.href = '/pagamentos/erro/?collection_id=' + data.payment_id;
             }
-        })
-        .catch(error => {
-            loadingOverlay.style.display = 'none';
-            console.error('Erro no processamento de pagamento:', error);
-            alert('Erro ao processar pagamento: ' + (error.message || error || 'Erro desconhecido'));
-        });
+            
+        } catch (error) {
+            console.error('Error processing payment:', error);
+            document.getElementById('loadingOverlay').style.display = 'none';
+            alert('Erro ao processar pagamento: ' + (error.message || error));
+        }
     }
+    
+    // Função para obter CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Renderizar o Payment Brick
+    renderPaymentBrick();
 });
 </script>
 {% endblock %}

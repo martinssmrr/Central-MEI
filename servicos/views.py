@@ -102,47 +102,35 @@ def regularizar_mei_passo_2(request):
         form = RegularizarMeiPasso2Form(request.POST)
         
         if form.is_valid():
-            # Combinar dados do passo 1 com os dados do passo 2
-            dados_completos = {**dados_passo_1, **form.cleaned_data}
+            # Armazenar dados do passo 2 na sessão
+            dados_passo2 = {
+                'cpf': form.cleaned_data['cpf'],
+                'rg': form.cleaned_data['rg'],
+                'cnpj': form.cleaned_data['cnpj'],
+                'cep': form.cleaned_data['cep'],
+                'rua': form.cleaned_data['rua'],
+                'numero': form.cleaned_data['numero'],
+                'complemento': form.cleaned_data.get('complemento', ''),
+                'bairro': form.cleaned_data['bairro'],
+                'cidade': form.cleaned_data['cidade'],
+                'estado': form.cleaned_data['estado'],
+                'observacoes': form.cleaned_data.get('observacoes', ''),
+            }
             
-            # Criar e salvar o objeto no banco de dados
-            regularizacao = RegularizacaoMEI.objects.create(
-                # Dados do passo 1
-                nome_completo=dados_completos['nome_completo'],
-                email=dados_completos['email'],
-                telefone=dados_completos['telefone'],
-                
-                # Dados do passo 2
-                cpf=dados_completos['cpf'],
-                rg=dados_completos['rg'],
-                cnpj=dados_completos['cnpj'],
-                cep=dados_completos['cep'],
-                rua=dados_completos['rua'],
-                numero=dados_completos['numero'],
-                complemento=dados_completos.get('complemento', ''),
-                bairro=dados_completos['bairro'],
-                cidade=dados_completos['cidade'],
-                estado=dados_completos['estado'],
-                observacoes=dados_completos.get('observacoes', ''),
-                
-                # Associar ao usuário logado, se houver
-                usuario=request.user if request.user.is_authenticated else None
-            )
+            request.session['dados_passo2'] = dados_passo2
             
-            # Limpar dados da sessão
-            if 'regularizar_mei_step1_data' in request.session:
-                del request.session['regularizar_mei_step1_data']
+            # Combinar dados dos dois passos para a sessão completa
+            dados_completos = {
+                **dados_passo_1,
+                **dados_passo2,
+                'tipo_servico': 'regularizar_mei',
+                'servico_slug': 'regularizar-mei'
+            }
             
-            # Mensagem de sucesso
-            messages.success(
-                request,
-                f'✅ Solicitação de regularização do MEI enviada com sucesso! '
-                f'Protocolo: #{regularizacao.id}. '
-                f'Em breve entraremos em contato.'
-            )
+            request.session['servico_dados_completos'] = dados_completos
             
-            # Redirecionar para página de sucesso
-            return redirect('servicos:regularizar_mei_sucesso', pk=regularizacao.id)
+            # Redirecionar para checkout
+            return redirect('pagamentos:checkout_servico', servico_slug='regularizar-mei')
         
         else:
             # Mensagem de erro
@@ -231,13 +219,8 @@ def declaracao_mei_passo_2(request):
                 # Recuperar dados do passo 1
                 dados_passo1 = request.session['declaracao_mei_dados']
                 
-                # Combinar todos os dados
-                dados_completos = {
-                    # Dados do passo 1
-                    'nome_completo': dados_passo1['nome_completo'],
-                    'email': dados_passo1['email'],
-                    'telefone': dados_passo1['telefone'],
-                    # Dados do passo 2
+                # Armazenar dados do passo 2 na sessão
+                dados_passo2 = {
                     'cnpj': form.cleaned_data['cnpj'],
                     'cpf': form.cleaned_data['cpf'],
                     'cep': form.cleaned_data['cep'],
@@ -249,19 +232,20 @@ def declaracao_mei_passo_2(request):
                     'estado': form.cleaned_data['estado'],
                 }
                 
-                # Criar solicitação no banco de dados
-                solicitacao = SolicitacaoDeclaracaoMEI.objects.create(**dados_completos)
+                request.session['dados_passo2'] = dados_passo2
                 
-                # Definir usuário se logado
-                if request.user.is_authenticated:
-                    solicitacao.usuario = request.user
-                    solicitacao.save()
+                # Combinar dados dos dois passos para a sessão completa
+                dados_completos = {
+                    **dados_passo1,
+                    **dados_passo2,
+                    'tipo_servico': 'declaracao_anual_mei',
+                    'servico_slug': 'declaracao-anual-mei'
+                }
                 
-                # Limpar sessão
-                del request.session['declaracao_mei_dados']
+                request.session['servico_dados_completos'] = dados_completos
                 
-                messages.success(request, f'Solicitação de Declaração MEI enviada com sucesso! Protocolo: {solicitacao.id}')
-                return redirect('servicos:declaracao_mei_sucesso', protocolo=solicitacao.id)
+                # Redirecionar para checkout
+                return redirect('pagamentos:checkout_servico', servico_slug='declaracao-anual-mei')
                 
             except Exception as e:
                 messages.error(request, f'Erro ao processar solicitação: {str(e)}')
@@ -335,74 +319,45 @@ def abrir_mei_passo2(request):
     if request.method == 'POST':
         form = AbrirMeiPasso2Form(request.POST)
         if form.is_valid():
-            # Recuperar dados do passo 1
-            dados_passo1 = request.session.get('dados_passo1', {})
+            # Armazenar dados do passo 2 na sessão
+            dados_passo2 = {
+                # Dados de identificação
+                'cpf': form.cleaned_data['cpf'].replace('.', '').replace('-', ''),
+                'rg': form.cleaned_data['rg'],
+                'orgao_expedidor': form.cleaned_data['orgao_expedidor'],
+                'estado_expedidor': form.cleaned_data['estado_expedidor'],
+                
+                # Dados empresariais
+                'cnae_primario': form.cleaned_data['cnae_primario'],
+                'cnaes_secundarios': form.cleaned_data.get('cnae_secundario', ''),
+                'forma_atuacao': form.cleaned_data['forma_atuacao'],
+                'capital_inicial': float(form.cleaned_data['capital_inicial']),
+                
+                # Endereço
+                'cep': form.cleaned_data['cep'].replace('-', ''),
+                'cidade': form.cleaned_data['cidade'],
+                'estado': form.cleaned_data['estado'],
+                'rua': form.cleaned_data['rua'],
+                'numero': form.cleaned_data['numero'],
+                'bairro': form.cleaned_data['bairro'],
+                'complemento': form.cleaned_data.get('complemento', ''),
+            }
             
-            # Criar a solicitação MEI
-            try:
-                solicitacao = SolicitacaoMEI.objects.create(
-                    # Dados do passo 1
-                    nome_completo=dados_passo1.get('nome_completo'),
-                    email=dados_passo1.get('email'),
-                    telefone=dados_passo1.get('telefone'),
-                    
-                    # Dados de identificação (passo 2)
-                    cpf=form.cleaned_data['cpf'].replace('.', '').replace('-', ''),
-                    rg=form.cleaned_data['rg'],
-                    orgao_expedidor=form.cleaned_data['orgao_expedidor'],
-                    estado_expedidor=form.cleaned_data['estado_expedidor'],
-                    
-                    # Dados empresariais (passo 2)
-                    cnae_primario=form.cleaned_data['cnae_primario'],
-                    cnaes_secundarios=form.cleaned_data.get('cnae_secundario', ''),
-                    forma_atuacao=form.cleaned_data['forma_atuacao'],
-                    capital_inicial=form.cleaned_data['capital_inicial'],
-                    
-                    # Endereço (passo 2)
-                    cep=form.cleaned_data['cep'].replace('-', ''),
-                    cidade=form.cleaned_data['cidade'],
-                    estado=form.cleaned_data['estado'],
-                    rua=form.cleaned_data['rua'],
-                    numero=form.cleaned_data['numero'],
-                    bairro=form.cleaned_data['bairro'],
-                    complemento=form.cleaned_data.get('complemento', ''),
-                    
-                    # Usuário (se logado)
-                    usuario=request.user if request.user.is_authenticated else None,
-                )
-                
-                # Redirecionar para pagamento
-                from django.http import HttpResponseRedirect
-                from django.urls import reverse
-                
-                # Preparar dados para pagamento
-                request.session['pagamento_data'] = {
-                    'solicitacao_id': solicitacao.id,
-                    'tipo_servico': 'abrir_mei',
-                    'nome_completo': solicitacao.nome_completo,
-                    'email': solicitacao.email,
-                    'telefone': solicitacao.telefone,
-                }
-                
-                # Limpar dados da sessão dos passos
-                if 'dados_passo1' in request.session:
-                    del request.session['dados_passo1']
-                if 'dados_passo2' in request.session:
-                    del request.session['dados_passo2']
-                
-                # Redirecionar para pagamento
-                return HttpResponseRedirect(
-                    reverse('pagamentos:processar') + 
-                    f'?solicitacao_id={solicitacao.id}&tipo_servico=abrir_mei'
-                )
-                
-            except Exception as e:
-                print(f"DEBUG - Erro ao criar solicitação: {e}")
-                if 'cpf' in str(e).lower() and 'unique' in str(e).lower():
-                    messages.error(request, 'Já existe uma solicitação com este CPF. Entre em contato conosco.')
-                else:
-                    messages.error(request, f'Erro ao processar sua solicitação: {e}')
-                return redirect('servicos:abrir_mei_passo2')
+            request.session['dados_passo2'] = dados_passo2
+            
+            # Combinar dados dos dois passos para a sessão completa
+            dados_completos = {
+                **request.session.get('dados_passo1', {}),
+                **dados_passo2,
+                'tipo_servico': 'abrir_mei',
+                'servico_slug': 'abrir-mei'
+            }
+            
+            request.session['servico_dados_completos'] = dados_completos
+            
+            # Redirecionar para checkout com slug do serviço
+            return redirect('pagamentos:checkout_servico', servico_slug='abrir-mei')
+            
         else:
             messages.error(request, 'Por favor, corrija os erros abaixo.')
     else:
@@ -606,51 +561,39 @@ def baixar_mei_passo_2(request):
         form = BaixarMeiPasso2Form(request.POST)
         
         if form.is_valid():
-            # Combinar dados do passo 1 com os dados do passo 2
-            dados_completos = {**dados_passo_1, **form.cleaned_data}
+            # Armazenar dados do passo 2 na sessão
+            dados_passo2 = {
+                'cnpj_mei': form.cleaned_data['cnpj_mei'],
+                'nome_fantasia': form.cleaned_data['nome_fantasia'],
+                'cpf': form.cleaned_data['cpf'],
+                'rg': form.cleaned_data['rg'],
+                'orgao_emissor': form.cleaned_data['orgao_emissor'],
+                'data_nascimento': form.cleaned_data['data_nascimento'],
+                'nome_mae': form.cleaned_data['nome_mae'],
+                'cep': form.cleaned_data['cep'],
+                'rua': form.cleaned_data['rua'],
+                'numero': form.cleaned_data['numero'],
+                'complemento': form.cleaned_data.get('complemento', ''),
+                'bairro': form.cleaned_data['bairro'],
+                'cidade': form.cleaned_data['cidade'],
+                'estado': form.cleaned_data['estado'],
+                'observacoes': form.cleaned_data.get('observacoes', ''),
+            }
             
-            # Criar e salvar o objeto no banco de dados
-            solicitacao = SolicitacaoBaixaMEI.objects.create(
-                # Dados do passo 1
-                nome_completo=dados_completos['nome_completo'],
-                email=dados_completos['email'],
-                telefone=dados_completos['telefone'],
-                
-                # Dados do passo 2
-                cnpj_mei=dados_completos['cnpj_mei'],
-                nome_fantasia=dados_completos['nome_fantasia'],
-                cpf=dados_completos['cpf'],
-                rg=dados_completos['rg'],
-                orgao_emissor=dados_completos['orgao_emissor'],
-                data_nascimento=dados_completos['data_nascimento'],
-                nome_mae=dados_completos['nome_mae'],
-                cep=dados_completos['cep'],
-                rua=dados_completos['rua'],
-                numero=dados_completos['numero'],
-                complemento=dados_completos.get('complemento', ''),
-                bairro=dados_completos['bairro'],
-                cidade=dados_completos['cidade'],
-                estado=dados_completos['estado'],
-                observacoes=dados_completos.get('observacoes', ''),
-                
-                # Associar ao usuário logado, se houver
-                usuario=request.user if request.user.is_authenticated else None
-            )
+            request.session['dados_passo2'] = dados_passo2
             
-            # Limpar dados da sessão
-            if 'baixar_mei_dados' in request.session:
-                del request.session['baixar_mei_dados']
+            # Combinar dados dos dois passos para a sessão completa
+            dados_completos = {
+                **dados_passo_1,
+                **dados_passo2,
+                'tipo_servico': 'baixar_mei',
+                'servico_slug': 'baixar-mei'
+            }
             
-            # Mensagem de sucesso
-            messages.success(
-                request,
-                f'✅ Solicitação de baixa do MEI enviada com sucesso! '
-                f'Protocolo: #{solicitacao.id}. '
-                f'Em breve entraremos em contato.'
-            )
+            request.session['servico_dados_completos'] = dados_completos
             
-            # Redirecionar para página de sucesso
-            return redirect('servicos:baixar_mei_sucesso', pk=solicitacao.id)
+            # Redirecionar para checkout
+            return redirect('pagamentos:checkout_servico', servico_slug='baixar-mei')
         
         else:
             # Mensagem de erro

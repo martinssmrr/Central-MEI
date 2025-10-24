@@ -12,6 +12,7 @@ urlpatterns = [
     
     # Checkout
     path('checkout/<uuid:pagamento_id>/', views.checkout_view, name='checkout'),
+    path('servico/<slug:servico_slug>/', views.CheckoutServicoView.as_view(), name='checkout_servico'),
     
     # Páginas de retorno
     path('sucesso/', views.pagamento_sucesso, name='sucesso'),
@@ -20,6 +21,7 @@ urlpatterns = [
     
     # Webhook
     path('webhook/', views.webhook_mercadopago, name='webhook'),
+    path('webhook/mercado-pago/', views.webhook_mercadopago, name='webhook_mercadopago'),
     
     # Test views
     path('test-mp/', test_views.test_mercadopago, name='test_mp'),

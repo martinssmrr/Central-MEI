@@ -180,9 +180,10 @@ CONTACT_EMAIL = config('CONTACT_EMAIL', default='contato@centralgestaomei.com.br
 
 MERCADOPAGO_ACCESS_TOKEN = config('MERCADOPAGO_ACCESS_TOKEN', default='TEST-ACCESS-TOKEN')
 MERCADOPAGO_PUBLIC_KEY = config('MERCADOPAGO_PUBLIC_KEY', default='TEST-PUBLIC-KEY')
-MERCADOPAGO_SUCCESS_URL = config('MERCADOPAGO_SUCCESS_URL', default='https://centralmeumei.com.br/pagamentos/sucesso/')
-MERCADOPAGO_FAILURE_URL = config('MERCADOPAGO_FAILURE_URL', default='https://centralmeumei.com.br/pagamentos/erro/')
-MERCADOPAGO_PENDING_URL = config('MERCADOPAGO_PENDING_URL', default='https://centralmeumei.com.br/pagamentos/pendente/')
+MERCADOPAGO_SUCCESS_URL = config('MERCADOPAGO_SUCCESS_URL', default='http://127.0.0.1:8000/pagamentos/sucesso/')
+MERCADOPAGO_FAILURE_URL = config('MERCADOPAGO_FAILURE_URL', default='http://127.0.0.1:8000/pagamentos/erro/')
+MERCADOPAGO_PENDING_URL = config('MERCADOPAGO_PENDING_URL', default='http://127.0.0.1:8000/pagamentos/pendente/')
+MERCADOPAGO_WEBHOOK_SECRET = config('MERCADOPAGO_WEBHOOK_SECRET', default='')
 
 # =============================================================================
 # CONFIGURAÇÕES PERSONALIZADAS DA EMPRESA

@@ -86,7 +86,7 @@
                     </div>
                     <div class="service-footer">
                         <div class="d-grid">
-                            <a href="{% url 'servicos:detalhe' servico.slug %}" class="btn btn-outline-primary">
+                            <a href="/servicos/{{ servico.slug }}/passo1/" class="btn btn-primary">
                                 Iniciar
                             </a>
                         </div>
@@ -106,7 +106,7 @@
                     </div>
                     <div class="service-footer">
                         <div class="d-grid">
-                            <a href="{% url 'servicos:abrir_mei' %}" class="btn btn-primary" aria-label="Iniciar abertura de MEI">
+                            <a href="/servicos/abrir_mei_passo1/" class="btn btn-primary" aria-label="Contratar abertura de MEI">
                                 Iniciar
                             </a>
                         </div>
@@ -125,7 +125,7 @@
                     </div>
                     <div class="service-footer">
                         <div class="d-grid">
-                            <a href="{% url 'servicos:regularizar_mei' %}" class="btn btn-primary">
+                            <a href="/servicos/regularizar_mei_passo1/" class="btn btn-primary">
                                 Iniciar
                             </a>
                         </div>
@@ -144,7 +144,7 @@
                     </div>
                     <div class="service-footer">
                         <div class="d-grid">
-                            <a href="{% url 'servicos:declaracao_mei' %}" class="btn btn-primary">
+                            <a href="/servicos/declaracao_anual_mei/passo1/" class="btn btn-primary">
                                 Iniciar
                             </a>
                         </div>
@@ -163,102 +163,7 @@
                     </div>
                     <div class="service-footer">
                         <div class="d-grid">
-                            <a href="{% url 'servicos:baixar_mei' %}" class="btn btn-primary" aria-label="Iniciar baixa de MEI">
-                                Iniciar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-item">
-                <div class="service-icon">
-                    <i class="bi bi-pencil-square"></i>
-                </div>
-                <div class="service-content">
-                    <h4 class="text-primary mb-3">Alteração MEI</h4>
-                    <div class="service-description">
-                        <p class="text-muted mb-3">Alteração de dados do MEI como endereço, atividade principal, nome empresarial.</p>
-                    </div>
-                    <div class="service-footer">
-                        <div class="d-grid">
-                            <a href="#" class="btn btn-primary">
-                                Iniciar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-item">
-                <div class="service-icon">
-                    <i class="bi bi-receipt"></i>
-                </div>
-                <div class="service-content">
-                    <h4 class="text-primary mb-3">Nota Fiscal</h4>
-                    <div class="service-description">
-                        <p class="text-muted mb-3">Emissão de notas fiscais eletrônicas para MEI. Configuração e suporte completo.</p>
-                    </div>
-                    <div class="service-footer">
-                        <div class="d-grid">
-                            <a href="#" class="btn btn-primary">
-                                Iniciar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-item">
-                <div class="service-icon">
-                    <i class="bi bi-search"></i>
-                </div>
-                <div class="service-content">
-                    <h4 class="text-primary mb-3">Buscar MEI pelo CPF</h4>
-                    <div class="service-description">
-                        <p class="text-muted mb-3">Consulta completa da situação do MEI através do CPF. Relatório detalhado.</p>
-                    </div>
-                    <div class="service-footer">
-                        <div class="d-grid">
-                            <a href="#" class="btn btn-primary">
-                                Iniciar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-item">
-                <div class="service-icon">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-                <div class="service-content">
-                    <h4 class="text-primary mb-3">Certidão Negativa de Débitos</h4>
-                    <div class="service-description">
-                        <p class="text-muted mb-3">Emissão de certidões negativas federais, estaduais e municipais.</p>
-                    </div>
-                    <div class="service-footer">
-                        <div class="d-grid">
-                            <a href="#" class="btn btn-primary">
-                                Iniciar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-item">
-                <div class="service-icon">
-                    <i class="bi bi-award"></i>
-                </div>
-                <div class="service-content">
-                    <h4 class="text-primary mb-3">Certificado Digital</h4>
-                    <div class="service-description">
-                        <p class="text-muted mb-3">Emissão e instalação de certificado digital A1 ou A3 para MEI.</p>
-                    </div>
-                    <div class="service-footer">
-                        <div class="d-grid">
-                            <a href="#" class="btn btn-primary">
+                            <a href="/servicos/baixar_mei_passo1/" class="btn btn-primary" aria-label="Contratar baixa de MEI">
                                 Iniciar
                             </a>
                         </div>
